@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>OPTICSvis</title>
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="sidebar">
+      <div class="elem">
+        <a href="#m1">Milestone 1</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m2">Milestone 2</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m3">Milestone 3</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m4">Milestone 4</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <h2 class="title">OPTICS<sub>vis</sub>: clustering, visualized</h2>
+      <hr/>
+
+      <section id="m1">
+        <h2>Milestone 1</h2>
+
+          <h3>Introduction</h3>
+
+        <p>
+          Our project idea is to visualize the resulting data from running the
+          OPTICS algorithm on a given data set. OPTICS does not generate a
+          simple mapping of points to a cluster ID, but rather outputs a list
+          of reachability data—that is, the length (given by, e.g., the
+          euclidean distance between those two points) that the algorithm had
+          to jump from a given point to another. Short distances are preferred by
+          the algorithm, so a series of short jumps likely marks a cluster.
+        </p>
+
+        <p>
+          However, in the end the user is looking at nothing but numbers and has to discern
+          the patterns in the data himself. As such, the first step after running OPTICS
+          is usually to draw a bar chart, which makes this task much easier.
+        </p>
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png">
+        <div class="img-subtext">OPTICS. source: wikipedia</div>
+      </section>
+
+      <section>
+        <h3>Project details</h3>
+
+        <dl>
+          <dt>Project type</dt>
+          <dd>Design study</dd>
+
+          <dt>Group</dt>
+          <dd>
+            <ul>
+              <li>Sonja Biedermann</li>
+              <li>Christian Permann</li>
+            </ul>
+          </dd>
+
+          <dt>Tasks</dt>
+          <dd>
+            <ul>
+              <li>Visualize data (as point clouds)</li>
+              <li>Visualize OPTICS results in an interactive way</li>
+              <li>Experiment with different settings for the algorithm (educational aspect)</li>
+            </ul>
+          </dd>
+
+          <dt>Why is this hard to achieve in existing tools?</dt>
+          <dd>
+            It's not so much hard to achieve as just not really done much<sup>[1]</sup>
+          </dd>
+        </dl>
+      </section>
+
+      <section id="m2">
+        <h2>Milestone 2</h2>
+
+        coming soon
+      </section>
+
+      <section id="m3">
+        <h2>Milestone 3</h2>
+        coming soonish
+      </section>
+
+      <section id="m4">
+        <h2>Milestone 4</h2>
+
+        coming eventually
+      </section>
+    </div>
+  </body>
+</html>
