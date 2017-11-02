@@ -51,6 +51,15 @@
           is usually to draw a bar chart, which makes this task much easier.
         </p>
 
+        <p>
+          We also found, that it is often useful to visualise the data as a Heat-Map,
+          which brings the problem of how to order the points for the Heat-Map to be visualy usefull.
+          For this reason we propose to order them according to the output of the OPTICS algorithm,
+          since similar points are likely to be close to each other. This should result in a map that
+          represents the data reduced by their distance to each other coded in with color and with
+          that visual and easy to recognize cluster- and subcluster structures.
+        </p>
+
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png">
         <div class="img-subtext">OPTICS. source: wikipedia</div>
       </section>
@@ -76,12 +85,16 @@
               <li>Visualize data (as point clouds)</li>
               <li>Visualize OPTICS results in an interactive way</li>
               <li>Experiment with different settings for the algorithm (educational aspect)</li>
+              <li>Figure out how different parameters affect the output of the algorithm</li>
+              <li>Make density based clustering (via OPTICS) more accessible</li>
             </ul>
           </dd>
 
           <dt>Why is this hard to achieve in existing tools?</dt>
           <dd>
-            It's not so much hard to achieve as just not really done much<sup>[1]</sup>
+            It's not so hard to achieve, it just seems, that not much work was done on this subject
+            and only few implementations of this algorithm are targeted towards casual/non expert analysis
+            of clusterdata and are therefor difficult to interpret.<sup>[1]</sup>
           </dd>
 
           <dt>Users</dt>
