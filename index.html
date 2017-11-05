@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>OPTICSvis</title>
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="sidebar">
+      <div class="elem">
+        <a href="#m1">Milestone 1</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m2">Milestone 2</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m3">Milestone 3</a>
+      </div>
+
+      <div class="elem">
+        <a href="#m4">Milestone 4</a>
+      </div>
+    </nav>
+
+    <div class="content">
+      <h2 class="title">OPTICS<sub>vis</sub>: clustering, visualized</h2>
+      <hr/>
+
+      <section id="m1">
+        <h2>Milestone 1</h2>
+
+        <h3>Introduction</h3>
+
+        <p>
+          Our project idea is to visualize the resulting data from running the
+          OPTICS algorithm on a given data set. OPTICS does not generate a
+          simple mapping of points to a cluster ID, but rather outputs a list
+          of reachability data—that is, the length (given by, e.g., the
+          euclidean distance between those two points) that the algorithm had
+          to jump from a given point to another. Short distances are preferred by
+          the algorithm, so a series of short jumps likely marks a cluster.
+        </p>
+
+        <p>
+          However, in the end the user is looking at nothing but numbers and has to discern
+          the patterns in the data himself. As such, the first step after running OPTICS
+          is usually to draw a bar chart, which makes this task much easier.
+        </p>
+
+        <p>
+          As such, visualization is arguably already a core component of cluster analysis
+          when using OPTICS. Why not allow for further manipulation of the algorithm, allowing
+          to specify parameters such as the minimum point size to qualifiy as a cluster, or the
+          cutoff distance that is applied onto the reachability data to define the actual clusters?
+        </p>
+
+        <p>
+          Furthermore, OPTICS is inherently capable of producing hierarchial
+          clusterings, but this information is oftentimes discarded in favor of
+          a simpler representation. Procuring an visualization method that is
+          still simple, but allows for evaluation of hierarchial clusters is
+          surely a worthwile undertaking, and one that we will strive for.
+        </p>
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png"/>
+        <div class="img-subtext">OPTICS. source: wikipedia</div>
+
+        <h3>Why do this and to what scope?</h3>
+
+        <p>
+          Not many tools exist that take on this subject, although notable
+          projects exist, especially Clustervision <a href="#clustervision">[1]</a>
+          and a DBSCAN visualization that we found <a href="#dbscan">[2]</a>,
+          the latter of which only visualizes how DBSCAN goes about finding
+          clusters (i.e. shows the epsilon neighborhoods). It is notable that
+          DBSCAN results in a simple partition of points into clusters along
+          with some metadata (e.g. core points versus edge points).
+        </p>
+
+        <p>
+          Clustervision is an especially powerful tool and takes on a
+          multitude of algorithms (including OPTICS) and offers additional
+          tooling like dimension reduction using TSNE. One of the core tasks
+          of this tool is to validate the results of the algorithm—i.e.
+          enable the user to check out the features of points in a cluster
+          and see the relations between data that caused them to be
+          classified into the same cluster.
+        </p>
+
+        <p>
+          This is something that we do not want to do, as we strongly feel that
+          this is out of bounds for us. We want to make an example of simple
+          data (i.e. low dimensional and spatial, a list of real points) and
+          how the results given by OPTICS relate to this data set and the used
+          settings, and show the partition derived from the reachability data.
+        </p>
+      </section>
+
+      <section>
+        <h3>Project details</h3>
+
+        <dl>
+          <dt>Project type</dt>
+          <dd>Design study</dd>
+
+          <dt>Group</dt>
+          <dd>
+            <ul>
+              <li>Sonja Biedermann</li>
+              <li>Christian Permann</li>
+            </ul>
+          </dd>
+
+          <dt>Tasks</dt>
+          <dd>
+            <ul>
+              <li>Visualize data (as point clouds)</li>
+              <li>Visualize OPTICS results in an interactive and accessible way</li>
+              <li>Experiment with different settings for the algorithm (educational aspect)</li>
+            </ul>
+          </dd>
+
+          <dt>Users</dt>
+          <dd>
+            <ul>
+              <li>Students interested in the algorithm</li>
+              <li>Teachers for presentation purposes</li>
+              <li>Scientists that just want something to quickly use density based clustering</li>
+              <li>Scientists that want to see if this algorithm fits their requirements</li>
+            </ul>
+          </dd>
+
+          <dt>Dataset</dt>
+          <dd>User provided or predefined points</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h3>Preliminary Project Solution</h3>
+
+        <img src="m1/scan.jpg" width="100%"/>
+        <div class="img-subtext">Sketch of a preliminary solution.</div>
+
+        <p>
+          A preliminary solution could consist out of a scatter plot visualizing the
+          input data, a bar plot visualizing the reachability data, as well as a heat
+          map that visualizes similarities. Another view may be used to show miscellaneous
+          metadata such as the number of points per cluster. A small dashboard is provided
+          to change algorithm parameters.
+        </p>
+      </section>
+
+      <section>
+        <h3>Separation of Tasks</h3>
+        <table width="100%">
+          <tr>
+            <th></th>
+            <th>Sonja</th>
+            <th>Christian</th>
+          </tr>
+
+          <tr>
+            <th>Website (Content)</th>
+            <td>85%</td>
+            <td>15%</td>
+          </tr>
+
+          <tr>
+            <th>Idea</th>
+            <td>15%</td>
+            <td>85%</td>
+          </tr>
+
+          <tr>
+            <th>Solution Sketch</th>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <h3>References</h3>
+        <ol>
+          <li id="clustervision"><a href="http://perer.org/papers/adamPerer-Clustervision-VAST2017.pdf">Clustervision: Visual Supervision of Unsupervised Clustering (opens a .pdf)</a></li>
+          <li id="dbscan"><a href="https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/">Visualizing DBSCAN clustering</a></li>
+        </ol>
+      </section>
+
+      <section id="m2">
+        <h2>Milestone 2</h2>
+
+        coming soon
+      </section>
+
+      <section id="m3">
+        <h2>Milestone 3</h2>
+        coming soonish
+      </section>
+
+      <section id="m4">
+        <h2>Milestone 4</h2>
+
+        coming eventually
+      </section>
+    </div>
+  </body>
+</html>

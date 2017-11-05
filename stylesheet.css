@@ -7,7 +7,7 @@ body {
     line-height: 1.6;
 
     color: #444;
-    /* background-color: #afafaf; */
+    background-color: #fefefa;
 }
 
 .title {
@@ -21,8 +21,8 @@ img {
 
 .img-subtext {
     text-align: right;
-    margin-right: 8em;
     font-size: 10px;
+    margin-top: 0.5em;
 }
 
 hr {
@@ -52,8 +52,9 @@ nav.sidebar .elem a {
 }
 
 nav.sidebar .elem:hover {
-    /* background-color: #daf2ff; */
-    background-color: #EBF4FA;
+    background-color: #daf2ff;
+    /* background-color: #efefef */
+    /* background-color: #EBF4FA; */
 }
 
 div.content {
@@ -67,4 +68,25 @@ section {
 
 dl dt {
     font-weight: bold;
+}
+
+ol {
+    counter-reset: list;
+}
+
+ol > li {
+    list-style: none;
+}
+
+ol > li:before {
+    content: "[" counter(list) "] ";
+    counter-increment: list;
+}
+
+table {
+    text-align: center;
+}
+
+table th {
+    background-color: #efefef;
 }
