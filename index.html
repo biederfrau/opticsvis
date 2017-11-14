@@ -202,7 +202,7 @@
                 Shows the points with their cluster coded as color
             </li>
             <li>
-                Shows the clusters with the amount of points contained, as well as the noise points in gray
+                Shows the clusters with the amount of points contained, as well as the noise points in gray.
             </li>
             <li>
                 Shows the Reachability Plot with the reachability distance for each point and the cutoff line that
@@ -211,20 +211,50 @@
             <li>
                 Shows the average reachability distance within the clusters, lower meaning a denser cluster
             </li>
-            <br/>
-            <ul>
-                <li>
-                    When mousing over any of the bar charts the points belonging to the according cluster will be
-                    highlighted in all other charts.
-                </li>
-                <li>
-                    The cutoff line can be dragged to redefine clusters
-                </li>
-            </ul>
-
-            </p>
         </ol>
-        </p>
+
+        <ul>
+            <li>
+                When mousing over any of the bar charts the points belonging to the according cluster will be
+                highlighted in all other charts, mousing over points has the reverse effect.
+            </li>
+            <li>
+                Zooming is enabled inside of the scatter plot.
+            </li>
+            <li>
+                Clicking on a bar of a bar chart hides other points in the scatter and reachability plot and gives
+                the other bars transparency.
+            </li>
+            <li>
+                The cutoff line can be dragged to redefine clusters. All charts and data will be reevaluated and
+                changed accordingly.
+            </li>
+            <br/>
+            <li>
+                The "Data"-Button lets you copy text into a text box, which gets interpreted and used as data for the
+                algorithm.
+            </li>
+            <li>
+                The "Settings"-Button lets you define the Epsilon and MIN-Points for the algorithm as well as
+                define a value from which on distances are being handled as if unreachable ("Context Infinity").
+                This value is therefor also the upper bound for the reachability plot.
+            </li>
+        </ul>
+        <h4>
+            Advantages:
+        </h4>
+        <ul>
+            <li>Nicely shows the points</li>
+            <li>Cluster information can be seen easily</li>
+        </ul>
+        <h4>
+            Disadvantages:
+        </h4>
+        <ul>
+            <li>Difficult to correlate points with reachability value</li>
+            <li>May produce ugly visualization with bad parameters</li>
+        </ul>
+
         <h3>Milestones</h3>
         <ul>
             <li>Setting up a HTML framework for the project</li>
