@@ -70,15 +70,15 @@ dl dt {
     font-weight: bold;
 }
 
-ol {
+ol.bib {
     counter-reset: list;
 }
 
-ol > li {
+ol.bib > li {
     list-style: none;
 }
 
-ol > li:before {
+ol.bib > li:before {
     content: "[" counter(list) "] ";
     counter-increment: list;
 }
@@ -89,4 +89,13 @@ table {
 
 table th {
     background-color: #efefef;
+}
+
+dl.chart-list {
+    counter-reset: list;
+}
+
+dl.chart-list > dt:before {
+    content: counter(list) ". ";
+    counter-increment: list;
 }
