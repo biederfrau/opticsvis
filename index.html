@@ -66,7 +66,7 @@
             surely a worthwile undertaking, and one that we will strive for.
         </p>
 
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png"/>
+        <img id="wiki-optics" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png"/>
         <div class="img-subtext">OPTICS. source: wikipedia</div>
 
         <h3>Why do this and to what scope?</h3>
@@ -185,7 +185,7 @@
 
     <section>
         <h3>References</h3>
-        <ol>
+        <ol class="bib">
             <li id="clustervision"><a href="http://perer.org/papers/adamPerer-Clustervision-VAST2017.pdf">Clustervision:
                 Visual Supervision of Unsupervised Clustering (opens a .pdf)</a></li>
             <li id="dbscan"><a href="https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/">Visualizing
@@ -195,7 +195,159 @@
 
     <section id="m2">
         <h2>Milestone 2</h2>
-        <h3>Mockup 1</h3>
+        <h3>Chart Pool</h3>
+
+        Our data is twofold, first: the data to be clustered, and then the actual output (along with metadata that is
+        derived from the output).
+
+        <dl class="chart-list">
+          <dt>Scatter plot</dt>
+          <dd>
+            <p>
+              Since we've decided to deal with exclusively real-valued data points, a scatter plot
+              is a natural visualization choice. However, especially with excessively many points,
+              scatter plots may start to become unwieldy, and, especially
+              considering svg-drawing in the browser, slow.
+            </p>
+          </dd>
+
+          <dt>Bar chart (split dimensions)</dt>
+          <dd>
+            <p>
+              We feel that given very large data sets, this might be an interesting way to aggregate
+              it. It works as follows: the dimensions are split up into two (or however many dimensions
+              there are) histograms that bin the number of points given in some range. That way the
+              data distribution is visualized.
+            </p>
+
+            <p>
+              To show the correlation between the two dimensions, we propose that
+              we add a color cue.  On hovering a bar, the bars of the other
+              dimension will change color to show the distribution of the points
+              that were put into the corresponding bin, e.g. turn blue to show that
+              few points of the selected bin were put into the other dimension's
+              bin or green for quite many.
+            </p>
+
+            <p>
+              However, this would at best provide a rough overview over the data distribution (which
+              is already a pretty sweet deal when you're dealing with Big Data, but we probably won't)
+              and might be alienating to any users, who probably expect a simple scatter plot instead.
+            </p>
+          </dd>
+
+          <dt>Heat map (similarities)</dt>
+          <dd>
+            <p>
+              This chart displays the points in the output order on both axes and maps the colors
+              to the similarity (e.g. inverse distance) of the points. This way, clusters are visible
+              along the diagonal. Hierarchial structures are also visible.
+            </p>
+          </dd>
+
+          <dt>Heat map (jump distances)</dt>
+          <dd>
+            <p>
+              An alternative application of a heat map would be to sort of merge the scatter plot
+              with a heat map, dividing the area into small rectangles and coloring them according
+              to the jumps that were made between points---with small jumps being high similarity.
+              This way, we actually display the densities of certain regions, which are already enough
+              to reveal any clusters, and get rid of the actual points (which may be toggled on demand)
+              to avoid clutter in case of large data.
+            </p>
+
+            <p>
+              This may, however, be hard to implement---or at least implement so that it works well.
+            </p>
+          </dd>
+
+          <dt>Scatter plot with jump paths</dt>
+          <dd>
+            <p>
+              Another spin on the scatter plot would be to show the actual jumps that the algorithm makes
+              between points, like it is done in <a href="#wiki-optics">the graphic at the top of the page</a>.
+              This would certainly how the algorithm works and provide a connection to the reachability data.
+            </p>
+          </dd>
+
+          <dt>Bar chart (reachability)</dt>
+          <dd>
+            <p>
+              Although we think that bar charts = boring charts, we think that the reachability is
+              best visualized using, well, bar charts. For one part, they allow for easy comparison of
+              reachability lengths, as the height of the bar immediately corresponds to the length of the
+              jump, so no thinking required.
+            </p>
+
+            <p>
+              Furthermore, bar charts have always been used to visualize the reachability, so it has
+              become canon. Someone who is well-aquainted with the algorithm might be thrown off if we
+              used something different.
+            </p>
+          </dd>
+
+          <dt>Bar chart (cluster sizes)</dt>
+          <dd>
+            <p>
+              It may be desirable to also show the make-up of the data using the different
+              cluster sizes. This can be done using a bar chart.
+            </p>
+          </dd>
+
+          <dt>Bubble chart (cluster sizes)</dt>
+          <dd>
+            <p>
+              It is also possible to display the cluster size information in a more fun way
+              by using a bubble chart. However, we feel that the use of spheres may be a bad
+              choice---historically, the OPTICS algorithm was a great idea because it is able to
+              find clusters that are NOT sphere shaped, by looking at densities. A bubble chart
+              looks like clusters, so it may be confusing to imply that the clusters in the data
+              are somehow also spherical.
+            </p>
+          </dd>
+
+          <dt>Area chart (clusters with different cutoffs)</dt>
+          <dd>
+            <p>
+              The cutoff distance is <em>the</em> parameter to play around with, and can
+              drastically alter the resulting clustering. As a reminder, the cutoff distance
+              mandates which points (whose jump distances all fall below the cutoff) get lumped
+              together in a cluster.
+            </p>
+
+            <p>
+              We could draw an area chart over different cutoff distances and show how the clusters
+              start to fall together given larger cutoffs. This could then be used to indentify critical
+              cutoffs, i.e. after how large a cutoff the result starts to be no longer useful. This
+              also tells a story on graph hierarchies, with larger cutoffs showing clusters that would be
+              further up on the dendogram.
+            </p>
+
+            <p>
+              This could also be used to display effects of different parameters, e.g. the min points
+              parameter. It could also be altered to only show the ratio between points classified as
+              noise versus points classified as cluster points.
+            </p>
+          </dd>
+
+          <dt>Dendogram (hierarchial clusters)</dt>
+          <dd>
+            <p>
+              A dendogram is the weapon of choice when wanting to show
+              hierarchies in a clustering.  Here, we could define different
+              cutoffs for sourcing the data to display, although this might be
+              tricky to get to work right on many different data sets.  This
+              could be solved by enabling user intervention, i.e. having the
+              user pick cutoffs (which is also a great thing to play around
+              with).
+            </p>
+
+            <p>
+              The implementation of this might be a little more involved.
+            </p>
+        </dl>
+
+        <h3>Mockup 1</h3><!--{{{-->
         <img src="m2/mockup1.png" width="100%"/>
         <ol>
             <li>
@@ -253,7 +405,19 @@
         <ul>
             <li>Difficult to correlate points with reachability value</li>
             <li>May produce ugly visualization with bad parameters</li>
-        </ul>
+        </ul><!--}}}-->
+
+        <h3>Mockup 2</h3>
+
+        XXX
+
+        <h3>Mockup 3</h3>
+
+        XXX
+
+        <h3>Implementation details</h3>
+
+        We will be using d3.js.
 
         <h3>Milestones</h3>
         <ul>
