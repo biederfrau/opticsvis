@@ -508,6 +508,93 @@
           </dd>
         </dl>
 
+        <h3>Visualization techniques</h3>
+
+        <p>
+          Most of the visualization techniques that we picked can find use in any constellation of charts,
+          so we will cover them in a general manner.
+        </p>
+
+        <dl class="chart-list">
+          <dt>Aggregation</dt>
+          <dd>
+            <p>
+              Clustering is a form of aggregation, so any clustering
+              visualization will make use of aggregation as soon as the points
+              are assigned their cluster ID and this is somehow visualized, as
+              the points are then aggregated into groups defined by their
+              cluster ID. In our case, the cluster membership is communicated
+              using colors.
+            </p>
+          </dd>
+
+          <dt>Heat maps</dt>
+          <dd>
+            <p>
+              A clustering can be visualized by placing similar values in close
+              proximity and using their similarity as an index into a color
+              scheme. This is displayed in mockup 4.
+            </p>
+
+            <p>
+              We are unclear on the technicalities, but the density map of mockup 3
+              could possibly also be considered a heatmap mapping point densities to
+              colors.
+            </p>
+          </dd>
+
+          <!-- <dt>Tree map</dt> -->
+          <!-- <dd> -->
+          <!-- </dd> -->
+
+          <dt>Filter</dt>
+          <dd>
+            <p>
+              ???
+            </p>
+          </dd>
+
+          <dt>Tooltips</dt>
+          <dd>
+            <p>
+              We will be using tooltips to convey exact data---e.g. a bar chart
+              depicting cluster sizes can only convey approximate data (unless
+              you reverse-engineer the formula for the rectangle size and count
+              the pixels somehow), but hovering the bar will create a popup
+              that will give the exact size of the cluster in question.
+            </p>
+          </dd>
+
+          <dt>Brushing &amp; Linking / Context and Focus / Zoom</dt>
+          <dd>
+            <p>
+              We plan on incorporating especially linking and having other
+              views react to selections made in different views, e.g.
+              highlighting a reachability bar in the reachability distance bar
+              chart will highlight the corresponding jump-path in the scatter
+              plot with jump paths (see mockup 3).
+            </p>
+
+            <p>
+              Brushing can be used on either the scatter plot (selecting a
+              group of points) or the reachability distance bar chart
+              (selecting also a group of points, but in a given order). The
+              first variant would update the other views to only show data
+              relating to the points that are contained in the selection
+              (possibly prompting expensive recomputation), while the second
+              variant would zoom in on the scatterplot, as consecutive points
+              in the bar chart are expected to be in close proximity to each
+              other.
+            </p>
+
+            <p>
+              This behavior somewhat resembles the context and focus pattern, with
+              e.g. the reachability acting as a context and the other views reacting to
+              focus the selection.
+            </p>
+          </dd>
+        </dl>
+
         <h3>Scenario of use</h3>
         <p>
             A typical scenario could be a teacher at a university, wanting to show how OPTICS can be used.
@@ -516,9 +603,12 @@
             With those the reachability plot, which usually is the only output, can be further explained for better
             understanding. Additionally the parameters and cutoff line can be adjusted to see how those affect the output.
         </p>
+
         <h3>Implementation details</h3>
 
-        We will be using d3.js.
+        <p>
+          We will be using d3.js.
+        </p>
 
         <h3>Milestones</h3>
         <ul>
