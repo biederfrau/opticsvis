@@ -266,7 +266,7 @@
             <p>
               Another spin on the scatter plot would be to show the actual jumps that the algorithm makes
               between points, like it is done in <a href="#wiki-optics">the graphic at the top of the page</a>.
-              This would certainly how the algorithm works and provide a connection to the reachability data.
+              This would illustrate how the algorithm works and provide a connection to the reachability data.
             </p>
           </dd>
 
@@ -424,8 +424,90 @@
         <h3>Mockup 2</h3>
         <img src="m2/mockup2.png" width="100%"/>
         <p>Charts [2] and [4] may be swaped out for those (Mockup 1)</p>
+
         <h3>Mockup 3</h3>
-        <p>soon</p>
+        <img src="m2/mockup3.png" width="100%"/>
+
+        <p>
+          The details on this mockup are not quite accurate but give a rough idea
+          of how the results for a given data set may look like.
+        </p>
+
+        <p>
+          For this mockup, we have picked 5 charts from the chart pool above,
+          namely a density map that also shows points (these can be toggled off
+          to decrease clutter), a scatter plot that also displays the jumps
+          between points that the algorithm made, the good old bar chart that
+          shows the reachability distance in the order that the algorithm
+          generated them, as well as an area chart that gives an overview over
+          how the clusters change with increasing cutoff distances, and another
+          simple bar chart that shows cluster sizes (or noise, which are
+          aggregated into one pseudocluster) by number of points.
+        </p>
+
+        <p>
+          The charts are enumerated starting at the top left and clockwise.
+        </p>
+
+        <dl class="chart-list">
+          <dt>Density map</dt>
+          <dd>
+            <p>
+              This view shows a density map. Since OPTICS is a density-based clustering algorithm,
+              displaying the densities is a natural choice.
+            </p>
+
+            <p>
+              It might be desirable to view the actual points, however, so an
+              option for toggling the data points (as in a normal scatterplot)
+              should be included. These points could then also be colored to
+              correlate with the other views.
+            </p>
+          </dd>
+
+          <dt>Bar chart (cluster sizes)</dt>
+          <dd>
+            <p>
+              This view shows the cluster sizes. The colors are picked to relate
+              to the other views.
+            </p>
+          </dd>
+
+          <dt>Scatter plot with jump paths</dt>
+          <dd>
+            <p>
+              This view shows the data points along with the paths that correlate to the jumps
+              displayed in the reachability bar chart. The jumps are colored according to the
+              cluster, according to the colors of the bar chart and other views. Hovering a
+              bar of the reachability chart should highlight the corresponding edge.
+            </p>
+          </dd>
+
+          <dt>Area chart (different cutoffs)</dt>
+          <dd>
+            <p>
+              The area chart shows how the ratio of the different clusters change as the cutoff distance
+              increases. This shows some hierarchical information as only adjacent clusters merge. The effect
+              can be replicated by dragging the cutoff bar on chart 5.
+            </p>
+          </dd>
+
+          <dt>Bar chart (reachability distances)</dt>
+          <dd>
+            <p>
+              This view shows the reachability distances (the lengths of the jumps) in the order
+              computed by the algorithm. This is a staple OPTICS chart and would probably be included
+              in even the most avant garde OPTICS visualizations.
+            </p>
+
+            <p>
+              A bar can be used to change the current cutoff distance. Multiple cutoff bars are also
+              possible, which would then reveal hierarchical cluster structures (e.g. as shown in the
+              density map, with denser inner regions (cores) and less dense outer regions ("suburbs")).
+            </p>
+          </dd>
+        </dl>
+
         <h3>Scenario of use</h3>
         <p>
             A typical scenario could be a teacher at a university, wanting to show how OPTICS can be used.
