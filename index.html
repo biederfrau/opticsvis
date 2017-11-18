@@ -354,6 +354,9 @@
           <dd>
             <p>
               It might be useful to show the progression of the algorithm over time?
+                This could also give a feeling for the algorithmic complexity of the algorithm,
+                and how different parameters affect its runtime in contrast to the amount of points
+                for a specific data set.
               We could also use an area chart because line charts tend to look flimsy.
             </p>
           </dd>
@@ -422,11 +425,39 @@
         <ul>
             <li>Difficult to correlate points with reachability value</li>
             <li>May produce ugly visualization with bad parameters</li>
-        </ul><!--}}}-->
+        </ul>
 
         <h3>Mockup 2</h3>
         <img src="m2/mockup2.png" width="100%"/>
-        <p>Charts [2] and [4] may be swaped out for those (Mockup 1)</p>
+        <p>
+            Charts [2] and [4] (Mockup 1) may be swaped out for those or the heat map(sketched in m1).
+        </p>
+        <ol>
+            <li>
+                Shows classification progress over time.
+            </li>
+            <li>
+                Shows the clusters with the amount of points contained, as well as the noise points in gray.
+            </li>
+        </ol>
+        <h4>
+        Advantages:
+        </h4>
+        <ul>
+            <li>(chart 1) Shows algorithm progress over time</li>
+            <li>(chart 2) Data partitioning(result) may be easy to recognize</li>
+            <li>(heat map) Can reduce the dimensionality to 2 if the data set has more than 2 dimensions
+            and visualizes nicely cluster and sub cluster structures without need for a cut off line</li>
+        </ul>
+        <h4>
+            Disadvantages:
+        </h4>
+        <ul>
+            <li>(chart 1) It is difficult to predict how useful progress over time is? </li>
+            <li>(chart 2) A bar chart may be better fit and more readable</li>
+            <li>(heat map) May need some thought to be understood</li>
+        </ul>
+
 
         <h3>Mockup 3</h3>
         <img src="m2/mockup3.png" width="100%"/>
