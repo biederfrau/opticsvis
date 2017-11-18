@@ -66,7 +66,8 @@
             surely a worthwile undertaking, and one that we will strive for.
         </p>
 
-        <img id="wiki-optics" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png"/>
+        <img id="wiki-optics"
+             src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/OPTICS.svg/712px-OPTICS.svg.png"/>
         <div class="img-subtext">OPTICS. source: wikipedia</div>
 
         <h3>Why do this and to what scope?</h3>
@@ -201,165 +202,165 @@
         derived from the output).
 
         <dl class="chart-list">
-          <dt>Scatter plot</dt>
-          <dd>
-            <p>
-              Since we've decided to deal with exclusively real-valued data points, a scatter plot
-              is a natural visualization choice. However, especially with excessively many points,
-              scatter plots may start to become unwieldy, and, especially
-              considering svg-drawing in the browser, slow.
-            </p>
-          </dd>
+            <dt>Scatter plot</dt>
+            <dd>
+                <p>
+                    Since we've decided to deal with exclusively real-valued data points, a scatter plot
+                    is a natural visualization choice. However, especially with excessively many points,
+                    scatter plots may start to become unwieldy, and, especially
+                    considering svg-drawing in the browser, slow.
+                </p>
+            </dd>
 
-          <dt>Bar chart (split dimensions)</dt>
-          <dd>
-            <img src="m2/split-dim.png" width="100%"/>
-            <div class="img-subtext">An image is worth a thousand words</div>
+            <dt>Bar chart (split dimensions)</dt>
+            <dd>
+                <img src="m2/split-dim.png" width="100%"/>
+                <div class="img-subtext">An image is worth a thousand words</div>
 
-            <p>
-              We feel that given very large data sets, this might be an interesting way to aggregate
-              it. It works as follows: the dimensions are split up into two (or however many dimensions
-              there are) histograms that bin the number of points given in some range. That way the
-              data distribution is visualized.
-            </p>
+                <p>
+                    We feel that given very large data sets, this might be an interesting way to aggregate
+                    it. It works as follows: the dimensions are split up into two (or however many dimensions
+                    there are) histograms that bin the number of points given in some range. That way the
+                    data distribution is visualized.
+                </p>
 
-            <p>
-              To show the correlation between the two dimensions, we propose that
-              we add a color cue.  On hovering a bar, the bars of the other
-              dimension will change color to show the distribution of the points
-              that were put into the corresponding bin, e.g. turn blue to show that
-              few points of the selected bin were put into the other dimension's
-              bin or green for quite many.
-            </p>
+                <p>
+                    To show the correlation between the two dimensions, we propose that
+                    we add a color cue. On hovering a bar, the bars of the other
+                    dimension will change color to show the distribution of the points
+                    that were put into the corresponding bin, e.g. turn blue to show that
+                    few points of the selected bin were put into the other dimension's
+                    bin or green for quite many.
+                </p>
 
-            <p>
-              However, this would at best provide a rough overview over the data distribution (which
-              is already a pretty sweet deal when you're dealing with Big Data, but we probably won't)
-              and might be alienating to any users, who probably expect a simple scatter plot instead.
-            </p>
-          </dd>
+                <p>
+                    However, this would at best provide a rough overview over the data distribution (which
+                    is already a pretty sweet deal when you're dealing with Big Data, but we probably won't)
+                    and might be alienating to any users, who probably expect a simple scatter plot instead.
+                </p>
+            </dd>
 
-          <dt>Heat map (similarities)</dt>
-          <dd>
-            <p>
-              This chart displays the points in the output order on both axes and maps the colors
-              to the similarity (e.g. inverse distance) of the points. This way, clusters are visible
-              along the diagonal. Hierarchial structures are also visible.
-            </p>
-          </dd>
+            <dt>Heat map (similarities)</dt>
+            <dd>
+                <p>
+                    This chart displays the points in the output order on both axes and maps the colors
+                    to the similarity (e.g. inverse distance) of the points. This way, clusters are visible
+                    along the diagonal. Hierarchial structures are also visible.
+                </p>
+            </dd>
 
-          <dt>Heat map (jump distances)</dt>
-          <dd>
-            <p>
-              An alternative application of a heat map would be to sort of merge the scatter plot
-              with a heat map, dividing the area into small rectangles and coloring them according
-              to the jumps that were made between points---with small jumps being high similarity.
-              This way, we actually display the densities of certain regions, which are already enough
-              to reveal any clusters, and get rid of the actual points (which may be toggled on demand)
-              to avoid clutter in case of large data.
-            </p>
+            <dt>Heat map (jump distances)</dt>
+            <dd>
+                <p>
+                    An alternative application of a heat map would be to sort of merge the scatter plot
+                    with a heat map, dividing the area into small rectangles and coloring them according
+                    to the jumps that were made between points---with small jumps being high similarity.
+                    This way, we actually display the densities of certain regions, which are already enough
+                    to reveal any clusters, and get rid of the actual points (which may be toggled on demand)
+                    to avoid clutter in case of large data.
+                </p>
 
-            <p>
-              This may, however, be hard to implement---or at least implement so that it works well.
-            </p>
-          </dd>
+                <p>
+                    This may, however, be hard to implement---or at least implement so that it works well.
+                </p>
+            </dd>
 
-          <dt>Scatter plot with jump paths</dt>
-          <dd>
-            <p>
-              Another spin on the scatter plot would be to show the actual jumps that the algorithm makes
-              between points, like it is done in <a href="#wiki-optics">the graphic at the top of the page</a>.
-              This would illustrate how the algorithm works and provide a connection to the reachability data.
-            </p>
-          </dd>
+            <dt>Scatter plot with jump paths</dt>
+            <dd>
+                <p>
+                    Another spin on the scatter plot would be to show the actual jumps that the algorithm makes
+                    between points, like it is done in <a href="#wiki-optics">the graphic at the top of the page</a>.
+                    This would illustrate how the algorithm works and provide a connection to the reachability data.
+                </p>
+            </dd>
 
-          <dt>Bar chart (reachability)</dt>
-          <dd>
-            <p>
-              Although we think that bar charts = boring charts, we think that the reachability is
-              best visualized using, well, bar charts. For one part, they allow for easy comparison of
-              reachability lengths, as the height of the bar immediately corresponds to the length of the
-              jump, so no thinking required.
-            </p>
+            <dt>Bar chart (reachability)</dt>
+            <dd>
+                <p>
+                    Although we think that bar charts = boring charts, we think that the reachability is
+                    best visualized using, well, bar charts. For one part, they allow for easy comparison of
+                    reachability lengths, as the height of the bar immediately corresponds to the length of the
+                    jump, so no thinking required.
+                </p>
 
-            <p>
-              Furthermore, bar charts have always been used to visualize the reachability, so it has
-              become canon. Someone who is well-aquainted with the algorithm might be thrown off if we
-              used something different.
-            </p>
-          </dd>
+                <p>
+                    Furthermore, bar charts have always been used to visualize the reachability, so it has
+                    become canon. Someone who is well-aquainted with the algorithm might be thrown off if we
+                    used something different.
+                </p>
+            </dd>
 
-          <dt>Bar chart (cluster sizes)</dt>
-          <dd>
-            <p>
-              It may be desirable to also show the make-up of the data using the different
-              cluster sizes. This can be done using a bar chart.
-            </p>
-          </dd>
+            <dt>Bar chart (cluster sizes)</dt>
+            <dd>
+                <p>
+                    It may be desirable to also show the make-up of the data using the different
+                    cluster sizes. This can be done using a bar chart.
+                </p>
+            </dd>
 
-          <dt>Bubble chart (cluster sizes)</dt>
-          <dd>
-            <p>
-              It is also possible to display the cluster size information in a more fun way
-              by using a bubble chart. However, we feel that the use of spheres may be a bad
-              choice---historically, the OPTICS algorithm was a great idea because it is able to
-              find clusters that are NOT sphere shaped, by looking at densities. A bubble chart
-              looks like clusters, so it may be confusing to imply that the clusters in the data
-              are somehow also spherical.
-            </p>
-          </dd>
+            <dt>Bubble chart (cluster sizes)</dt>
+            <dd>
+                <p>
+                    It is also possible to display the cluster size information in a more fun way
+                    by using a bubble chart. However, we feel that the use of spheres may be a bad
+                    choice---historically, the OPTICS algorithm was a great idea because it is able to
+                    find clusters that are NOT sphere shaped, by looking at densities. A bubble chart
+                    looks like clusters, so it may be confusing to imply that the clusters in the data
+                    are somehow also spherical.
+                </p>
+            </dd>
 
-          <dt>Area chart (clusters with different cutoffs)</dt>
-          <dd>
-            <p>
-              The cutoff distance is <em>the</em> parameter to play around with, and can
-              drastically alter the resulting clustering. As a reminder, the cutoff distance
-              mandates which points (whose jump distances all fall below the cutoff) get lumped
-              together in a cluster.
-            </p>
+            <dt>Area chart (clusters with different cutoffs)</dt>
+            <dd>
+                <p>
+                    The cutoff distance is <em>the</em> parameter to play around with, and can
+                    drastically alter the resulting clustering. As a reminder, the cutoff distance
+                    mandates which points (whose jump distances all fall below the cutoff) get lumped
+                    together in a cluster.
+                </p>
 
-            <p>
-              We could draw an area chart over different cutoff distances and show how the clusters
-              start to fall together given larger cutoffs. This could then be used to indentify critical
-              cutoffs, i.e. after how large a cutoff the result starts to be no longer useful. This
-              also tells a story on graph hierarchies, with larger cutoffs showing clusters that would be
-              further up on the dendogram.
-            </p>
+                <p>
+                    We could draw an area chart over different cutoff distances and show how the clusters
+                    start to fall together given larger cutoffs. This could then be used to indentify critical
+                    cutoffs, i.e. after how large a cutoff the result starts to be no longer useful. This
+                    also tells a story on graph hierarchies, with larger cutoffs showing clusters that would be
+                    further up on the dendogram.
+                </p>
 
-            <p>
-              This could also be used to display effects of different parameters, e.g. the min points
-              parameter. It could also be altered to only show the ratio between points classified as
-              noise versus points classified as cluster points.
-            </p>
-          </dd>
+                <p>
+                    This could also be used to display effects of different parameters, e.g. the min points
+                    parameter. It could also be altered to only show the ratio between points classified as
+                    noise versus points classified as cluster points.
+                </p>
+            </dd>
 
-          <dt>Dendogram (hierarchial clusters)</dt>
-          <dd>
-            <p>
-              A dendogram is the weapon of choice when wanting to show
-              hierarchies in a clustering.  Here, we could define different
-              cutoffs for sourcing the data to display, although this might be
-              tricky to get to work right on many different data sets.  This
-              could be solved by enabling user intervention, i.e. having the
-              user pick cutoffs (which is also a great thing to play around
-              with).
-            </p>
+            <dt>Dendogram (hierarchial clusters)</dt>
+            <dd>
+                <p>
+                    A dendogram is the weapon of choice when wanting to show
+                    hierarchies in a clustering. Here, we could define different
+                    cutoffs for sourcing the data to display, although this might be
+                    tricky to get to work right on many different data sets. This
+                    could be solved by enabling user intervention, i.e. having the
+                    user pick cutoffs (which is also a great thing to play around
+                    with).
+                </p>
 
-            <p>
-              The implementation of this might be a little more involved.
-            </p>
-          </dd>
+                <p>
+                    The implementation of this might be a little more involved.
+                </p>
+            </dd>
 
-          <dt>Line chart (points classified over time)</dt>
-          <dd>
-            <p>
-              It might be useful to show the progression of the algorithm over time?
-                This could also give a feeling for the algorithmic complexity of the algorithm,
-                and how different parameters affect its runtime in contrast to the amount of points
-                for a specific data set.
-              We could also use an area chart because line charts tend to look flimsy.
-            </p>
-          </dd>
+            <dt>Line chart (points classified over time)</dt>
+            <dd>
+                <p>
+                    It might be useful to show the progression of the algorithm over time?
+                    This could also give a feeling for the algorithmic complexity of the algorithm,
+                    and how different parameters affect its runtime in contrast to the amount of points
+                    for a specific data set.
+                    We could also use an area chart because line charts tend to look flimsy.
+                </p>
+            </dd>
         </dl>
 
         <h3>Mockup 1</h3><!--{{{-->
@@ -451,19 +452,20 @@
             </li>
         </ol>
         <h4>
-        Advantages:
+            Advantages:
         </h4>
         <ul>
             <li>(chart 1) Shows algorithm progress over time</li>
             <li>(chart 2) Data partitioning(result) may be easy to recognize</li>
             <li>(heat map) Can reduce the dimensionality to 2 if the data set has more than 2 dimensions
-            and visualizes nicely cluster and sub cluster structures without need for a cut off line</li>
+                and visualizes nicely cluster and sub cluster structures without need for a cut off line
+            </li>
         </ul>
         <h4>
             Disadvantages:
         </h4>
         <ul>
-            <li>(chart 1) It is difficult to predict how useful progress over time is? </li>
+            <li>(chart 1) It is difficult to predict how useful progress over time is?</li>
             <li>(chart 2) A bar chart may be better fit and more readable</li>
             <li>(heat map) May need some thought to be understood</li>
         </ul><!--}}}-->
@@ -473,83 +475,83 @@
         <div class="img-subtext">Detail view of the visualization components</div>
 
         <p>
-          The details on this mockup are not quite accurate but give a rough idea
-          of how the results for a given data set may look like.
+            The details on this mockup are not quite accurate but give a rough idea
+            of how the results for a given data set may look like.
         </p>
 
         <p>
-          For this mockup, we have picked 5 charts from the chart pool above,
-          namely a density map that also shows points (these can be toggled off
-          to decrease clutter), a scatter plot that also displays the jumps
-          between points that the algorithm made, the good old bar chart that
-          shows the reachability distance in the order that the algorithm
-          generated them, as well as an area chart that gives an overview over
-          how the clusters change with increasing cutoff distances, and another
-          simple bar chart that shows cluster sizes (or noise, which are
-          aggregated into one pseudocluster) by number of points.
+            For this mockup, we have picked 5 charts from the chart pool above,
+            namely a density map that also shows points (these can be toggled off
+            to decrease clutter), a scatter plot that also displays the jumps
+            between points that the algorithm made, the good old bar chart that
+            shows the reachability distance in the order that the algorithm
+            generated them, as well as an area chart that gives an overview over
+            how the clusters change with increasing cutoff distances, and another
+            simple bar chart that shows cluster sizes (or noise, which are
+            aggregated into one pseudocluster) by number of points.
         </p>
 
         <p>
-          The charts are enumerated starting at the top left and clockwise.
+            The charts are enumerated starting at the top left and clockwise.
         </p>
 
         <dl class="chart-list">
-          <dt>Density map</dt>
-          <dd>
-            <p>
-              This view shows a density map. Since OPTICS is a density-based clustering algorithm,
-              displaying the densities is a natural choice.
-            </p>
+            <dt>Density map</dt>
+            <dd>
+                <p>
+                    This view shows a density map. Since OPTICS is a density-based clustering algorithm,
+                    displaying the densities is a natural choice.
+                </p>
 
-            <p>
-              It might be desirable to view the actual points, however, so an
-              option for toggling the data points (as in a normal scatterplot)
-              should be included. These points could then also be colored to
-              correlate with the other views.
-            </p>
-          </dd>
+                <p>
+                    It might be desirable to view the actual points, however, so an
+                    option for toggling the data points (as in a normal scatterplot)
+                    should be included. These points could then also be colored to
+                    correlate with the other views.
+                </p>
+            </dd>
 
-          <dt>Bar chart (cluster sizes)</dt>
-          <dd>
-            <p>
-              This view shows the cluster sizes. The colors are picked to relate
-              to the other views.
-            </p>
-          </dd>
+            <dt>Bar chart (cluster sizes)</dt>
+            <dd>
+                <p>
+                    This view shows the cluster sizes. The colors are picked to relate
+                    to the other views.
+                </p>
+            </dd>
 
-          <dt>Scatter plot with jump paths</dt>
-          <dd>
-            <p>
-              This view shows the data points along with the paths that correlate to the jumps
-              displayed in the reachability bar chart. The jumps are colored according to the
-              cluster, according to the colors of the bar chart and other views. Hovering a
-              bar of the reachability chart should highlight the corresponding edge.
-            </p>
-          </dd>
+            <dt>Scatter plot with jump paths</dt>
+            <dd>
+                <p>
+                    This view shows the data points along with the paths that correlate to the jumps
+                    displayed in the reachability bar chart. The jumps are colored according to the
+                    cluster, according to the colors of the bar chart and other views. Hovering a
+                    bar of the reachability chart should highlight the corresponding edge.
+                </p>
+            </dd>
 
-          <dt>Area chart (different cutoffs)</dt>
-          <dd>
-            <p>
-              The area chart shows how the ratio of the different clusters change as the cutoff distance
-              increases. This shows some hierarchical information as only adjacent clusters merge. The effect
-              can be replicated by dragging the cutoff bar on chart 5.
-            </p>
-          </dd>
+            <dt>Area chart (different cutoffs)</dt>
+            <dd>
+                <p>
+                    The area chart shows how the ratio of the different clusters change as the cutoff distance
+                    increases. This shows some hierarchical information as only adjacent clusters merge. The effect
+                    can be replicated by dragging the cutoff bar on chart 5.
+                </p>
+            </dd>
 
-          <dt>Bar chart (reachability distances)</dt>
-          <dd>
-            <p>
-              This view shows the reachability distances (the lengths of the jumps) in the order
-              computed by the algorithm. This is a staple OPTICS chart and would probably be included
-              in even the most avant garde OPTICS visualizations.
-            </p>
+            <dt>Bar chart (reachability distances)</dt>
+            <dd>
+                <p>
+                    This view shows the reachability distances (the lengths of the jumps) in the order
+                    computed by the algorithm. This is a staple OPTICS chart and would probably be included
+                    in even the most avant garde OPTICS visualizations.
+                </p>
 
-            <p>
-              A bar can be used to change the current cutoff distance. Multiple cutoff bars are also
-              possible, which would then reveal hierarchical cluster structures (e.g. as shown in the
-              density map, with denser inner regions (cores) and less dense outer regions ("suburbs")).
-            </p>
-          </dd>
+                <p>
+                    A bar can be used to change the current cutoff distance. Multiple cutoff bars are also
+                    possible, which would then reveal hierarchical cluster structures (e.g. as shown in the
+                    density map, with denser inner regions (cores) and less dense outer regions ("suburbs")).
+                </p>
+            </dd>
         </dl>
 
         <h4>User interface</h4>
@@ -557,108 +559,119 @@
         <div class="img-subtext">Minimal user interface for mockup 3</div>
 
         <p>
-          The user interface will consist of a side bar on the right side with three
-          sections (buttons) to press. On press the bar will expand a little and
-          show general information about the algorithm (about), or show a text field
-          for pasting data (data), or show settings for the algorithm (in the form of
-          sliders for e.g. cutoff distance, most likely).
+            The user interface will consist of a side bar on the right side with three
+            sections (buttons) to press. On press the bar will expand a little and
+            show general information about the algorithm (about), or show a text field
+            for pasting data (data), or show settings for the algorithm (in the form of
+            sliders for e.g. cutoff distance, most likely).
         </p><!--}}}-->
 
         <h3>Visualization techniques</h3><!--{{{-->
 
         <p>
-          Most of the visualization techniques that we picked can find use in any constellation of charts,
-          so we will cover them in a general manner.
+            Most of the visualization techniques that we picked can find use in any constellation of charts,
+            so we will cover them in a general manner.
         </p>
 
         <dl class="chart-list">
-          <dt>Aggregation</dt>
-          <dd>
-            <p>
-              Clustering is a form of aggregation, so any clustering
-              visualization will make use of aggregation as soon as the points
-              are assigned their cluster ID and this is somehow visualized, as
-              the points are then aggregated into groups defined by their
-              cluster ID. In our case, the cluster membership is communicated
-              using colors.
-            </p>
-          </dd>
+            <dt>Aggregation</dt>
+            <dd>
+                <p>
+                    Clustering is a form of aggregation, so any clustering
+                    visualization will make use of aggregation as soon as the points
+                    are assigned their cluster ID and this is somehow visualized, as
+                    the points are then aggregated into groups defined by their
+                    cluster ID. In our case, the cluster membership is communicated
+                    using colors.
+                </p>
+            </dd>
 
-          <dt>Heat maps</dt>
-          <dd>
-            <p>
-              A clustering can be visualized by placing similar values in close
-              proximity and using their similarity as an index into a color
-              scheme. This is displayed in mockup 4.
-            </p>
+            <dt>Heat maps</dt>
+            <dd>
+                <p>
+                    A clustering can be visualized by placing similar values in close
+                    proximity and using their similarity as an index into a color
+                    scheme. This is displayed in mockup 4.
+                </p>
 
-            <p>
-              We are unclear on the technicalities, but the density map of mockup 3
-              could possibly also be considered a heatmap mapping point densities to
-              colors.
-            </p>
-          </dd>
+                <p>
+                    We are unclear on the technicalities, but the density map of mockup 3
+                    could possibly also be considered a heatmap mapping point densities to
+                    colors.
+                </p>
+            </dd>
 
-          <dt>Tooltips</dt>
-          <dd>
-            <p>
-              We will be using tooltips to convey exact data---e.g. a bar chart
-              depicting cluster sizes can only convey approximate data (unless
-              you reverse-engineer the formula for the rectangle size and count
-              the pixels somehow), but hovering the bar will create a popup
-              that will give the exact size of the cluster in question.
-            </p>
-          </dd>
+            <dt>Tooltips</dt>
+            <dd>
+                <p>
+                    We will be using tooltips to convey exact data---e.g. a bar chart
+                    depicting cluster sizes can only convey approximate data (unless
+                    you reverse-engineer the formula for the rectangle size and count
+                    the pixels somehow), but hovering the bar will create a popup
+                    that will give the exact size of the cluster in question.
+                </p>
+            </dd>
 
-          <dt>Brushing &amp; Linking / Context and Focus / Zoom</dt>
-          <dd>
-            <p>
-              We plan on incorporating especially linking and having other
-              views react to selections made in different views, e.g.
-              highlighting a reachability bar in the reachability distance bar
-              chart will highlight the corresponding jump-path in the scatter
-              plot with jump paths (see mockup 3).
-            </p>
+            <dt>Brushing &amp; Linking / Context and Focus / Zoom</dt>
+            <dd>
+                <p>
+                    We plan on incorporating especially linking and having other
+                    views react to selections made in different views, e.g.
+                    highlighting a reachability bar in the reachability distance bar
+                    chart will highlight the corresponding jump-path in the scatter
+                    plot with jump paths (see mockup 3).
+                </p>
 
-            <p>
-              Brushing can be used on either the scatter plot (selecting a
-              group of points) or the reachability distance bar chart
-              (selecting also a group of points, but in a given order). The
-              first variant would update the other views to only show data
-              relating to the points that are contained in the selection
-              (possibly prompting expensive recomputation), while the second
-              variant would zoom in on the scatterplot, as consecutive points
-              in the bar chart are expected to be in close proximity to each
-              other.
-            </p>
+                <p>
+                    Brushing can be used on either the scatter plot (selecting a
+                    group of points) or the reachability distance bar chart
+                    (selecting also a group of points, but in a given order). The
+                    first variant would update the other views to only show data
+                    relating to the points that are contained in the selection
+                    (possibly prompting expensive recomputation), while the second
+                    variant would zoom in on the scatterplot, as consecutive points
+                    in the bar chart are expected to be in close proximity to each
+                    other.
+                </p>
 
-            <p>
-              This behavior somewhat resembles the context and focus pattern, with
-              e.g. the reachability acting as a context and the other views reacting to
-              focus the selection.
-            </p>
-          </dd>
+                <p>
+                    This behavior somewhat resembles the context and focus pattern, with
+                    e.g. the reachability acting as a context and the other views reacting to
+                    focus the selection.
+                </p>
+            </dd>
 
-          <dt>Filter</dt>
-          <dd>
-            <p>
-              Selecting a cluster (in the cluster size chart) will all relevant views focus
-              on data pertaining to only this one cluster. This overlaps somewhat with the
-              previous techniques.
-            </p>
-          </dd>
-        </dl><!--}}}-->
+            <dt>Filter</dt>
+            <dd>
+                <p>
+                    Selecting a cluster (in the cluster size chart) will all relevant views focus
+                    on data pertaining to only this one cluster. This overlaps somewhat with the
+                    previous techniques.
+                </p>
+            </dd>
+        </dl>
 
-        <h3>Scenario of use</h3><!--{{{-->
+        <h3>Mockup conclusion</h3>
         <p>
-            After our Mockups we still expect our visualization to look like the sketch from M1.
-            Our scenario of use is designed with that in mind.<br/><br/>
+            After our mockups we concluded, that our implementation will probably look something like this:
+        <ol>
+            <li>Scatter plot with jump path / exchangeable with density map</li>
+            <li>Bar chart with cluster sizes</li>
+            <li>Reachability plot</li>
+            <li>Heat map (similatities)</li>
+        </ol>
+        Our scenario of use is designed with that in mind.
+        </p>
 
+
+        <h3>Scenario of use</h3>
+        <p>
             A typical scenario could be a teacher at a university, wanting to show how OPTICS can be used.
-            For this said teacher would first enter data in the corresponding menu and edit the algorithm settings.
+            For this, said teacher would first enter data in the corresponding menu and edit the algorithm settings.
             Next the data is shown and the different charts show the clusters and some meta data.
-            With those the reachability plot, which usually is the only output, can be further explained for better
-            understanding. Additionally the parameters and cutoff line can be adjusted to see how those affect the output.
+            With those, the reachability plot, which usually is the only output, can be further explained for better
+            understanding. Additionally the parameters and cutoff line can be adjusted to see how those affect the
+            output.
         </p>
         <p>
             An even more concrete step by step way to use this for research could be:
@@ -668,119 +681,120 @@
             <li>Load in some data</li>
             <li>Go to "Settings"</li>
             <li>Define Eps/MINPts/"Infinity"</li>
-            <li>Show the scatter plot (the classification may not be nice)</li>
+            <li>Show the scatter plot/density map (the classification may not be nice)</li>
             <li>Look at the heat map, if it looks fine change cut off line, otherwise change settings</li>
             <li>Further tweak settings and/or cut off</li>
             <li>Analyse cluster meta information (e.g. cluster size)</li>
-            <li>Think about how good this algorithm worked for given data set / how content you are with the results</li>
+            <li>Think about how good this algorithm worked for given data set / how content you are with the results
+            </li>
             <li>Rerun experiments / Decide if this algorithm is fit for given problem</li>
             <li>Use gained knowledge as you want</li>
-        </ul><!--}}}-->
+        </ul>
 
-        <h3>Implementation details</h3><!--{{{-->
+        <h3>Implementation details</h3>
 
         <p>
-          We will be using d3.js. We have tried it out (obviously) and have a rough idea
-          of what it can do, and think that our ideas can be easily realized using it.
-        </p><!--}}}-->
+            We will be using d3.js. We have tried it out (obviously) and have a rough idea
+            of what it can do, and think that our ideas can be easily realized using it.
+        </p>
 
         <h3>Milestones</h3>
 
         <p>
-          Milestones are sequential in nature (they do build up on each other),
-          but work will probably not stop immediately at the due date but fade
-          out. It might be necessary to go back to work done for a previous
-          milestone.
+            Milestones are sequential in nature (they do build up on each other),
+            but work will probably not stop immediately at the due date but fade
+            out. It might be necessary to go back to work done for a previous
+            milestone.
         </p>
 
         <dl class="milestone-list">
-          <dt>Finalize ideation phase</dt>
-          <dd>
-            <p>
-              Pick best parts of all mockups, combine into one and further flesh
-              out. Think harder about feasibility (i.e. how hard to implement).
-            </p>
+            <dt>Finalize ideation phase</dt>
+            <dd>
+                <p>
+                    Pick best parts of all mockups, combine into one and further flesh
+                    out. Think harder about feasibility (i.e. how hard to implement).
+                </p>
 
-            <p><b>Assigned to:</b> all</p>
-            <p><b>Due:</b> 23rd November</p>
-          </dd>
+                <p><b>Assigned to:</b> all</p>
+                <p><b>Due:</b> 23rd November</p>
+            </dd>
 
-          <dt>Preparation (non-vis parts)</dt>
-          <dd>
-            <p>
-              Implement the OPTICS algorithm in a variant that supports everything
-              we need for visualization (data collection, data parsing, etc.). Set up
-              a basic skeleton including JS and HTML and UI parts.
-            </p>
+            <dt>Preparation (non-vis parts)</dt>
+            <dd>
+                <p>
+                    Implement the OPTICS algorithm in a variant that supports everything
+                    we need for visualization (data collection, data parsing, etc.). Set up
+                    a basic skeleton including JS and HTML and UI parts.
+                </p>
 
-            <p>
-              <b>Assigned to:</b>
-              <ul>
-                <li>Algorithm: Christian</li>
-                <li>Skeleton: Sonja</li>
-              </ul>
-            </p>
-            <p><b>Due:</b> 26th November</p>
-          </dd>
+                <p>
+                    <b>Assigned to:</b>
+                <ul>
+                    <li>Algorithm: Christian</li>
+                    <li>Skeleton: Sonja</li>
+                </ul>
+                </p>
+                <p><b>Due:</b> 26th November</p>
+            </dd>
 
-          <dt>Non (or hardly) interactive visualization</dt>
-          <dd>
-            <p>
-              Implement all views in a static way, without filtering and linking and stuff.
-              Obviously keep in mind that this will later need to be implemented and take
-              precautions to make this as painless as possible, don't just hamfist it like
-              a crazed brogrammer.
-            </p>
+            <dt>Non (or hardly) interactive visualization</dt>
+            <dd>
+                <p>
+                    Implement all views in a static way, without filtering and linking and stuff.
+                    Obviously keep in mind that this will later need to be implemented and take
+                    precautions to make this as painless as possible, don't just hamfist it like
+                    a crazed brogrammer.
+                </p>
 
-            <p>
-              <b>Assigned to:</b>
-              <ul>
-                <li>Half of views: Christian</li>
-                <li>Other half: Sonja</li>
-                <li>Pick pretty colors and stuff: Sonja</li>
-              </ul>
-            </p>
-            <p><b>Due:</b> 29th December</p>
-          </dd>
+                <p>
+                    <b>Assigned to:</b>
+                <ul>
+                    <li>Half of views: Christian</li>
+                    <li>Other half: Sonja</li>
+                    <li>Pick pretty colors and stuff: Sonja</li>
+                </ul>
+                </p>
+                <p><b>Due:</b> 29th December</p>
+            </dd>
 
-          <dt>Interactive elements</dt>
-          <dd>
-            <p>
-              Add interactivity, i.e. draggable elements, linky and brushy things,
-              zooming. Finish the UI.
-            </p>
+            <dt>Interactive elements</dt>
+            <dd>
+                <p>
+                    Add interactivity, i.e. draggable elements, linky and brushy things,
+                    zooming. Finish the UI.
+                </p>
 
-            <p>
-              <b>Assigned to:</b>
-              <ul>
-                <li>Zooming and Dragging: Christian</li>
-                <li>Linking and Brushing, UI: Sonja</li>
-              </ul>
-            </p>
-            <p><b>Due:</b> 3rd December</p>
-          </dd>
+                <p>
+                    <b>Assigned to:</b>
+                <ul>
+                    <li>Zooming and Dragging: Christian</li>
+                    <li>Linking and Brushing, UI: Sonja</li>
+                </ul>
+                </p>
+                <p><b>Due:</b> 3rd December</p>
+            </dd>
 
-          <dt>Testing, Debugging and adding some polish (e.g. usability)</dt>
-          <dd>
-            <p>
-              Since interactive parts are almost guaranteed to be weird and buggy
-              at first, test, test and then test some more. Maybe let strange people
-              play with it. Get feedback and try not to argue with them.
-            </p>
+            <dt>Testing, Debugging and adding some polish (e.g. usability)</dt>
+            <dd>
+                <p>
+                    Since interactive parts are almost guaranteed to be weird and buggy
+                    at first, test, test and then test some more. Maybe let strange people
+                    play with it. Get feedback and try not to argue with them.
+                </p>
 
-            <p>
-              <b>Assigned to:</b> all
-            </p>
-            <p><b>Due:</b> 10th December with days to spare</p>
-          </dd>
+                <p>
+                    <b>Assigned to:</b> all
+                </p>
+                <p><b>Due:</b> 10th December with days to spare</p>
+            </dd>
         </dl>
 
         <h4>Maybe's, stretch goals</h4>
         <ul>
-          <li>Maybe let the user select a start point for the algorithm to explore its relevance</li>
-          <li>Maybe let the user define a select next logic (first/last unexplored,random, min/max in some
-            dimension)
-          </li>
+            <li>Maybe let the user select a start point for the algorithm to explore its relevance</li>
+            <li>Maybe let the user define a select next logic (first/last unexplored,random, min/max in some
+                dimension)
+            </li>
         </ul>
     </section>
 
