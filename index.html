@@ -435,9 +435,9 @@
         <ul>
             <li>Difficult to correlate points with reachability value</li>
             <li>May produce ugly visualization with bad parameters</li>
-        </ul>
+        </ul><!--}}}-->
 
-        <h3>Mockup 2</h3>
+        <h3>Mockup 2</h3><!--{{{-->
         <img src="m2/mockup2.png" width="100%"/>
         <p>
             Charts [2] and [4] (Mockup 1) may be swaped out for those or the heat map(sketched in m1).
@@ -466,10 +466,9 @@
             <li>(chart 1) It is difficult to predict how useful progress over time is? </li>
             <li>(chart 2) A bar chart may be better fit and more readable</li>
             <li>(heat map) May need some thought to be understood</li>
-        </ul>
+        </ul><!--}}}-->
 
-
-        <h3>Mockup 3</h3>
+        <h3>Mockup 3</h3><!--{{{-->
         <img src="m2/mockup3.png" width="100%"/>
         <div class="img-subtext">Detail view of the visualization components</div>
 
@@ -563,9 +562,9 @@
           show general information about the algorithm (about), or show a text field
           for pasting data (data), or show settings for the algorithm (in the form of
           sliders for e.g. cutoff distance, most likely).
-        </p>
+        </p><!--}}}-->
 
-        <h3>Visualization techniques</h3>
+        <h3>Visualization techniques</h3><!--{{{-->
 
         <p>
           Most of the visualization techniques that we picked can find use in any constellation of charts,
@@ -597,17 +596,6 @@
               We are unclear on the technicalities, but the density map of mockup 3
               could possibly also be considered a heatmap mapping point densities to
               colors.
-            </p>
-          </dd>
-
-          <!-- <dt>Tree map</dt> -->
-          <!-- <dd> -->
-          <!-- </dd> -->
-
-          <dt>Filter</dt>
-          <dd>
-            <p>
-              ???
             </p>
           </dd>
 
@@ -650,9 +638,18 @@
               focus the selection.
             </p>
           </dd>
-        </dl>
 
-        <h3>Scenario of use</h3>
+          <dt>Filter</dt>
+          <dd>
+            <p>
+              Selecting a cluster (in the cluster size chart) will all relevant views focus
+              on data pertaining to only this one cluster. This overlaps somewhat with the
+              previous techniques.
+            </p>
+          </dd>
+        </dl><!--}}}-->
+
+        <h3>Scenario of use</h3><!--{{{-->
         <p>
             A typical scenario could be a teacher at a university, wanting to show how OPTICS can be used.
             For this said teacher would first enter data in the corresponding menu and edit the algorithm settings.
@@ -675,35 +672,105 @@
             <li>Think about how good this algorithm worked for given data set / how content you are with the results</li>
             <li>Rerun experiments / Decide if this algorithm is fit for given problem</li>
             <li>Use gained knowledge as you want</li>
-        </ul>
+        </ul><!--}}}-->
 
-        <h3>Implementation details</h3>
+        <h3>Implementation details</h3><!--{{{-->
 
         <p>
-          We will be using d3.js.
-        </p>
+          We will be using d3.js. We have tried it out (obviously) and have a rough idea
+          of what it can do, and think that our ideas can be easily realized using it.
+        </p><!--}}}-->
 
         <h3>Milestones</h3>
+
+        <dl class="milestone-list">
+          <dt>Finalize ideation phase</dt>
+          <dd>
+            <p>
+              Pick best parts of all mockups, combine into one and further flesh
+              out. Think harder about feasibility (i.e. how hard to implement).
+            </p>
+
+            <p><b>Assigned to:</b> all</p>
+            <p><b>Due:</b> 23rd November</p>
+          </dd>
+
+          <dt>Preparation (non-vis parts)</dt>
+          <dd>
+            <p>
+              Implement the OPTICS algorithm in a variant that supports everything
+              we need for visualization (data collection, data parsing, etc.). Set up
+              a basic skeleton including JS and HTML and UI parts.
+            </p>
+
+            <p>
+              <b>Assigned to:</b>
+              <ul>
+                <li>Algorithm: Christian</li>
+                <li>Skeleton: Sonja</li>
+              </ul>
+            </p>
+            <p><b>Due:</b> 26th November</p>
+          </dd>
+
+          <dt>Non (or hardly) interactive visualization</dt>
+          <dd>
+            <p>
+              Implement all views in a static way, without filtering and linking and stuff.
+              Obviously keep in mind that this will later need to be implemented and take
+              precautions to make this as painless as possible, don't just hamfist it like
+              a crazed brogrammer.
+            </p>
+
+            <p>
+              <b>Assigned to:</b>
+              <ul>
+                <li>Half of views: Christian</li>
+                <li>Other half: Sonja</li>
+                <li>Pick pretty colors and stuff: Sonja</li>
+              </ul>
+            </p>
+            <p><b>Due:</b> 29th December</p>
+          </dd>
+
+          <dt>Interactive elements</dt>
+          <dd>
+            <p>
+              Add interactivity, i.e. draggable elements, linky and brushy things,
+              zooming. Finish the UI.
+            </p>
+
+            <p>
+              <b>Assigned to:</b>
+              <ul>
+                <li>Zooming and Dragging: Christian</li>
+                <li>Linking and Brushing, UI: Sonja</li>
+              </ul>
+            </p>
+            <p><b>Due:</b> 3rd December</p>
+          </dd>
+
+          <dt>Testing, Debugging and adding some polish (e.g. usability)</dt>
+          <dd>
+            <p>
+              Since interactive parts are almost guaranteed to be weird and buggy
+              at first, test, test and then test some more. Maybe let strange people
+              play with it. Get feedback and try not to argue with them.
+            </p>
+
+            <p>
+              <b>Assigned to:</b> all
+            </p>
+            <p><b>Due:</b> 10th December with days to spare</p>
+          </dd>
+        </dl>
+
+        <h4>Maybe's, stretch goals</h4>
         <ul>
-            <li>Setting up a HTML framework for the project</li>
-            <li>Implementing the OPTICS Algorithm</li>
-            <li>Define file requirements for input(CSV,JSON,other...)</li>
-            <li>Implementing a user interface for loading data and changing parameters</li>
-            <li>Implement visualization for reachability plot</li>
-            <li>Implement scatter plot (with selectable dimensions?)</li>
-            <li>Implement heat map</li>
-            <li>Implement cutoff line for cluster definition</li>
-            <li>Implement bar chart with cluster sizes and color in clusters in heat map</li>
-            <li>Additional mouse over information</li>
-            <li>Link the charts together for highlighting on click</li>
-            <li>Make cutoff line draggable</li>
-            <li>Maybe? draw lines according to the optics order between points</li>
-            <li>Maybe? slowly show the lines one after another</li>
-            <li>Maybe? let the user select a start point for the algorithm to explore its relevance</li>
-            <li>Maybe? let the user define a select next logic (first/last unexplored,random, min/max in some
-                dimension)
-            </li>
-            <li>Maybe? multiple cutoff lines for defining sub clusters</li>
+          <li>Maybe let the user select a start point for the algorithm to explore its relevance</li>
+          <li>Maybe let the user define a select next logic (first/last unexplored,random, min/max in some
+            dimension)
+          </li>
         </ul>
     </section>
 

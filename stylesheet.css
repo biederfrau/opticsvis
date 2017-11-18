@@ -91,11 +91,16 @@ table th {
     background-color: #efefef;
 }
 
-dl.chart-list {
+dl.chart-list, dl.milestone-list {
     counter-reset: list;
 }
 
 dl.chart-list > dt:before {
     content: counter(list) ". ";
+    counter-increment: list;
+}
+
+dl.milestone-list > dt:before {
+    content: "Milestone " counter(list) ": ";
     counter-increment: list;
 }
