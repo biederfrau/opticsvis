@@ -1,0 +1,173 @@
+body {
+    background-color: #efefef;
+    overflow: hidden;
+}
+
+.container {
+    min-width: 960px;
+}
+
+.left-col {
+    width: 45vw;
+    height: 96vh;
+    float: left;
+}
+
+.right-col {
+    width: 35vw;
+    height: 96vh;
+    margin-left: 45vw;
+    padding-left: 0.8em;
+}
+
+svg {
+    padding: 0.2em;
+    z-index: -1;
+    shape-rendering: geometricPrecision;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+svg text {
+    font-family: sans-serif;
+}
+
+.state {
+    stroke: #efefef;
+    stroke-width: 1;
+    /* fill: #708BC8; */
+    fill: #5E7D7E;
+    pointer-events: all;
+    transition: opacity 500ms;
+}
+
+.state:hover {
+    opacity: 0.9;
+}
+
+.statelabel {
+    font: 13px sans-serif;
+    fill-opacity: 0.7;
+    z-index: 99;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* source of spinner css: https://stackoverflow.com/a/20013732/5130767 */
+.spinner {
+    position: absolute;
+    left: 50vw;
+    top: 50vh;
+    height:60px;
+    width:60px;
+    margin:0px auto;
+    animation: rotation .6s infinite linear;
+    border-left:6px solid rgba(0,174,239,.15);
+    border-right:6px solid rgba(0,174,239,.15);
+    border-bottom:6px solid rgba(0,174,239,.15);
+    border-top:6px solid rgba(0,174,239,.8);
+    border-radius:100%;
+}
+
+@keyframes rotation {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(359deg); }
+}
+
+.loading {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: #efefef;
+    z-index: 1000;
+}
+
+.city {
+    stroke: #c52b27;
+    stroke-width: 0.7;
+    fill: #f75d59;
+    pointer-events: none;
+}
+
+.link {
+    stroke: #f75d59;
+    stroke-width: 1;
+    pointer-events: none;
+    stroke-opacity: 0.8;
+}
+
+.point {
+    opacity: 0.9;
+    stroke: #efefef;
+    stroke-width: 0.5;
+    clip-path: url(#clip-scatter);
+}
+
+.bar {
+    transition: opacity 500ms;
+}
+
+.bar:hover {
+    opacity: 0.8;
+}
+
+.tooltip {
+    position: absolute;
+    z-index: 666;
+    background-color: #e5e4e2;
+    font-family: sans-serif;
+    padding: 0.5em;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+#histo-legend {
+    fill: #fefefa;
+    opacity: 0.7;
+    border: 1px;
+}
+
+.histo-legend-text {
+    font-size: 9.5px;
+}
+
+.layer {
+    transition: opacity 500ms;
+}
+
+.layer:hover {
+    opacity: 0.8;
+    stroke: #f75d59;
+    stroke-width: 1.5;
+}
+
+.lower-layer {
+    fill: #f75d59;
+}
+
+.focused-layer {
+    stroke: orange;
+    opacity: 1;
+    stroke-width: 1;
+}
+
+.defocused-layer {
+    opacity: 0.2 !important;
+}
+
+.area {
+    clip-path: url(#clip-area);
+}
+
+svg text.reset-chart {
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    text-anchor: end;
+}
+
+svg rect.zoom {
+    opacity: 0;
+}
