@@ -28,6 +28,7 @@
         for (var i = 0; i < totalcount; i++) {
             input[i].flag = false;
             input[i].distance = maxdist;
+            input[i].from=-1;
         }
         for (var i = 0; i < totalcount; i++) {
             var current = null;
@@ -56,7 +57,11 @@
                         var neighbour = neighbours[j];
                         if (!neighbour.flag) {
                             var dist = Math.max(distances[j], coredistance);
-                            if ((neighbour.distance) > dist) neighbour.distance = dist;
+                            if ((neighbour.distance) > dist){
+                                neighbour.distance = dist;
+                                //from where did we jump here
+                                neighbour.from=i;
+                            }
                             //TODO: there may be a better check for this?
                             if (!seedlist.contains(neighbour)) seedlist.push(neighbour);
                         }
@@ -110,7 +115,7 @@
     function query(input, range, start, distances) {
         // TODO this can maybe be improved?
         var result = [];
-        input.forEach(function (p) {
+        input.forEach(function (p,i) {
             var distance = distbetween(p, start);
             if (distance <= range && p !== start) {
                 result.push(p);
