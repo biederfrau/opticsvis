@@ -10,6 +10,18 @@ body {
     background-color: #fefefa;
 }
 
+svg {
+    padding: 0.2em;
+    z-index: -1;
+    shape-rendering: geometricPrecision;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+svg text {
+    font-family: sans-serif;
+}
+
 .title {
     text-align: center;
 }

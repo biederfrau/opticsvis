@@ -1,6 +1,8 @@
 body {
     background-color: #efefef;
     overflow: hidden;
+    font-family: sans-serif;
+    text-align: justify;
 }
 
 .container {
@@ -59,4 +61,57 @@ svg text {
     height: 100vh;
     background-color: #efefef;
     z-index: 1000;
+}
+
+div.ui-bar {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 10vw;
+    height: 100vh;
+    background-color: #C3FDB8;
+    opacity: 0.7;
+    transition: width 500ms;
+}
+
+div.ui-bar .elem {
+    transition: background-color 700ms;
+    text-align: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+div.ui-bar .elem a {
+    text-decoration: none;
+    color: inherit;
+}
+
+div.ui-bar.toggled {
+    width: 30vw;
+}
+
+div.ui-bar .elem:hover {
+    background-color: white;
+
+}
+
+div.ui-bar .elem.toggled {
+    background-color: white;
+}
+
+div.ui-bar .data-entry, div.ui-bar .about-entry {
+    display: none;
+    width: 29vw;
+    padding: 0.5em;
+}
+
+div.ui-bar .data-entry.toggled, div.ui-bar .about-entry.toggled {
+    display: block;
+    background-color: white;
+}
+
+textarea {
+    box-sizing: border-box;
+    width: 29vw;
+    resize: vertical;
 }
