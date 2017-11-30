@@ -1,4 +1,4 @@
-function compute(state) {
+function compute(data, state) {
 
 }
 
@@ -71,19 +71,27 @@ function do_the_things() {//{{{
     };
 
     $(".ui-bar *").click(function(e) {
-        this.toggleClass("toggled");
+        if(!$(".ui-bar").hasClass("toggled")) { $(".ui-bar").addClass("toggled"); }
+
+        if($(this).hasClass("toggled")) {
+            var siblings = $(this).siblings(),
+                none_toggled = true;
+
+            siblings.each(idx => {
+                none_toggled = none_toggled && !$(siblings[idx]).hasClass("toggled");
+            });
+
+            if(none_toggled) { $(".ui-bar").removeClass("toggled"); }
+        }
+
+        $(this).toggleClass("toggled");
     });
 
-    // ui crap {{{
     $("#about-input").click(e => {
-        $("#about-input").toggleClass("toggled");
-        $(".ui-bar").toggleClass("toggled");
         $(".ui-bar .about-entry").toggleClass("toggled");
     });
 
     $("#data-input").click(e => {
-        $("#data-input").toggleClass("toggled");
-        $(".ui-bar").toggleClass("toggled");
         $(".ui-bar .data-entry").toggleClass("toggled");
     });
 
@@ -91,6 +99,26 @@ function do_the_things() {//{{{
         state.data = $("#data-textarea").val().split("\n")
             .map(_.trim).filter(line => line !== "")
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
-    });//}}}
+
+        console.log("new data: ", state.data);
+    });
+
+    // state.thinking(5);
+    var ssv = d3.dsvFormat(" ");
+    d3.request("default.dat")
+        .mimeType("text/plain")
+        .response(xhr => ssv.parse(xhr.responseText, row => [row.x, row.y]))
+        .get((err, data) => {
+            if(err) { throw err; }
+
+            console.log(data);
+            compute(data, state);
+
+            setup_density(state);
+            setup_reach(state);
+            setup_clusters(state);
+            setup_jumps(state);
+            setup_heat(state);
+    });
 }//}}}
 // vim: set ts=4 sw=4 tw=0 et :
