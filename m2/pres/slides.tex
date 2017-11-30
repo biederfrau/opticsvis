@@ -29,6 +29,10 @@
 \begin{frame}{Project definition}
     \begin{itemize}
         \item OPTICS: density based clustering
+            \begin{itemize}
+                \item algorithm jumps between points in some order
+                \item records jump distances
+            \end{itemize}
         \item output somewhat hard to read
             \begin{itemize}
                 \item point order
@@ -40,7 +44,7 @@
         \centering
         \includegraphics[height=.3\textheight]{img/optics-edited}
         \vspace{1em}
-        \includegraphics[width=.3\textwidth]{img/optics-edited-points}
+        \includegraphics[width=.3\textwidth]{img/optics-edited-points-black}
     \end{figure}
 \end{frame}
 
@@ -78,7 +82,7 @@
 
 \subsection{Possible Visualizations}
 
-\begin{frame}{Visualization possibilities}
+\begin{frame}{Visualization possibilities (a selection)}
     \begin{description}
         \item[Density map]\hfill\\
             OPTICS is density-based, maybe the visualization
@@ -88,6 +92,9 @@
         \item[Heat map \hfill]\hfill\\
             Similarities of points mapped to both axes reveal hierarchial
             structures.
+        \item[Dendogram]\hfill\\
+            Dendograms (or tree maps) can be used to visualize cluster
+            hierarchies, but corresponding cutoffs need to be picked---but how?
     \end{description}
 \end{frame}
 
@@ -113,9 +120,20 @@
     \includegraphics[width=\textwidth]{../mockup3-ui}
 \end{frame}
 
+\begin{frame}{Mockup 3: Analysis}
+    \begin{itemize}
+        \item[\color{asparagus}+] density map is an apt way to display data for density clustering
+        \item[\color{asparagus}+] scatter plot with jump paths shows how the algorithm works
+        \item[\color{asparagus}+] area chart contrasts different cutoffs against each other, can help pick the best cutoff
+
+        \item[\color{alizarin}--] area chart is non-interactive
+        \item[\color{alizarin}--] area chart is probably close to useless on most data sets
+    \end{itemize}
+\end{frame}
+
 \section{Future Work}
 
-\begin{frame}{Future Work}
+\begin{frame}{Future Work: Milestones}
 \end{frame}
 
 \end{document}
