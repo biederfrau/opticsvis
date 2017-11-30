@@ -69,8 +69,8 @@ div.ui-bar {
     top: 0px;
     width: 10vw;
     height: 100vh;
-    background-color: #C3FDB8;
     opacity: 0.7;
+    background-color: #79B2DB;
     transition: width 500ms;
 }
 
@@ -79,6 +79,8 @@ div.ui-bar .elem {
     text-align: center;
     padding-top: 1em;
     padding-bottom: 1em;
+    cursor: pointer;
+    background-color: #659EC7;
 }
 
 div.ui-bar .elem a {
@@ -91,7 +93,7 @@ div.ui-bar.toggled {
 }
 
 div.ui-bar .elem:hover {
-    background-color: white;
+    background-color: #97D0F9;
 
 }
 
