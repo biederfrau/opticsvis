@@ -11,7 +11,7 @@ function filter(state) {
 function setup_density(state) {
     var canvas = d3.select("#density"),
         style = window.getComputedStyle(document.getElementById("density")),
-        margins = {"left": 35, "right": 25, "top": 50, "bottom": 25},
+        margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
@@ -42,8 +42,6 @@ function draw_density(data, state, ctx) {
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
         .size([ctx.width, ctx.height]);
-
-    console.log(densityEstimator(data));
 
     canvas.insert("g", "g")
         .attr("fill", "none")
@@ -114,7 +112,7 @@ function do_the_things() {//{{{
     };
 
     // ui crap {{{
-    $(".ui-bar *").click(function(e) {
+    $(".ui-bar .elem").click(function(e) {
         if(!$(".ui-bar").hasClass("toggled")) { $(".ui-bar").addClass("toggled"); }
 
         if($(this).hasClass("toggled")) {
@@ -125,6 +123,8 @@ function do_the_things() {//{{{
                 none_toggled = none_toggled && !$(siblings[idx]).hasClass("toggled");
             });
 
+            console.log(siblings);
+            console.log(none_toggled);
             if(none_toggled) { $(".ui-bar").removeClass("toggled"); }
         }
 
@@ -132,11 +132,11 @@ function do_the_things() {//{{{
     });
 
     $("#about-input").click(e => {
-        $(".ui-bar .about-entry").toggleClass("toggled");
+        $(".ui-bar .about-entry").toggleClass("visible");
     });
 
     $("#data-input").click(e => {
-        $(".ui-bar .data-entry").toggleClass("toggled");
+        $(".ui-bar .data-entry").toggleClass("visible");
     });
 
     $("#data-form").submit(e => {
@@ -144,7 +144,8 @@ function do_the_things() {//{{{
             .map(_.trim).filter(line => line !== "")
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
 
-        console.log("new data: ", state.data);
+        compute(data, state);
+        state.dispatcher.call("update", [state.input_data, state.output_data]);
     }); // }}}
 
     // state.thinking(5);
