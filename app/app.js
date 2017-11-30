@@ -1,16 +1,59 @@
 function compute(data, state) {
-
+    state.input_data = $.extend(true, [], data);
+    state.output_data = optics(data);
 }
 
 function filter(state) {
 
 }
 
+// https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
 function setup_density(state) {
+    var canvas = d3.select("#density"),
+        style = window.getComputedStyle(document.getElementById("density")),
+        margins = {"left": 35, "right": 25, "top": 50, "bottom": 25},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
 
+    canvas.append("text").attr("x", width / 2 + margins.left).attr("y", margins.top / 2)
+        .text("Density of data set").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    var x = d3.scaleLinear().range([margins.left, width - margins.right]),
+        y = d3.scaleLinear().range([height - margins.bottom, margins.top]);
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
+
+    var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+    draw_density(state.input_data, state, ctx);
 }
 
-function draw_density(data, state) {
+function draw_density(data, state, ctx) {
+    var canvas = d3.select("#density"),
+        color = d3.scaleSequential(d3.interpolateYlGnBu).domain([0, .004]);
+
+    ctx.x.domain(d3.extent(data, x => x[0]));
+    ctx.y.domain(d3.extent(data, x => x[1]));
+
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
+
+    var densityEstimator = d3.contourDensity()
+        .x(d => ctx.x(d[0]))
+        .y(d => ctx.y(d[1]))
+        .size([ctx.width, ctx.height]);
+
+    console.log(densityEstimator(data));
+
+    canvas.insert("g", "g")
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-linejoin", "round")
+        .selectAll("path")
+        .data(densityEstimator(data))
+        .enter().append("path").attr("fill", d => color(d.value))
+        .attr("d", d3.geoPath());
 
     state.dispatcher.call("drawn");
 }
@@ -70,6 +113,7 @@ function do_the_things() {//{{{
         },
     };
 
+    // ui crap {{{
     $(".ui-bar *").click(function(e) {
         if(!$(".ui-bar").hasClass("toggled")) { $(".ui-bar").addClass("toggled"); }
 
@@ -101,17 +145,16 @@ function do_the_things() {//{{{
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
 
         console.log("new data: ", state.data);
-    });
+    }); // }}}
 
     // state.thinking(5);
     var ssv = d3.dsvFormat(" ");
     d3.request("default.dat")
         .mimeType("text/plain")
-        .response(xhr => ssv.parse(xhr.responseText, row => [row.x, row.y]))
+        .response(xhr => ssv.parse(xhr.responseText, row => [+row.x, +row.y]))
         .get((err, data) => {
             if(err) { throw err; }
 
-            console.log(data);
             compute(data, state);
 
             setup_density(state);
