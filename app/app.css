@@ -107,7 +107,7 @@ div.ui-bar .data-entry, div.ui-bar .about-entry {
     padding: 0.5em;
 }
 
-div.ui-bar .data-entry.toggled, div.ui-bar .about-entry.toggled {
+div.ui-bar .data-entry.visible, div.ui-bar .about-entry.visible {
     display: block;
     background-color: white;
 }
