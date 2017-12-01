@@ -33,7 +33,7 @@ function setup_density(state) {
 
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
-        color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
+        color = d3.scaleSequential(d3.interpolateYlGnBu).domain([0, .004]);
 
     ctx.x.domain(d3.extent(data, x => x[0])).nice();
     ctx.y.domain(d3.extent(data, x => x[1])).nice();
@@ -44,8 +44,7 @@ function draw_density(data, state, ctx) {
     var densityEstimator = d3.contourDensity()
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
-        .size([ctx.width, ctx.height])
-        .bandwidth(10);
+        .size([ctx.width, ctx.height]);
 
     canvas.insert("g", "g")
         .attr("fill", "none")
@@ -66,7 +65,6 @@ function draw_density(data, state, ctx) {
                 .append("circle").classed("point", true)
                 .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
                 .attr("r", 4)
-                .attr("stroke-color", "white")
                 .attr("fill", "black");
         } else { points.remove(); }
     });
@@ -138,11 +136,56 @@ function draw_jumps(data, state) {
 }
 
 function setup_heat(state) {
-
+	var data=state.output_data;
+	var datasize=data.length;
+	var distances = new Array();
+	distances.max=0;
+	for(var i=0;i<datasize;++i){
+		distances[i]=new Array();
+		for(var j=0;j<datasize;++j){
+			distances[i][j]=distbetween(data[i],data[j]);
+			if(distances[i][j]>distances.max)distances.max=distances[i][j];
+		}	
+	}
+	console.log(distances);
+	draw_heat(distances,state);
 }
 
 function draw_heat(data, state) {
-
+	var canvas = d3.select("#heat"),
+	style = window.getComputedStyle(document.getElementById("heat")),
+        margins = {"left": 35, "right": 35, "top": 35, "bottom": 35},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height),
+		color = d3.scalePow()
+		.exponent(0.66)
+		.domain([0,data.max])
+      .interpolate(d3.interpolateHcl)
+      .range([d3.rgb("#0000FF"), d3.rgb('#FFFFFF')]);
+	var count=data.length;
+	var rwidth= (width-margins.left-margins.right)/count;
+	var rheight=(height-margins.top-margins.bottom)/count;
+	var rects= canvas.selectAll(".rect")
+	rects.data(data)
+                .enter()
+                .append("svg").classed("row", true)
+				.attr("x", function(d,i,j) { return margins.left; })
+				.attr("y", function(d,i,j) { return height-((i+1) * (rheight))-margins.bottom; })
+				.attr("width", width-margins.right)
+				.attr("height",rheight)
+				.attr("fill", "transparent")
+				.selectAll(".row")
+				.data( function(d,i,j) { return d; } )
+				.enter()
+                .append("rect").classed("rect", true)
+                .attr("x", function(d,i,j) { return (i * (rwidth)); })
+				.attr("y", function(d,i,j) { return 0; })
+                .attr("width", rwidth)
+				.attr("height",rheight)
+                .attr("fill", d=>color(d))
+				.attr("stroke","transparent");
+				//margins.left+(i * rwidth)
+	
     state.dispatcher.call("drawn");
 }
 
