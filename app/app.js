@@ -149,7 +149,6 @@ function setup_heat(state) {
 			if(distances[i][j]>distances.max)distances.max=distances[i][j];
 		}	
 	}
-	console.log(distances);
 	draw_heat(distances,state);
 }
 

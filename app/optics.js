@@ -1,6 +1,6 @@
 var eps = 40;
 var minPTS = 2;
-var maxdist = 100000;
+var maxdist = 300;
 var distbetween;
 
 function seteps(neweps){
