@@ -117,3 +117,8 @@ textarea {
     width: 29vw;
     resize: vertical;
 }
+
+#density .point {
+    stroke: #efefef;
+    stroke-width: 0.5;
+}
