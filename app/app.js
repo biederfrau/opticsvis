@@ -33,7 +33,7 @@ function setup_density(state) {
 
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
-        color = d3.scaleSequential(d3.interpolateYlGnBu).domain([0, .004]);
+        color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
     ctx.x.domain(d3.extent(data, x => x[0])).nice();
     ctx.y.domain(d3.extent(data, x => x[1])).nice();
@@ -44,7 +44,8 @@ function draw_density(data, state, ctx) {
     var densityEstimator = d3.contourDensity()
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
-        .size([ctx.width, ctx.height]);
+        .size([ctx.width, ctx.height])
+		.bandwidth(10);
 
     canvas.insert("g", "g")
         .attr("fill", "none")
@@ -65,6 +66,7 @@ function draw_density(data, state, ctx) {
                 .append("circle").classed("point", true)
                 .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
                 .attr("r", 4)
+				.attr("stroke-color", "white")
                 .attr("fill", "black");
         } else { points.remove(); }
     });
