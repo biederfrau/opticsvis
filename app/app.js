@@ -16,7 +16,10 @@ function setup_density(state) {
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2 + margins.left).attr("y", margins.top / 2)
-        .text("Density of data set").style("font-weight", "bold").attr("text-anchor", "middle");
+        .text("Density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2 + margins.left).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
+        .style("font-size", "12px").attr("text-anchor", "middle");
 
     var x = d3.scaleLinear().range([margins.left, width - margins.right]),
         y = d3.scaleLinear().range([height - margins.bottom, margins.top]);
@@ -52,6 +55,20 @@ function draw_density(data, state, ctx) {
         .data(densityEstimator(data))
         .enter().append("path").attr("fill", d => color(d.value))
         .attr("d", d3.geoPath());
+
+    canvas.on("dblclick", () => {
+        var points = canvas.selectAll(".point");
+
+        if(points.empty()) {
+            points.data(data)
+                .enter()
+                .append("circle").classed("point", true)
+                .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+                .attr("r", 4)
+                .attr("fill", "black");
+        } else { points.remove(); }
+
+    })
 
     state.dispatcher.call("drawn");
 }
