@@ -153,8 +153,8 @@ function setup_heat(state) {
 }
 
 function draw_heat(data, state) {
-	var closecolor="#000080";
-	var distantcolor="#FFFFFF";
+	var closecolor="#000066";
+	var distantcolor="#E6F3FF";
 	var canvas = d3.select("#heat"),
 	style = window.getComputedStyle(document.getElementById("heat")),
         margins = {"left": 35, "right": 90, "top": 35, "bottom": 35},
@@ -163,7 +163,7 @@ function draw_heat(data, state) {
 		color = d3.scaleLinear()
 		//.scalePow().exponent(0.66)
 		.domain([0,data.max])
-      .interpolate(d3.interpolateHcl)
+      .interpolate(d3.interpolateRgb)
       .range([d3.rgb(closecolor), d3.rgb(distantcolor)]);
 	  
 	 
@@ -202,8 +202,8 @@ function draw_heat(data, state) {
 	var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
 	
 	 var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
-			legend.append("stop").attr("offset", "0%").attr("stop-color", distantcolor).attr("stop-opacity", 1);
-			legend.append("stop").attr("offset", "100%").attr("stop-color", closecolor).attr("stop-opacity", 1);
+			legend.append("stop").attr("offset", "0%").attr("stop-color", distantcolor);
+			legend.append("stop").attr("offset", "100%").attr("stop-color", closecolor);
 			key.append("rect").attr("width", legendwidth).attr("height", height-margins.bottom-margins.top).attr("y", margins.top).style("fill", "url(#gradient)");
 			var y = d3.scaleLinear().range([ height-margins.bottom-margins.top, 0]).domain([0,data.max]);
 			var yAxis = d3.axisRight(y);
