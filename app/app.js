@@ -35,8 +35,8 @@ function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
-    ctx.x.domain(d3.extent(data, x => x[0]));
-    ctx.y.domain(d3.extent(data, x => x[1]));
+    ctx.x.domain(d3.extent(data, x => x[0])).nice();
+    ctx.y.domain(d3.extent(data, x => x[1])).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
@@ -69,17 +69,52 @@ function draw_density(data, state, ctx) {
                 .attr("stroke-color", "white")
                 .attr("fill", "black");
         } else { points.remove(); }
-
-    })
+    });
 
     state.dispatcher.call("drawn");
 }
 
-function setup_reach(data, state) {
+function setup_reach(state) {
+    var canvas = d3.select("#reach"),
+        style = window.getComputedStyle(document.getElementById("reach")),
+        margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
 
+    canvas.append("text").attr("x", width / 2 + margins.left).attr("y", margins.top / 2)
+        .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
+        y = d3.scaleLinear().range([height - margins.bottom, margins.top]);
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
+
+    var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+    draw_reach(state.output_data, state, ctx);
 }
 
-function draw_reach(data, state) {
+function draw_reach(data, state, ctx) {
+    var canvas = d3.select("#reach");
+
+    // TODO cut off properly
+    data = data.filter(x => x.distance < 100);
+
+    ctx.x.domain(data.map((_, i) => i));
+    ctx.y.domain(d3.extent(data, d => d.distance)).nice();
+
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
+
+    var bars = canvas.selectAll(".bar").data(data);
+
+    console.log(ctx.y.range());
+    bars.enter().append("rect")
+        .attr("x", (d, i) => ctx.x(i))
+        .attr("y", d => ctx.y(d.distance) - ctx.margins.bottom)
+        .attr("width", ctx.x.bandwidth())
+        .attr("height", d => ctx.height - ctx.y(d.distance))
+        .attr("fill", "black");
 
     state.dispatcher.call("drawn");
 }
