@@ -1,7 +1,7 @@
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
     state.output_data = optics(data);
-    state.clusterer= getClusterer();
+    state.clustersizes= getClusterSizes();
 }
 
 function filter(state) {
@@ -144,21 +144,7 @@ function draw_clusters(data, state, ctx) {
 //TODO: use real cutoff
     //TODO: change last tick to "noise"
     var axisleftticks=5;
-    var clusterer=state.clusterer;
-    var curindex=0;
-    var clusters=[];
-    var noise=0;
-    for(var i=0;i<clusterer.length;++i) {
-        if (clusterer[i] == 1) {
-            noise++;
-        }
-        else {
-            clusters[curindex++] = clusterer[i];
-        }
-    }
-    clusters[curindex]=noise;
-
-    data=clusters;
+    data=state.clustersizes;
     var canvas = d3.select("#size");
 
     var max=d3.max(data, function(d) { return d; });
@@ -239,7 +225,7 @@ function draw_jumps(data, state,ctx) {
                 .attr("stroke-width",1)
                 .attr("stroke","black");
 
-
+console.log(data)
     state.dispatcher.call("drawn");
 }
 

@@ -3,7 +3,7 @@ var minPTS = 2;
 var maxdist = 300;
 var distbetween;
 var cutoff=20;
-var clusterer;
+var clustersizes;
 
 
 function seteps(neweps){
@@ -22,8 +22,8 @@ function setcutoff(newcutoff) {
     cutoff=newcutoff;
 }
 
-function getClusterer() {
-    return clusterer;
+function getClusterSizes() {
+    return clustersizes;
 }
 
 //TODO maybe there is a better way?
@@ -106,22 +106,44 @@ function optics(input) {
         }
 
     }
-    calculateClusterer(clusterOrder);
+    calculateClusterers(clusterOrder);
     return clusterOrder;
 }
 
-function calculateClusterer(clusterOrder) {
+function calculateClusterers(clusterOrder) {
     clusterer=[];
     var datalength= clusterOrder.length;
     var curindex=0;
     clusterer[0]=1;
-
-    for(var i=1;i<datalength;++i){
-        if(clusterOrder[i].distance>cutoff){
-            clusterer[++curindex]=0;
+    for(var i=1;i<datalength;++i) {
+        if (clusterOrder[i].distance > cutoff) {
+            clusterer[++curindex] = 0;
         }
         ++clusterer[curindex];
     }
+    tag(clusterOrder,clusterer);
+}
+
+function  tag(clusterOrder,clusterer){
+    var curindex=0;
+    var clusters=[];
+    var noise=0;
+    var index=0;
+    for(var i=0;i<clusterer.length;++i) {
+        if (clusterer[i] == 1) {
+            noise++;
+            clusterOrder[index++].tag=-1;
+
+        }
+        else {
+            clusters[curindex++] = clusterer[i];
+            var count=clusterer[i];
+            for(var j=0;j<count;++j)
+                clusterOrder[index++].tag=i;
+        }
+    }
+    clusters[curindex]=noise;
+    clustersizes=clusters;
 }
 
 function coredist(distances, minPTS) {
