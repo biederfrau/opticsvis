@@ -81,7 +81,7 @@ function setup_reach(state) {
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
-    canvas.append("text").attr("x", width / 2 + margins.left).attr("y", margins.top / 2)
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
 
     var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
@@ -120,10 +120,52 @@ function draw_reach(data, state, ctx) {
 }
 
 function setup_clusters(state) {
+    var canvas = d3.select("#size"),
+        style = window.getComputedStyle(document.getElementById("size")),
+        margins = {"left": 35, "right": 20, "top": 30, "bottom": 25},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
 
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top*2/3)
+        .text("Cluster Sizes").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
+    y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
+
+    var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+    draw_clusters(state.output_data, state, ctx);
 }
 
-function draw_clusters(data, state) {
+function draw_clusters(data, state, ctx) {
+    var axisleftticks=5;
+
+
+    var canvas = d3.select("#size");
+
+    // TODO use real data
+    data = data.filter(function (d, i) { return (d.distance < 100&& i<10 );});
+
+    var maxdist=d3.max(data, function(d) { return d.distance; });
+    ctx.x.domain(data.map((_, i) => i));
+    ctx.y.domain([0,maxdist]);
+    console.log(ctx.y.range());
+
+    var barbottom=ctx.height-ctx.margins.bottom;
+    var bars = canvas.selectAll(".bar").data(data);
+
+    bars.enter().append("rect")
+        .attr("x", (d, i) => ctx.x(i))
+.attr("y", d => barbottom-ctx.y(d.distance))
+.attr("width", ctx.x.bandwidth())
+        .attr("height", d => ctx.y(d.distance))
+.attr("fill", "black");
+
+    ctx.y.domain([maxdist,0])
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".yaxis").call(d3.axisLeft(ctx.y).ticks(axisleftticks));
 
     state.dispatcher.call("drawn");
 }
@@ -157,7 +199,7 @@ function draw_heat(data, state) {
 	var distantcolor="#E6F3FF";
 	var canvas = d3.select("#heat"),
 	style = window.getComputedStyle(document.getElementById("heat")),
-        margins = {"left": 35, "right": 90, "top": 35, "bottom": 35},
+        margins = {"left": 20, "right": 80, "top": 20, "bottom": 20},
         width = parseFloat(style.width),
         height = parseFloat(style.height),
 		color = d3.scaleLinear()
