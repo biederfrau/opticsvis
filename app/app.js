@@ -15,10 +15,10 @@ function setup_density(state) {
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
-    canvas.append("text").attr("x", width / 2 + margins.left).attr("y", margins.top / 2)
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2 + margins.left).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     var x = d3.scaleLinear().range([margins.left, width - margins.right]),
@@ -171,10 +171,61 @@ function draw_clusters(data, state, ctx) {
 }
 
 function setup_jumps(state) {
+    var canvas = d3.select("#jumps"),
+        style = window.getComputedStyle(document.getElementById("jumps")),
+        margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
 
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
+        .text("Density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
+        .style("font-size", "12px").attr("text-anchor", "middle");
+
+    var x = d3.scaleLinear().range([margins.left, width - margins.right]),
+        y = d3.scaleLinear().range([height - margins.bottom, margins.top]);
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
+
+    var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+    draw_jumps(state.output_data, state, ctx);
 }
 
-function draw_jumps(data, state) {
+function draw_jumps(data, state,ctx) {
+    var canvas = d3.select("#jumps"),
+        color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
+
+    ctx.x.domain(d3.extent(data, x => x[0])).nice();
+    ctx.y.domain(d3.extent(data, x => x[1])).nice();
+
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
+    var points = canvas.selectAll(".point");
+
+
+        points.data(data)
+            .enter()
+            .append("circle").classed("point", true)
+            .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+            .attr("r", 4)
+            .attr("stroke-color", "white")
+            .attr("fill", "black");
+    var datalength=data.length;
+
+    var jumppaths=canvas.selectAll(".jumppath");
+            jumppaths
+                .data(data)
+                .enter()
+                .append("line").classed("jumppath", true)
+                .attr("x1",d => ctx.x(d[0]))
+                .attr("y1",d => ctx.y(d[1]))
+                .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
+                .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
+                .attr("stroke-width",1)
+                .attr("stroke","black");
+
 
     state.dispatcher.call("drawn");
 }
