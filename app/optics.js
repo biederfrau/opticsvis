@@ -2,6 +2,9 @@ var eps = 40;
 var minPTS = 2;
 var maxdist = 300;
 var distbetween;
+var cutoff=20;
+var clusterer;
+
 
 function seteps(neweps){
     eps=neweps;
@@ -15,8 +18,13 @@ function setmaxdist(newmaxdist){
 function setdistbetween(newdistbetween) {
     distbetween=newdistbetween;
 }
+function setcutoff(newcutoff) {
+    cutoff=newcutoff;
+}
 
-
+function getClusterer() {
+    return clusterer;
+}
 
 //TODO maybe there is a better way?
 Array.prototype.contains = function (obj) {
@@ -98,7 +106,22 @@ function optics(input) {
         }
 
     }
+    calculateClusterer(clusterOrder);
     return clusterOrder;
+}
+
+function calculateClusterer(clusterOrder) {
+    clusterer=[];
+    var datalength= clusterOrder.length;
+    var curindex=0;
+    clusterer[0]=1;
+
+    for(var i=1;i<datalength;++i){
+        if(clusterOrder[i].distance>cutoff){
+            clusterer[++curindex]=0;
+        }
+        ++clusterer[curindex];
+    }
 }
 
 function coredist(distances, minPTS) {

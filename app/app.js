@@ -1,6 +1,7 @@
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
     state.output_data = optics(data);
+    state.clusterer= getClusterer();
 }
 
 function filter(state) {
@@ -142,21 +143,9 @@ function setup_clusters(state) {
 function draw_clusters(data, state, ctx) {
 //TODO: use real cutoff
     //TODO: change last tick to "noise"
-    var cutoff=20;
-
     var axisleftticks=5;
-    var clusterer=[];
-    var datalength= data.length;
+    var clusterer=state.clusterer;
     var curindex=0;
-    clusterer[0]=1;
-
-    for(var i=1;i<datalength;++i){
-        if(data[i].distance>cutoff){
-            clusterer[++curindex]=0;
-        }
-        ++clusterer[curindex];
-    }
-    curindex=0;
     var clusters=[];
     var noise=0;
     for(var i=0;i<clusterer.length;++i) {
