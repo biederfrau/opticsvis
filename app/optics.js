@@ -4,7 +4,7 @@ var maxdist = 300;
 var distbetween;
 var cutoff=20;
 var clustersizes;
-
+var clusterOrderSave;
 
 function seteps(neweps){
     eps=neweps;
@@ -25,6 +25,10 @@ function setcutoff(newcutoff) {
 function getClusterSizes() {
     return clustersizes;
 }
+
+function getClusterOrder(){
+    return clusterOrderSave;
+};
 
 //TODO maybe there is a better way?
 Array.prototype.contains = function (obj) {
@@ -106,11 +110,11 @@ function optics(input) {
         }
 
     }
-    calculateClusterers(clusterOrder);
+    calculateClusters(clusterOrder);
     return clusterOrder;
 }
 
-function calculateClusterers(clusterOrder) {
+function calculateClusters(clusterOrder) {
     clusterer=[];
     var datalength= clusterOrder.length;
     var curindex=0;
@@ -144,6 +148,7 @@ function  tag(clusterOrder,clusterer){
     }
     clusters[curindex]=noise;
     clustersizes=clusters;
+    clusterOrderSave=clusterOrder;
 }
 
 function coredist(distances, minPTS) {
