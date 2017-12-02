@@ -175,7 +175,7 @@ function draw_heat(data, state) {
 	var rheight=innerheight/count;
 	var rwidth= innerwidth/count;
 	
-	var heatmapcanvas=canvas.append("svg")
+	var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
 	.classed("heatmapcanvas", true)
 	.attr("x", margins.left)
 	.attr("y", margins.top)
@@ -220,7 +220,7 @@ function draw_heat(data, state) {
             "scale(" + e.transform.k + ")"
           ].join(" "));	
  */
-        d3.select(".heatmapcanvas").attr("transform", e.transform);
+        d3.select(".transfromablemap").attr("transform", e.transform);
     }
 	);
 			
