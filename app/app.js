@@ -140,17 +140,41 @@ function setup_clusters(state) {
 }
 
 function draw_clusters(data, state, ctx) {
+//TODO: use real cutoff
+    //TODO: change last tick to "noise"
+    var cutoff=20;
+
     var axisleftticks=5;
+    var clusterer=[];
+    var datalength= data.length;
+    var curindex=0;
+    clusterer[0]=1;
 
+    for(var i=1;i<datalength;++i){
+        if(data[i].distance>cutoff){
+            clusterer[++curindex]=0;
+        }
+        ++clusterer[curindex];
+    }
+    curindex=0;
+    var clusters=[];
+    var noise=0;
+    for(var i=0;i<clusterer.length;++i) {
+        if (clusterer[i] == 1) {
+            noise++;
+        }
+        else {
+            clusters[curindex++] = clusterer[i];
+        }
+    }
+    clusters[curindex]=noise;
 
+    data=clusters;
     var canvas = d3.select("#size");
 
-    // TODO use real data
-    data = data.filter(function (d, i) { return (d.distance < 100&& i<10 );});
-
-    var maxdist=d3.max(data, function(d) { return d.distance; });
+    var max=d3.max(data, function(d) { return d; });
     ctx.x.domain(data.map((_, i) => i));
-    ctx.y.domain([0,maxdist]);
+    ctx.y.domain([0,max]);
     console.log(ctx.y.range());
 
     var barbottom=ctx.height-ctx.margins.bottom;
@@ -158,12 +182,12 @@ function draw_clusters(data, state, ctx) {
 
     bars.enter().append("rect")
         .attr("x", (d, i) => ctx.x(i))
-.attr("y", d => barbottom-ctx.y(d.distance))
+.attr("y", d => barbottom-ctx.y(d))
 .attr("width", ctx.x.bandwidth())
-        .attr("height", d => ctx.y(d.distance))
+        .attr("height", d => ctx.y(d))
 .attr("fill", "black");
 
-    ctx.y.domain([maxdist,0])
+    ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y).ticks(axisleftticks));
 
