@@ -169,18 +169,26 @@ function draw_heat(data, state) {
 	 
 	  
 	  
-	  
-	  
+	var innerheight=height-margins.top-margins.bottom;
+	var innerwidth=width-margins.left-margins.right;
 	var count=data.length;
-	var rwidth= (width-margins.left-margins.right)/count;
-	var rheight=(height-margins.top-margins.bottom)/count;
-	var rects= canvas.selectAll(".rect")
+	var rheight=innerheight/count;
+	var rwidth= innerwidth/count;
+	
+	var heatmapcanvas=canvas.append("svg")
+	.classed("heatmapcanvas", true)
+	.attr("x", margins.left)
+	.attr("y", margins.top)
+	.attr("width", innerwidth)
+	.attr("height",innerheight)
+	;
+	var rects= heatmapcanvas.selectAll(".rect")
 	rects.data(data)
                 .enter()
                 .append("svg").classed("row", true)
-				.attr("x", function(d,i,j) { return margins.left; })
-				.attr("y", function(d,i,j) { return height-((i+1) * (rheight))-margins.bottom; })
-				.attr("width", width-margins.right)
+				.attr("x", function(d,i,j) { return 0; })
+				.attr("y", function(d,i,j) { return innerheight-((i+1) * (rheight)); })
+				.attr("width", innerwidth)
 				.attr("height",rheight)
 				.attr("fill", "transparent")
 				.selectAll(".row")
@@ -197,6 +205,27 @@ function draw_heat(data, state) {
 	
 	
 	
+
+	
+	zoom = d3.zoom()
+        .scaleExtent([1, 20])
+        .on("zoom", 	function() {
+          var e = d3.event;
+		  
+         e.transform.x = Math.min(0, Math.max(e.transform.x, width - width * e.transform.k)),
+         e.transform.y = Math.min(0, Math.max(e.transform.y, height - height * e.transform.k));
+/*
+          d3.select(".heatmapcanvas").attr("transform", [
+            "translate(" + [tx, ty] + ")",
+            "scale(" + e.transform.k + ")"
+          ].join(" "));	
+ */
+        d3.select(".heatmapcanvas").attr("transform", e.transform);
+    }
+	);
+			
+	canvas.call(zoom);
+	
 	var legendwidth=30;
 	var disttomap=10;
 	var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
@@ -204,14 +233,15 @@ function draw_heat(data, state) {
 	 var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
 			legend.append("stop").attr("offset", "0%").attr("stop-color", distantcolor);
 			legend.append("stop").attr("offset", "100%").attr("stop-color", closecolor);
-			key.append("rect").attr("width", legendwidth).attr("height", height-margins.bottom-margins.top).attr("y", margins.top).style("fill", "url(#gradient)");
-			var y = d3.scaleLinear().range([ height-margins.bottom-margins.top, 0]).domain([0,data.max]);
+			key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", margins.top).style("fill", "url(#gradient)");
+			var y = d3.scaleLinear().range([ innerheight, 0]).domain([0,data.max]);
 			var yAxis = d3.axisRight(y);
 			key.append("g").attr("class", "y axis").attr("transform", "translate("+legendwidth+","+margins.top+")")
 			.call(yAxis);
 	
     state.dispatcher.call("drawn");
 }
+
 
 function do_the_things() {//{{{
     state = {
