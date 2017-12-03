@@ -94,37 +94,21 @@ function setup_reach(state) {
     var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
     y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
 
-    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
-    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
-
+    canvas.append("g").classed("data", true);
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+
     draw_reach(state.output_data, state, ctx);
-}
-
-function draw_reach(data, state, ctx) {
-    var canvas = d3.select("#reach");
-
-    // TODO cut off properly
-    //data = data.filter(x => x.distance < 100);
-
-    var max=d3.max(data, function(d) { return d.distance; });
-    ctx.x.domain(data.map((_, i) => i));
-    ctx.y.domain([0,max]);
 
 
-    var bars = canvas.selectAll(".bar").data(data);
+    var interactioncanvas=canvas.append("g").classed("interaction", true);
+
+    //TODO: movable cutoff
     var barbottom=ctx.height-ctx.margins.bottom;
-    console.log(ctx.y.range());
-    bars.enter().append("rect")
-        .attr("x", (d, i) => ctx.x(i))
-        .attr("y", d => barbottom-ctx.y(d.distance))
-        .attr("width", ctx.x.bandwidth())
-        .attr("height", d => ctx.y(d.distance))
-        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
 
 
-//TODO: movable cutoff
-    canvas
+    var max=d3.max(state.output_data, function(d) { return d.distance; });
+    ctx.y.domain([0,max]);
+    interactioncanvas
         .append("line").classed("cutoff", true)
         .attr("x1",d => ctx.margins.left)
         .attr("y1",d => barbottom-ctx.y(cutoff))
@@ -147,16 +131,39 @@ function draw_reach(data, state, ctx) {
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         d3.select(this).attr("y1", d3.event.y).attr("y2", d3.event.y);
         setcutoff(ctx.y.invert(d3.event.y-ctx.margins.top));
+        console.log(cutoff);
         reCalculateClusters();
         state.clustersizes= getClusterSizes();
         d3.select("#size").selectAll("*").remove();
+        d3.select("#reach").select(".data").selectAll("*").remove();
         setup_clusters(state);
-
+        draw_reach(state.output_data, state, ctx);
     }
-
     function dragended(d) {
         d3.select(this).classed("active", false);
     }
+}
+
+
+function draw_reach(data, state, ctx) {
+    var canvas = d3.select("#reach").select(".data");
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, ctx.height - ctx.margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
+
+    var max=d3.max(data, function(d) { return d.distance; });
+    ctx.x.domain(data.map((_, i) => i));
+    ctx.y.domain([0,max]);
+
+    var bars = canvas.selectAll(".bar").data(data);
+    var barbottom=ctx.height-ctx.margins.bottom;
+    console.log(ctx.y.range());
+    bars.enter().append("rect")
+        .attr("x", (d, i) => ctx.x(i))
+        .attr("y", d => barbottom-ctx.y(d.distance))
+        .attr("width", ctx.x.bandwidth())
+        .attr("height", d => ctx.y(d.distance))
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
