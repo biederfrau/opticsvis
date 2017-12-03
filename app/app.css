@@ -1,3 +1,12 @@
+.tooltip{
+    position:absolute;
+    z-index:10;
+    visibility:hidden;
+    background-color:white;
+    border:1px solid black;
+    padding:5px;
+}
+
 body {
     background-color: #efefef;
     overflow: hidden;
@@ -122,3 +131,4 @@ textarea {
     stroke: #efefef;
     stroke-width: 0.5;
 }
+

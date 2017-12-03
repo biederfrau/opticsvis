@@ -2,6 +2,11 @@ var noisecolor="grey";
 var interpolator="Rainbow";
 var colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
+var tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .text("a simple tooltip");
+
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
     state.output_data = optics(data);
@@ -282,7 +287,7 @@ function draw_jumps(data, state,ctx) {
                 .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
                 .attr("stroke-width",1)
                 .attr("stroke","black");
-    
+
     state.dispatcher.call("drawn");
 }
 
@@ -331,16 +336,13 @@ function draw_heat(data, state) {
 	.attr("width", innerwidth)
 	.attr("height",innerheight)
 	;
-	var rects= heatmapcanvas.selectAll(".rect")
+
+	var rects= heatmapcanvas.selectAll(".row")
 	rects.data(data)
                 .enter()
-                .append("svg").classed("row", true)
-				.attr("x", function(d,i,j) { return 0; })
-				.attr("y", function(d,i,j) { return innerheight-((i+1) * (rheight)); })
-				.attr("width", innerwidth)
-				.attr("height",rheight)
-				.attr("fill", "transparent")
-				.selectAll(".row")
+                .append("g").classed("row", true)
+                .attr("transform", function(d,i) { return "translate(0,"+(innerheight-((i+1) * (rheight)))+")"})
+				.selectAll(".rect")
 				.data( function(d,i,j) { return d; } )
 				.enter()
                 .append("rect").classed("rect", true)
@@ -350,7 +352,18 @@ function draw_heat(data, state) {
 				.attr("height",rheight)
                 .attr("fill", d=>color(d))
 				.attr("stroke","transparent");
-				//margins.left+(i * rwidth)
+    heatmapcanvas.selectAll(".rect")
+                .on("mouseover", function (d) {
+                    tooltip.text("Distance: "+d);
+                    return tooltip.style("visibility", "visible");
+                })
+                .on("mousemove", function () {
+                    return tooltip.style("top",
+                        (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    return tooltip.style("visibility", "hidden");
+                });
 
 
 
