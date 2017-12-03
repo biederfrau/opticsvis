@@ -175,7 +175,18 @@ function draw_reach(data, state, ctx) {
         .attr("y", d => barbottom-ctx.y(d.distance))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d.distance))
-        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
+        .on("mouseover", function (d) {
+            tooltip.text("Reachability Distance: "+d.distance);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top",
+                (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            return tooltip.style("visibility", "hidden");
+        });
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
@@ -223,7 +234,19 @@ function draw_clusters(data, state, ctx) {
         .attr("y", d => barbottom-ctx.y(d))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d))
-        .attr("fill", (d,i) => i==noiseindex?noisecolor:colorScale(i));
+        .attr("fill", (d,i) => i==noiseindex?noisecolor:colorScale(i))
+        .on("mouseover", function (d) {
+            tooltip.text("Size: "+d);
+            return tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top",
+                (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+        })
+        .on("mouseout", function () {
+            return tooltip.style("visibility", "hidden");
+        });
+
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
