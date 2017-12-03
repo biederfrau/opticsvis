@@ -43,6 +43,9 @@ function setup_density(state) {
 }
 
 function draw_density(data, state, ctx) {
+    //TODO: maybe let the user change this
+    var bandwidth=10;
+
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
@@ -56,7 +59,7 @@ function draw_density(data, state, ctx) {
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
         .size([ctx.width, ctx.height])
-		.bandwidth(10);
+		.bandwidth(bandwidth);
 
     canvas.insert("g", "g")
         .attr("fill", "none")
