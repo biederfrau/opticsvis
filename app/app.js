@@ -248,7 +248,8 @@ function draw_clusters(data, state, ctx) {
 
 
     ctx.y.domain([max,0])
-    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(function(d) { return d==data.length-1?"Noise":d}));
+
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y).ticks(axisleftticks));
 
     state.dispatcher.call("drawn");
