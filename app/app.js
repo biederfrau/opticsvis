@@ -13,7 +13,6 @@ function filter(state) {
 
 }
 
-
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
 function setup_density(state) {
     var canvas = d3.select("#density"),
@@ -126,7 +125,7 @@ function setup_reach(state) {
     }
 
     function dragged(d) {
-        //TODO: cleanup and also update other charts and update the colorscale domain
+        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         d3.select(this).attr("y1", d3.event.y).attr("y2", d3.event.y);
@@ -134,10 +133,20 @@ function setup_reach(state) {
         console.log(cutoff);
         reCalculateClusters();
         state.clustersizes= getClusterSizes();
+        colorScale.domain([0, clustersizes.length-1])
         d3.select("#size").selectAll("*").remove();
-        d3.select("#reach").select(".data").selectAll("*").remove();
         setup_clusters(state);
+        d3.select("#reach").select(".data").selectAll("*").remove();
         draw_reach(state.output_data, state, ctx);
+        var points = d3.select("#density").selectAll(".point");
+        if(!points.empty()){
+        points.data(state.output_data)
+            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+        }
+        points = d3.select("#jumps").selectAll(".point");
+        points.data(state.output_data)
+            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+
     }
     function dragended(d) {
         d3.select(this).classed("active", false);
