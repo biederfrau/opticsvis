@@ -131,7 +131,32 @@ function draw_reach(data, state, ctx) {
         .attr("x2",d => ctx.width-ctx.margins.right)
         .attr("y2",d => barbottom-ctx.y(cutoff))
         .attr("stroke-width",1)
-        .attr("stroke","black");
+        .attr("stroke","black")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    function dragstarted(d) {
+        d3.select(this).raise().classed("active", true);
+    }
+
+    function dragged(d) {
+        //TODO: cleanup and also update other charts and update the colorscale domain
+        if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
+        if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
+        d3.select(this).attr("y1", d3.event.y).attr("y2", d3.event.y);
+        setcutoff(ctx.y.invert(d3.event.y-ctx.margins.top));
+        reCalculateClusters();
+        state.clustersizes= getClusterSizes();
+        d3.select("#size").selectAll("*").remove();
+        setup_clusters(state);
+
+    }
+
+    function dragended(d) {
+        d3.select(this).classed("active", false);
+    }
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));

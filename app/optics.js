@@ -114,6 +114,10 @@ function optics(input) {
     return clusterOrder;
 }
 
+function reCalculateClusters(){
+    calculateClusters(clusterOrderSave);
+}
+
 function calculateClusters(clusterOrder) {
     clusterer=[];
     var datalength= clusterOrder.length;
