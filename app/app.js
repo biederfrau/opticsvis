@@ -8,6 +8,8 @@ function filter(state) {
 
 }
 
+var noisecolor="grey";
+
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
 function setup_density(state) {
     var canvas = d3.select("#density"),
@@ -29,7 +31,7 @@ function setup_density(state) {
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
-    draw_density(state.input_data, state, ctx);
+    draw_density(state.output_data, state, ctx);
 }
 
 function draw_density(data, state, ctx) {
@@ -68,7 +70,7 @@ function draw_density(data, state, ctx) {
                 .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
                 .attr("r", 4)
 				.attr("stroke-color", "white")
-                .attr("fill", "black");
+                .attr("fill", (d) => d.tag==-1?noisecolor:"black");
         } else { points.remove(); }
     });
 
@@ -154,13 +156,13 @@ function draw_clusters(data, state, ctx) {
 
     var barbottom=ctx.height-ctx.margins.bottom;
     var bars = canvas.selectAll(".bar").data(data);
-
+    var noiseindex=data.length-1;
     bars.enter().append("rect")
         .attr("x", (d, i) => ctx.x(i))
 .attr("y", d => barbottom-ctx.y(d))
 .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d))
-.attr("fill", "black");
+.attr("fill", (d,i) => i==noiseindex?noisecolor:"black");
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
@@ -210,7 +212,7 @@ function draw_jumps(data, state,ctx) {
             .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
             .attr("r", 4)
             .attr("stroke-color", "white")
-            .attr("fill", "black");
+            .attr("fill", (d) => d.tag==-1?noisecolor:"black");
     var datalength=data.length;
 
     var jumppaths=canvas.selectAll(".jumppath");
