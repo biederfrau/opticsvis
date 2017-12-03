@@ -1,6 +1,6 @@
 var eps = 40;
-var minPTS = 2;
-var maxdist = 300;
+var minPTS = 4;
+var maxdist = 60;
 var distbetween;
 var cutoff=20;
 var clustersizes;
