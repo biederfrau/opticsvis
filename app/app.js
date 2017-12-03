@@ -106,7 +106,6 @@ function setup_reach(state) {
 
     var interactioncanvas=canvas.append("g").classed("interaction", true);
 
-    //TODO: movable cutoff
     var barbottom=ctx.height-ctx.margins.bottom;
 
 
@@ -118,7 +117,7 @@ function setup_reach(state) {
         .attr("y1",d => barbottom-ctx.y(cutoff))
         .attr("x2",d => ctx.width-ctx.margins.right)
         .attr("y2",d => barbottom-ctx.y(cutoff))
-        .attr("stroke-width",1)
+        .attr("stroke-width",3)
         .attr("stroke","black")
         .call(d3.drag()
             .on("start", dragstarted)
