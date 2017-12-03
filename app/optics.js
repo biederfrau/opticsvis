@@ -2,7 +2,7 @@ var eps = 40;
 var minPTS = 4;
 var maxdist = 60;
 var distbetween;
-var cutoff=20;
+var cutoff=25;
 var clustersizes;
 var clusterOrderSave;
 
@@ -137,13 +137,12 @@ function  tag(clusterOrder,clusterer){
         if (clusterer[i] == 1) {
             noise++;
             clusterOrder[index++].tag=-1;
-
         }
         else {
             clusters[curindex++] = clusterer[i];
             var count=clusterer[i];
             for(var j=0;j<count;++j)
-                clusterOrder[index++].tag=i;
+                clusterOrder[index++].tag=i-noise;
         }
     }
     clusters[curindex]=noise;

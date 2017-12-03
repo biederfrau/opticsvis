@@ -1,14 +1,18 @@
+var noisecolor="grey";
+var interpolator="Rainbow";
+var colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
+
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
     state.output_data = optics(data);
     state.clustersizes= getClusterSizes();
+    colorScale.domain([0, clustersizes.length-1])
 }
 
 function filter(state) {
 
 }
 
-var noisecolor="grey";
 
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
 function setup_density(state) {
@@ -70,7 +74,7 @@ function draw_density(data, state, ctx) {
                 .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
                 .attr("r", 4)
 				.attr("stroke-color", "white")
-                .attr("fill", (d) => d.tag==-1?noisecolor:"black");
+                .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         } else { points.remove(); }
     });
 
@@ -116,7 +120,18 @@ function draw_reach(data, state, ctx) {
         .attr("y", d => barbottom-ctx.y(d.distance))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d.distance))
-        .attr("fill", "black");
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+
+
+//TODO: movable cutoff
+    canvas
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => ctx.margins.left)
+        .attr("y1",d => barbottom-ctx.y(cutoff))
+        .attr("x2",d => ctx.width-ctx.margins.right)
+        .attr("y2",d => barbottom-ctx.y(cutoff))
+        .attr("stroke-width",1)
+        .attr("stroke","black");
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
@@ -164,7 +179,7 @@ function draw_clusters(data, state, ctx) {
         .attr("y", d => barbottom-ctx.y(d))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d))
-        .attr("fill", (d,i) => i==noiseindex?noisecolor:"black");
+        .attr("fill", (d,i) => i==noiseindex?noisecolor:colorScale(i));
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
@@ -214,7 +229,7 @@ function draw_jumps(data, state,ctx) {
             .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
             .attr("r", 4)
             .attr("stroke-color", "white")
-            .attr("fill", (d) => d.tag==-1?noisecolor:"black");
+            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
     var datalength=data.length;
 
     var jumppaths=canvas.selectAll(".jumppath");
