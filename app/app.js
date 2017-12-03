@@ -130,7 +130,6 @@ function setup_reach(state) {
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         d3.select(this).attr("y1", d3.event.y).attr("y2", d3.event.y);
         setcutoff(ctx.y.invert(d3.event.y-ctx.margins.top));
-        console.log(cutoff);
         reCalculateClusters();
         state.clustersizes= getClusterSizes();
         colorScale.domain([0, clustersizes.length-1])
@@ -166,7 +165,6 @@ function draw_reach(data, state, ctx) {
 
     var bars = canvas.selectAll(".bar").data(data);
     var barbottom=ctx.height-ctx.margins.bottom;
-    console.log(ctx.y.range());
     bars.enter().append("rect")
         .attr("x", (d, i) => ctx.x(i))
         .attr("y", d => barbottom-ctx.y(d.distance))
@@ -284,8 +282,7 @@ function draw_jumps(data, state,ctx) {
                 .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
                 .attr("stroke-width",1)
                 .attr("stroke","black");
-
-console.log(data)
+    
     state.dispatcher.call("drawn");
 }
 
