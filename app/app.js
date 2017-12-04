@@ -131,12 +131,14 @@ function setup_reach(state) {
     var barbottom=ctx.height-ctx.margins.bottom;
     var max=d3.max(state.output_data, function(d) { return d.distance; });
 
+    var max=d3.max(state.output_data, function(d) { return d.distance; });
+
     interactioncanvas
         .append("line").classed("cutoff", true)
         .attr("x1",d => ctx.margins.left)
-        .attr("y1",d => barbottom-ctx.y(cutoff))
+        .attr("y1",d => barbottom-ctx.y(max-cutoff))
         .attr("x2",d => ctx.width-ctx.margins.right)
-        .attr("y2",d => barbottom-ctx.y(cutoff))
+        .attr("y2",d => barbottom-ctx.y(max-cutoff))
         .attr("stroke-width",3)
         .attr("stroke","black")
         .call(d3.drag()
