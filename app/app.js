@@ -408,7 +408,7 @@ function setup_heat(state) {
         .attr("transform", "translate("+legendwidth+","+margins.top+")");
 
 
-    var ctx = {"y":y,"margins": margins, "width": width, "height": height, "color":color };
+    var ctx = {"y":y,"margins": margins, "width": width, "height": height, "color":color, "innerheight":innerheight, "innerwidth":innerwidth};
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
         draw_heat(data[1], state,ctx);
@@ -434,11 +434,9 @@ function draw_heat(data, state,ctx) {
     data=distances;
     ctx.y.domain([0,data.max]);
     ctx.color.domain([0,data.max])
-	var innerheight=ctx.height-ctx.margins.top-ctx.margins.bottom;
-	var innerwidth=ctx.width-ctx.margins.left-ctx.margins.right;
 	var count=data.length;
-	var rheight=innerheight/count;
-	var rwidth= innerwidth/count;
+	var rheight=ctx.innerheight/count;
+	var rwidth= ctx.innerwidth/count;
 
 	var heatmapcanvas=canvas.select(".heatmapcanvas");
 
@@ -447,7 +445,7 @@ function draw_heat(data, state,ctx) {
 
 	rows       .enter()
                 .append("g").classed("row", true)
-                .attr("transform", function(d,i) { return "translate(0,"+(innerheight-((i+1) * (rheight)))+")"})
+                .attr("transform", function(d,i) { return "translate(0,"+(ctx.innerheight-((i+1) * (rheight)))+")"})
                 .selectAll(".rect").data( function(d,i,j) { return d; } )
 				.enter()
                 .append("rect").classed("rect", true)
