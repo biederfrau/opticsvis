@@ -23,7 +23,7 @@ function filter(state) {
 function setup_density(state) {
     var canvas = d3.select("#density"),
         style = window.getComputedStyle(document.getElementById("density")),
-        margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
+        margins = {"left": 55, "right": 150, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
@@ -46,6 +46,10 @@ function setup_density(state) {
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round");
 
+    canvas.append("g")
+        .classed("legend", true)
+        .attr("transform", "translate(" + [width - 100, margins.top] + ")");
+
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_density(state.output_data, state, ctx);
 
@@ -57,7 +61,7 @@ function setup_density(state) {
 // draw_density {{{
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
-        color = d3.scaleSequential(d3.interpolateBlues);
+        color = d3.scaleSequential(d3.interpolateYlGnBu);
 
     ctx.x.domain(d3.extent(data, x => x[0])).nice();
     ctx.y.domain(d3.extent(data, x => x[1])).nice();
@@ -97,6 +101,16 @@ function draw_density(data, state, ctx) {
                 .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         } else { points.remove(); }
     });
+
+    var legend = d3.legendColor()
+        .shapeWidth(20)
+        .cells(30)
+        .orient("vertical")
+        .labelFormat(d3.format(".04f"))
+        .ascending(true)
+        .scale(color);
+
+    canvas.select(".legend").call(legend);
 
     state.dispatcher.call("drawn");
 } // }}}
