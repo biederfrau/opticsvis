@@ -114,16 +114,19 @@ function setup_reach(state) {
     canvas.append("g").classed("data", true);
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
 
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, ctx.height - ctx.margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
+
     draw_reach(state.output_data, state, ctx);
 
-
+    state.dispatcher.on("data:change.reach", data => {
+        draw_reach(data[1], state, ctx);
+});
     var interactioncanvas=canvas.append("g").classed("interaction", true);
 
     var barbottom=ctx.height-ctx.margins.bottom;
-
-
     var max=d3.max(state.output_data, function(d) { return d.distance; });
-    ctx.y.domain([0,max]);
+
     interactioncanvas
         .append("line").classed("cutoff", true)
         .attr("x1",d => ctx.margins.left)
@@ -152,8 +155,9 @@ function setup_reach(state) {
         colorScale.domain([0, clustersizes.length-1])
         d3.select("#size").selectAll("*").remove();
         setup_clusters(state);
-        d3.select("#reach").select(".data").selectAll("*").remove();
-        draw_reach(state.output_data, state, ctx);
+        var rects = d3.select("#reach").select(".data").selectAll(".bar");
+        rects.data(state.output_data)
+            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         var points = d3.select("#density").selectAll(".point");
         if(!points.empty()){
         points.data(state.output_data)
@@ -173,16 +177,13 @@ function setup_reach(state) {
 function draw_reach(data, state, ctx) {
     var canvas = d3.select("#reach").select(".data");
 
-    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, ctx.height - ctx.margins.bottom] + ")");
-    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
-
     var max=d3.max(data, function(d) { return d.distance; });
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
     var bars = canvas.selectAll(".bar").data(data);
     var barbottom=ctx.height-ctx.margins.bottom;
-    bars.enter().append("rect")
+    bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
         .attr("y", d => barbottom-ctx.y(d.distance))
         .attr("width", ctx.x.bandwidth())
@@ -199,8 +200,10 @@ function draw_reach(data, state, ctx) {
         .on("mouseout", function () {
             return tooltip.style("visibility", "hidden");
         });
+    bars.exit().remove();
 
     ctx.y.domain([max,0])
+    canvas=d3.select("#reach");
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
@@ -225,7 +228,12 @@ function setup_clusters(state) {
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+
     draw_clusters(state.output_data, state, ctx);
+
+    state.dispatcher.on("data:change.size", data => {
+        draw_clusters(data[1], state, ctx);
+});
 } // }}}
 
 // draw_clusters {{{
@@ -243,7 +251,7 @@ function draw_clusters(data, state, ctx) {
     var barbottom=ctx.height-ctx.margins.bottom;
     var bars = canvas.selectAll(".bar").data(data);
     var noiseindex=data.length-1;
-    bars.enter().append("rect")
+    bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
         .attr("y", d => barbottom-ctx.y(d))
         .attr("width", ctx.x.bandwidth())
@@ -260,7 +268,7 @@ function draw_clusters(data, state, ctx) {
         .on("mouseout", function () {
             return tooltip.style("visibility", "hidden");
         });
-
+    bars.exit().remove();
 
     ctx.y.domain([max,0])
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(function(d) { return d==data.length-1?"Noise":d}));
@@ -292,6 +300,8 @@ function setup_jumps(state) {
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_jumps(state.output_data, state, ctx);
+    state.dispatcher.on("data:change.jumps", data => {
+        draw_jumps(data[1], state, ctx);});
 } // }}}
 
 // draw_jumps {{{
@@ -304,95 +314,100 @@ function draw_jumps(data, state,ctx) {
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
-    var points = canvas.selectAll(".point");
+    var points = canvas.selectAll(".point").data(data);
 
 
-        points.data(data)
+        points
             .enter()
-            .append("circle").classed("point", true)
+            .append("circle").classed("point", true).merge(points)
             .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
             .attr("r", 4)
             .attr("stroke-color", "white")
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+    points.exit().remove();
+
     var datalength=data.length;
 
-    var jumppaths=canvas.selectAll(".jumppath");
+    var jumppaths=canvas.selectAll(".jumppath").data(data);
             jumppaths
-                .data(data)
                 .enter()
-                .append("line").classed("jumppath", true)
+                .append("line").classed("jumppath", true).merge(jumppaths)
                 .attr("x1",d => ctx.x(d[0]))
                 .attr("y1",d => ctx.y(d[1]))
                 .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
                 .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
                 .attr("stroke-width",1)
                 .attr("stroke","black");
+    jumppaths.exit().remove();
 
     state.dispatcher.call("drawn");
 } // }}}
 
 // setup_heat {{{
 function setup_heat(state) {
-	var data=state.output_data;
-	var datasize=data.length;
-	var distances = new Array();
-	distances.max=0;
-	for(var i=0;i<datasize;++i){
-		distances[i]=new Array();
-		for(var j=0;j<datasize;++j){
-			distances[i][j]=distbetween(data[i],data[j]);
-			if(distances[i][j]>distances.max)distances.max=distances[i][j];
-		}
-	}
-	draw_heat(distances,state);
-} // }}}
+    var closecolor="#000066";
+    var distantcolor="#E6F3FF";
 
-// draw_heat {{{
-function draw_heat(data, state) {
-	var closecolor="#000066";
-	var distantcolor="#E6F3FF";
-	var canvas = d3.select("#heat"),
-	style = window.getComputedStyle(document.getElementById("heat")),
+	var data=state.output_data;
+
+	var style = window.getComputedStyle(document.getElementById("heat")),
         margins = {"left": 20, "right": 80, "top": 20, "bottom": 20},
         width = parseFloat(style.width),
         height = parseFloat(style.height),
-		color = d3.scaleLinear()
-		//.scalePow().exponent(0.66)
-		.domain([0,data.max])
-      .interpolate(d3.interpolateRgb)
-      .range([d3.rgb(closecolor), d3.rgb(distantcolor)]);
+        color = d3.scaleLinear()
+        //.scalePow().exponent(0.66)
+            .interpolate(d3.interpolateRgb)
+            .range([d3.rgb(closecolor), d3.rgb(distantcolor)]);
+    var ctx = {"margins": margins, "width": width, "height": height, "color":color };
+	draw_heat(data,state,ctx);
+    state.dispatcher.on("data:change.heat", data => {
+        draw_heat(data[1], state,ctx);
+});
+} // }}}
 
+// draw_heat {{{
+function draw_heat(data, state,ctx) {
 
+	var canvas = d3.select("#heat");
 
-
-	var innerheight=height-margins.top-margins.bottom;
-	var innerwidth=width-margins.left-margins.right;
+    var datasize=data.length;
+    var distances = new Array();
+    distances.max=0;
+    for(var i=0;i<datasize;++i){
+        distances[i]=new Array();
+        for(var j=0;j<datasize;++j){
+            distances[i][j]=distbetween(data[i],data[j]);
+            if(distances[i][j]>distances.max)distances.max=distances[i][j];
+        }
+    }
+    data=distances;
+    ctx.color.domain([0,distances.max])
+	var innerheight=ctx.height-ctx.margins.top-ctx.margins.bottom;
+	var innerwidth=ctx.width-ctx.margins.left-ctx.margins.right;
 	var count=data.length;
 	var rheight=innerheight/count;
 	var rwidth= innerwidth/count;
 
 	var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
 	.classed("heatmapcanvas", true)
-	.attr("x", margins.left)
-	.attr("y", margins.top)
+	.attr("x", ctx.margins.left)
+	.attr("y", ctx.margins.top)
 	.attr("width", innerwidth)
 	.attr("height",innerheight)
 	;
 
-	var rects= heatmapcanvas.selectAll(".row")
-	rects.data(data)
-                .enter()
-                .append("g").classed("row", true)
+	var rows= heatmapcanvas.selectAll(".row").data(data)
+	rows       .enter()
+                .append("g").classed("row", true).merge(rows)
                 .attr("transform", function(d,i) { return "translate(0,"+(innerheight-((i+1) * (rheight)))+")"})
-				.selectAll(".rect")
-				.data( function(d,i,j) { return d; } )
+                .selectAll(".rect").data( function(d,i,j) { return d; } )
 				.enter()
                 .append("rect").classed("rect", true)
                 .attr("x", function(d,i,j) { return (i * (rwidth)); })
 				.attr("y", function(d,i,j) { return 0; })
                 .attr("width", rwidth)
 				.attr("height",rheight)
-                .attr("fill", d=>color(d))
+                .attr("fill", d=>ctx.color(d))
 				.attr("stroke","transparent");
     heatmapcanvas.selectAll(".rect")
                 .on("mouseover", function (d) {
@@ -406,6 +421,7 @@ function draw_heat(data, state) {
                 .on("mouseout", function () {
                     return tooltip.style("visibility", "hidden");
                 });
+    rows.exit().remove();
 
 
 
@@ -416,8 +432,8 @@ function draw_heat(data, state) {
         .on("zoom", 	function() {
           var e = d3.event;
 
-         e.transform.x = Math.min(0, Math.max(e.transform.x, width - width * e.transform.k)),
-         e.transform.y = Math.min(0, Math.max(e.transform.y, height - height * e.transform.k));
+         e.transform.x = Math.min(0, Math.max(e.transform.x, ctx.width - ctx.width * e.transform.k)),
+         e.transform.y = Math.min(0, Math.max(e.transform.y, ctx.height - ctx.height * e.transform.k));
 /*
           d3.select(".heatmapcanvas").attr("transform", [
             "translate(" + [tx, ty] + ")",
@@ -432,15 +448,15 @@ function draw_heat(data, state) {
 
 	var legendwidth=30;
 	var disttomap=10;
-	var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
+	var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", ctx.height).attr("x",ctx.width-ctx.margins.right+disttomap).attr("y",0);
 
 	 var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
-			legend.append("stop").attr("offset", "0%").attr("stop-color", distantcolor);
-			legend.append("stop").attr("offset", "100%").attr("stop-color", closecolor);
-			key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", margins.top).style("fill", "url(#gradient)");
+			legend.append("stop").attr("offset", "0%").attr("stop-color", ctx.color.range()[1]);
+			legend.append("stop").attr("offset", "100%").attr("stop-color", ctx.color.range()[0]);
+			key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", ctx.margins.top).style("fill", "url(#gradient)");
 			var y = d3.scaleLinear().range([ innerheight, 0]).domain([0,data.max]);
 			var yAxis = d3.axisRight(y);
-			key.append("g").attr("class", "y axis").attr("transform", "translate("+legendwidth+","+margins.top+")")
+			key.append("g").attr("class", "y axis").attr("transform", "translate("+legendwidth+","+ctx.margins.top+")")
 			.call(yAxis);
 
     state.dispatcher.call("drawn");
