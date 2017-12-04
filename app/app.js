@@ -333,7 +333,7 @@ function draw_jumps(data, state,ctx) {
 
     jumppaths
         .enter()
-        .append("line").classed("jumppath", true).merge(jumppaths)
+        .insert("line", ".point").classed("jumppath", true).merge(jumppaths)
         .attr("x1",d => ctx.x(d[0]))
         .attr("y1",d => ctx.y(d[1]))
         .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
