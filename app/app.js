@@ -159,8 +159,7 @@ function setup_reach(state) {
         reCalculateClusters();
         state.clustersizes= getClusterSizes();
         colorScale.domain([0, clustersizes.length-1])
-        d3.select("#size").selectAll("*").remove();
-        setup_clusters(state);
+        state.dispatcher.call("size",this,[state.input_data,state.output_data]);
         var rects = d3.select("#reach").select(".data").selectAll(".bar");
         rects.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
@@ -237,7 +236,7 @@ function setup_clusters(state) {
 
     draw_clusters(state.output_data, state, ctx);
 
-    state.dispatcher.on("data:change.size", data => {
+    state.dispatcher.on("data:change.size size", data => {
         draw_clusters(data[1], state, ctx);
 });
 } // }}}
@@ -475,7 +474,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
