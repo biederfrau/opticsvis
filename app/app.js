@@ -470,7 +470,7 @@ function draw_heat(data, state,ctx) {
                     return tooltip.style("visibility", "hidden");
                 });
 
-
+    canvas.select(".yaxis").call(d3.axisRight(ctx.y));
 
     state.dispatcher.call("drawn");
 } // }}}
