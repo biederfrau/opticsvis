@@ -491,6 +491,10 @@ function do_the_things() {//{{{
         $(".ui-bar .data-entry").toggleClass("visible");
     });
 
+    $("#settings-input").click(e => {
+        $(".ui-bar .settings-entry").toggleClass("visible");
+    });
+
     $("#data-form").submit(e => {
         data = $("#data-textarea").val().split("\n")
             .map(_.trim).filter(line => line !== "")

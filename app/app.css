@@ -78,7 +78,7 @@ div.ui-bar {
     top: 0px;
     width: 10vw;
     height: 100vh;
-    opacity: 0.7;
+    opacity: 0.8;
     background-color: #79B2DB;
     transition: width 500ms;
 }
@@ -110,14 +110,14 @@ div.ui-bar .elem.toggled {
     background-color: white;
 }
 
-div.ui-bar .data-entry, div.ui-bar .about-entry {
+div.ui-bar div:not(.elem) {
     display: none;
     width: 29vw;
     padding: 0.5em;
 }
 
-div.ui-bar .data-entry.visible, div.ui-bar .about-entry.visible {
-    display: block;
+div.ui-bar *.visible {
+    display: block !important;
     background-color: white;
 }
 
