@@ -1,8 +1,8 @@
-var noisecolor="grey";
-var interpolator="Rainbow";
-var colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
+const noisecolor="grey";
+const interpolator="Rainbow";
+const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
-var tooltip = d3.select("body")
+const tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
     .text("a simple tooltip");
@@ -19,6 +19,7 @@ function filter(state) {
 }
 
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
+// setup_density {{{
 function setup_density(state) {
     var canvas = d3.select("#density"),
         style = window.getComputedStyle(document.getElementById("density")),
@@ -38,14 +39,23 @@ function setup_density(state) {
     canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
 
+    canvas.insert("g", "g")
+        .classed("contours-bg", true)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-linejoin", "round");
+
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_density(state.output_data, state, ctx);
-}
 
+    state.dispatcher.on("data:change.density", data => {
+        draw_density(data[1], state, ctx);
+    });
+} // }}}
+
+// draw_density {{{
 function draw_density(data, state, ctx) {
-    //TODO: maybe let the user change this
-    var bandwidth=10;
-
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
@@ -58,18 +68,17 @@ function draw_density(data, state, ctx) {
     var densityEstimator = d3.contourDensity()
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
-        .size([ctx.width, ctx.height])
-		.bandwidth(bandwidth);
+        .size([ctx.width, ctx.height]);
 
-    canvas.insert("g", "g")
-        .attr("fill", "none")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-linejoin", "round")
-        .selectAll("path")
-        .data(densityEstimator(data))
-        .enter().append("path").attr("fill", d => color(d.value))
+    var contours = canvas.select(".contours-bg").selectAll(".contour").data(densityEstimator(data));
+    contours.enter()
+        .append("path").classed("contour", true)
+        .merge(contours)
+        .attr("fill", d => color(d.value))
         .attr("d", d3.geoPath());
+
+    contours.exit().remove();
+    canvas.selectAll(".point").remove();
 
     canvas.on("dblclick", () => {
         var points = canvas.selectAll(".point");
@@ -86,8 +95,9 @@ function draw_density(data, state, ctx) {
     });
 
     state.dispatcher.call("drawn");
-}
+} // }}}
 
+// draw_reach {{{
 function setup_reach(state) {
     var canvas = d3.select("#reach"),
         style = window.getComputedStyle(document.getElementById("reach")),
@@ -157,9 +167,9 @@ function setup_reach(state) {
     function dragended(d) {
         d3.select(this).classed("active", false);
     }
-}
+} // }}}
 
-
+// draw_reach {{{
 function draw_reach(data, state, ctx) {
     var canvas = d3.select("#reach").select(".data");
 
@@ -195,8 +205,9 @@ function draw_reach(data, state, ctx) {
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
     state.dispatcher.call("drawn");
-}
+} // }}}
 
+// setup_clusters {{{
 function setup_clusters(state) {
     var canvas = d3.select("#size"),
         style = window.getComputedStyle(document.getElementById("size")),
@@ -215,8 +226,9 @@ function setup_clusters(state) {
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_clusters(state.output_data, state, ctx);
-}
+} // }}}
 
+// draw_clusters {{{
 function draw_clusters(data, state, ctx) {
 //TODO: use real cutoff
     //TODO: change last tick to "noise"
@@ -256,8 +268,9 @@ function draw_clusters(data, state, ctx) {
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y).ticks(axisleftticks));
 
     state.dispatcher.call("drawn");
-}
+} // }}}
 
+// setup_jumps {{{
 function setup_jumps(state) {
     var canvas = d3.select("#jumps"),
         style = window.getComputedStyle(document.getElementById("jumps")),
@@ -279,8 +292,9 @@ function setup_jumps(state) {
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_jumps(state.output_data, state, ctx);
-}
+} // }}}
 
+// draw_jumps {{{
 function draw_jumps(data, state,ctx) {
     var canvas = d3.select("#jumps"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
@@ -315,8 +329,9 @@ function draw_jumps(data, state,ctx) {
                 .attr("stroke","black");
 
     state.dispatcher.call("drawn");
-}
+} // }}}
 
+// setup_heat {{{
 function setup_heat(state) {
 	var data=state.output_data;
 	var datasize=data.length;
@@ -330,8 +345,9 @@ function setup_heat(state) {
 		}
 	}
 	draw_heat(distances,state);
-}
+} // }}}
 
+// draw_heat {{{
 function draw_heat(data, state) {
 	var closecolor="#000066";
 	var distantcolor="#E6F3FF";
@@ -428,12 +444,11 @@ function draw_heat(data, state) {
 			.call(yAxis);
 
     state.dispatcher.call("drawn");
-}
-
+} // }}}
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "date:update", "cat:update", "dist:update", "update"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
@@ -462,8 +477,6 @@ function do_the_things() {//{{{
                 none_toggled = none_toggled && !$(siblings[idx]).hasClass("toggled");
             });
 
-            console.log(siblings);
-            console.log(none_toggled);
             if(none_toggled) { $(".ui-bar").removeClass("toggled"); }
         }
 
@@ -479,12 +492,12 @@ function do_the_things() {//{{{
     });
 
     $("#data-form").submit(e => {
-        state.data = $("#data-textarea").val().split("\n")
+        data = $("#data-textarea").val().split("\n")
             .map(_.trim).filter(line => line !== "")
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
 
         compute(data, state);
-        state.dispatcher.call("update", [state.input_data, state.output_data]);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     }); // }}}
 
     // state.thinking(5);
