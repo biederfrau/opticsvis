@@ -70,7 +70,11 @@ function draw_density(data, state, ctx) {
         .y(d => ctx.y(d[1]))
         .size([ctx.width, ctx.height]);
 
-    var contours = canvas.select(".contours-bg").selectAll(".contour").data(densityEstimator(data));
+    var estimated = densityEstimator(data),
+        contours = canvas.select(".contours-bg").selectAll(".contour").data(estimated);
+
+    color.domain(d3.extent(estimated, d => d.value));
+
     contours.enter()
         .append("path").classed("contour", true)
         .merge(contours)
@@ -314,30 +318,29 @@ function draw_jumps(data, state,ctx) {
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
+
     var points = canvas.selectAll(".point").data(data);
 
-
-        points
-            .enter()
-            .append("circle").classed("point", true).merge(points)
-            .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
-            .attr("r", 4)
-            .attr("stroke-color", "white")
-            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+    points.enter()
+        .append("circle").classed("point", true).merge(points)
+        .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+        .attr("r", 4)
+        .attr("stroke-color", "white")
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
     points.exit().remove();
 
-    var datalength=data.length;
-
     var jumppaths=canvas.selectAll(".jumppath").data(data);
-            jumppaths
-                .enter()
-                .append("line").classed("jumppath", true).merge(jumppaths)
-                .attr("x1",d => ctx.x(d[0]))
-                .attr("y1",d => ctx.y(d[1]))
-                .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
-                .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
-                .attr("stroke-width",1)
-                .attr("stroke","black");
+
+    jumppaths
+        .enter()
+        .append("line").classed("jumppath", true).merge(jumppaths)
+        .attr("x1",d => ctx.x(d[0]))
+        .attr("y1",d => ctx.y(d[1]))
+        .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
+        .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
+        .attr("stroke-width",1)
+        .attr("stroke","black");
+
     jumppaths.exit().remove();
 
     state.dispatcher.call("drawn");
@@ -358,11 +361,12 @@ function setup_heat(state) {
         //.scalePow().exponent(0.66)
             .interpolate(d3.interpolateRgb)
             .range([d3.rgb(closecolor), d3.rgb(distantcolor)]);
+
     var ctx = {"margins": margins, "width": width, "height": height, "color":color };
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
         draw_heat(data[1], state,ctx);
-});
+    });
 } // }}}
 
 // draw_heat {{{
