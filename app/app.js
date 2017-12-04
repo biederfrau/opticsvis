@@ -28,7 +28,7 @@ function setup_density(state) {
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
-        .text("Density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
+        .text("Estimated density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
 
     canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
         .style("font-size", "12px").attr("text-anchor", "middle");
@@ -57,7 +57,7 @@ function setup_density(state) {
 // draw_density {{{
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
-        color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
+        color = d3.scaleSequential(d3.interpolateBlues);
 
     ctx.x.domain(d3.extent(data, x => x[0])).nice();
     ctx.y.domain(d3.extent(data, x => x[1])).nice();
