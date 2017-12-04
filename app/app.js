@@ -244,8 +244,6 @@ function setup_clusters(state) {
 
 // draw_clusters {{{
 function draw_clusters(data, state, ctx) {
-//TODO: use real cutoff
-    //TODO: change last tick to "noise"
     var axisleftticks=5;
     data=state.clustersizes;
     var canvas = d3.select("#size");
@@ -364,7 +362,53 @@ function setup_heat(state) {
             .interpolate(d3.interpolateRgb)
             .range([d3.rgb(closecolor), d3.rgb(distantcolor)]);
 
-    var ctx = {"margins": margins, "width": width, "height": height, "color":color };
+    var innerheight=height-margins.top-margins.bottom;
+    var innerwidth=width-margins.left-margins.right;
+
+    var canvas = d3.select("#heat");
+
+    var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
+            .classed("heatmapcanvas", true)
+            .attr("x", margins.left)
+            .attr("y", margins.top)
+            .attr("width", innerwidth)
+            .attr("height",innerheight)
+        ;
+
+    zoom = d3.zoom()
+        .scaleExtent([1, 20])
+        .on("zoom", 	function() {
+                var e = d3.event;
+
+                e.transform.x = Math.min(0, Math.max(e.transform.x, ctx.width - ctx.width * e.transform.k)),
+                    e.transform.y = Math.min(0, Math.max(e.transform.y, ctx.height - ctx.height * e.transform.k));
+                /*
+                 d3.select(".heatmapcanvas").attr("transform", [
+                 "translate(" + [tx, ty] + ")",
+                 "scale(" + e.transform.k + ")"
+                 ].join(" "));
+                 */
+                d3.select(".transfromablemap").attr("transform", e.transform);
+            }
+        );
+
+    canvas.call(zoom);
+
+    var legendwidth=30;
+    var disttomap=10;
+    var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
+
+    var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
+    legend.append("stop").attr("offset", "0%").attr("stop-color", color.range()[1]);
+    legend.append("stop").attr("offset", "100%").attr("stop-color", color.range()[0]);
+    key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", margins.top).style("fill", "url(#gradient)");
+    var y = d3.scaleLinear().range([ innerheight, 0]);
+    key.append("g")
+        .attr("class", "yaxis")
+        .attr("transform", "translate("+legendwidth+","+margins.top+")");
+
+
+    var ctx = {"y":y,"margins": margins, "width": width, "height": height, "color":color };
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
         draw_heat(data[1], state,ctx);
@@ -386,25 +430,23 @@ function draw_heat(data, state,ctx) {
             if(distances[i][j]>distances.max)distances.max=distances[i][j];
         }
     }
+
     data=distances;
-    ctx.color.domain([0,distances.max])
+    ctx.y.domain([0,data.max]);
+    ctx.color.domain([0,data.max])
 	var innerheight=ctx.height-ctx.margins.top-ctx.margins.bottom;
 	var innerwidth=ctx.width-ctx.margins.left-ctx.margins.right;
 	var count=data.length;
 	var rheight=innerheight/count;
 	var rwidth= innerwidth/count;
 
-	var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
-	.classed("heatmapcanvas", true)
-	.attr("x", ctx.margins.left)
-	.attr("y", ctx.margins.top)
-	.attr("width", innerwidth)
-	.attr("height",innerheight)
-	;
+	var heatmapcanvas=canvas.select(".heatmapcanvas");
 
-	var rows= heatmapcanvas.selectAll(".row").data(data)
+    heatmapcanvas.selectAll(".row").remove();
+	var rows= heatmapcanvas.selectAll(".row").data(data);
+
 	rows       .enter()
-                .append("g").classed("row", true).merge(rows)
+                .append("g").classed("row", true)
                 .attr("transform", function(d,i) { return "translate(0,"+(innerheight-((i+1) * (rheight)))+")"})
                 .selectAll(".rect").data( function(d,i,j) { return d; } )
 				.enter()
@@ -427,43 +469,8 @@ function draw_heat(data, state,ctx) {
                 .on("mouseout", function () {
                     return tooltip.style("visibility", "hidden");
                 });
-    rows.exit().remove();
 
 
-
-
-
-	zoom = d3.zoom()
-        .scaleExtent([1, 20])
-        .on("zoom", 	function() {
-          var e = d3.event;
-
-         e.transform.x = Math.min(0, Math.max(e.transform.x, ctx.width - ctx.width * e.transform.k)),
-         e.transform.y = Math.min(0, Math.max(e.transform.y, ctx.height - ctx.height * e.transform.k));
-/*
-          d3.select(".heatmapcanvas").attr("transform", [
-            "translate(" + [tx, ty] + ")",
-            "scale(" + e.transform.k + ")"
-          ].join(" "));
- */
-        d3.select(".transfromablemap").attr("transform", e.transform);
-    }
-	);
-
-	canvas.call(zoom);
-
-	var legendwidth=30;
-	var disttomap=10;
-	var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", ctx.height).attr("x",ctx.width-ctx.margins.right+disttomap).attr("y",0);
-
-	 var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
-			legend.append("stop").attr("offset", "0%").attr("stop-color", ctx.color.range()[1]);
-			legend.append("stop").attr("offset", "100%").attr("stop-color", ctx.color.range()[0]);
-			key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", ctx.margins.top).style("fill", "url(#gradient)");
-			var y = d3.scaleLinear().range([ innerheight, 0]).domain([0,data.max]);
-			var yAxis = d3.axisRight(y);
-			key.append("g").attr("class", "y axis").attr("transform", "translate("+legendwidth+","+ctx.margins.top+")")
-			.call(yAxis);
 
     state.dispatcher.call("drawn");
 } // }}}
