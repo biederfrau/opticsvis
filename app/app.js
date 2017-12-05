@@ -103,8 +103,10 @@ function draw_density(data, state, ctx) {
     });
 
     var legend = d3.legendColor()
+        .title("Est. density")
         .shapeWidth(20)
-        .cells(Math.floor(ctx.height / 20))
+        .shapeHeight(20)
+        .cells(Math.floor((ctx.height - ctx.margins.bottom - ctx.margins.top) / 25))
         .orient("vertical")
         .labelFormat(d3.format(".04f"))
         .ascending(true)
