@@ -163,30 +163,8 @@ function setup_reach(state) {
 
     const rectwidth=12;
 
-
     var cutoff1=barbottom-ctx.y(max-getcutoff());
     var cutoff2=cutoff1;
-
-    var moveable1=interactioncanvas.append("g").classed("moveable1",true);
-    moveable1.attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
-        .append("line").classed("cutoff", true)
-        .attr("x1",d => 0)
-        .attr("y1",d => 0)
-        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left)
-        .attr("y2",d => 0)
-        .attr("stroke-width",1)
-        .attr("stroke","black");
-
-    moveable1.append("rect").classed("cutoffhandle", true)
-        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left)
-        .attr("y",d => -rectwidth/2)
-        .attr("height",d => rectwidth)
-        .attr("width",d => rectwidth)
-        .attr("fill", "black");
-        //.attr("fill",black);
-
-    moveable1.call(d3.drag()
-            .on("drag", dragged));
 
     var moveable2=interactioncanvas.append("g").classed("moveable2",true);
     moveable2.attr("transform", "translate(" + [ctx.margins.left, cutoff2] + ")")
@@ -208,7 +186,25 @@ function setup_reach(state) {
     moveable2.call(d3.drag()
         .on("drag", dragged2));
 
+    var moveable1=interactioncanvas.append("g").classed("moveable1",true);
+    moveable1.attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => 0)
+        .attr("y1",d => 0)
+        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y2",d => 0)
+        .attr("stroke-width",1)
+        .attr("stroke","black");
 
+    moveable1.append("rect").classed("cutoffhandle", true)
+        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y",d => -rectwidth/2)
+        .attr("height",d => rectwidth)
+        .attr("width",d => rectwidth)
+        .attr("fill", "black");
+
+    moveable1.call(d3.drag()
+        .on("drag", dragged));
 
     function dragged(d) {
         //TODO: cleanup
@@ -324,13 +320,12 @@ function draw_clusters(data, state, ctx) {
 
     var barbottom=ctx.height-ctx.margins.bottom;
     var bars = canvas.selectAll(".bar").data(data);
-    var noiseindex=data.length-1;
     bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
         .attr("y", d => barbottom-ctx.y(d.value))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d.value))
-        .attr("fill", (d,i) => i==noiseindex?noisecolor:colorScale(i))
+        .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(i))
         .on("mouseover", function (d) {
             tooltip.text("Size: "+d.value);
             return tooltip.style("visibility", "visible");
@@ -345,7 +340,7 @@ function draw_clusters(data, state, ctx) {
     bars.exit().remove();
 
     ctx.y.domain([max,0])
-    canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(function(d) { return d==data.length-1?"Noise":d}));
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(function(d) { return data[d].key==-1?"Noise":d}));
 
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y).ticks(axisleftticks));
 
