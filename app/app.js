@@ -10,8 +10,19 @@ const tooltip = d3.select("body")
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
     state.output_data = optics(data);
-    state.clustersizes= getClusterSizes();
-    colorScale.domain([0, clustersizes.length-1])
+    state.clustersizes= getClusterSizes(state.output_data);
+    colorScale.domain([0, state.clustersizes.length-1])
+}
+
+function getClusterSizes(data){
+    return d3.nest().key(function (d) {
+        return d.tag;
+    })
+        .rollup(function (d) {
+            return d3.sum(d, function (g) {
+                return 1;
+            });
+        }).entries(data);
 }
 
 function filter(state) {
@@ -149,48 +160,93 @@ function setup_reach(state) {
 
     var max=d3.max(state.output_data, function(d) { return d.distance; });
 
-    interactioncanvas
-        .append("line").classed("cutoff", true)
-        .attr("x1",d => ctx.margins.left)
-        .attr("y1",d => barbottom-ctx.y(max-cutoff))
-        .attr("x2",d => ctx.width-ctx.margins.right)
-        .attr("y2",d => barbottom-ctx.y(max-cutoff))
-        .attr("stroke-width",3)
-        .attr("stroke","black")
-        .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
 
-    function dragstarted(d) {
-        d3.select(this).raise().classed("active", true);
-    }
+    const rectwidth=12;
+
+
+    var cutoff1=barbottom-ctx.y(max-getcutoff());
+    var cutoff2=cutoff1;
+
+    var moveable1=interactioncanvas.append("g").classed("moveable1",true);
+    moveable1.attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => 0)
+        .attr("y1",d => 0)
+        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y2",d => 0)
+        .attr("stroke-width",1)
+        .attr("stroke","black");
+
+    moveable1.append("rect").classed("cutoffhandle", true)
+        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y",d => -rectwidth/2)
+        .attr("height",d => rectwidth)
+        .attr("width",d => rectwidth)
+        .attr("fill", "black");
+        //.attr("fill",black);
+
+    moveable1.call(d3.drag()
+            .on("drag", dragged));
+
+    var moveable2=interactioncanvas.append("g").classed("moveable2",true);
+    moveable2.attr("transform", "translate(" + [ctx.margins.left, cutoff2] + ")")
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => 0)
+        .attr("y1",d => 0)
+        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
+        .attr("y2",d => 0)
+        .attr("stroke-width",1)
+        .attr("stroke","gray");
+
+    moveable2.append("rect").classed("cutoffhandle", true)
+        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
+        .attr("y",d => -rectwidth/2)
+        .attr("height",d => rectwidth)
+        .attr("width",d => rectwidth)
+        .attr("fill","grey");
+
+    moveable2.call(d3.drag()
+        .on("drag", dragged2));
+
+
 
     function dragged(d) {
         //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
+        if(d3.event.y>cutoff2)d3.event.y=cutoff2;
+        d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
+        cutoff1=d3.event.y;
+        setcutoff1(ctx.y.invert(cutoff1-ctx.margins.top));
+        cutoffchanged();
+
+    }
+
+    function dragged2(d) {
+        //TODO: cleanup
+        if(d3.event.y<cutoff1)d3.event.y=cutoff1;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
-        d3.select(this).attr("y1", d3.event.y).attr("y2", d3.event.y);
-        setcutoff(ctx.y.invert(d3.event.y-ctx.margins.top));
+        d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
+        cutoff2=d3.event.y;
+        setcutoff2(ctx.y.invert(cutoff2-ctx.margins.top));
+        cutoffchanged();
+    }
+
+    function cutoffchanged(){
         reCalculateClusters();
-        state.clustersizes= getClusterSizes();
-        colorScale.domain([0, clustersizes.length-1])
+        state.clustersizes= getClusterSizes(state.output_data);
+        colorScale.domain([0, state.clustersizes.length-1]);
         state.dispatcher.call("size",this,[state.input_data,state.output_data]);
         var rects = d3.select("#reach").select(".data").selectAll(".bar");
         rects.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         var points = d3.select("#density").selectAll(".point");
         if(!points.empty()){
-        points.data(state.output_data)
-            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+            points.data(state.output_data)
+                .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         }
         points = d3.select("#jumps").selectAll(".point");
         points.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
-
-    }
-    function dragended(d) {
-        d3.select(this).classed("active", false);
     }
 } // }}}
 
@@ -250,20 +306,19 @@ function setup_clusters(state) {
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
 
-    draw_clusters(state.output_data, state, ctx);
+    draw_clusters(state.clustersizes, state, ctx);
 
     state.dispatcher.on("data:change.size size", data => {
-        draw_clusters(data[1], state, ctx);
+        draw_clusters(state.clustersizes, state, ctx);
 });
 } // }}}
 
 // draw_clusters {{{
 function draw_clusters(data, state, ctx) {
     var axisleftticks=5;
-    data=state.clustersizes;
     var canvas = d3.select("#size");
 
-    var max=d3.max(data, function(d) { return d; });
+    var max=d3.max(data, function(d) { return d.value; });
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
@@ -272,12 +327,12 @@ function draw_clusters(data, state, ctx) {
     var noiseindex=data.length-1;
     bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
-        .attr("y", d => barbottom-ctx.y(d))
+        .attr("y", d => barbottom-ctx.y(d.value))
         .attr("width", ctx.x.bandwidth())
-        .attr("height", d => ctx.y(d))
+        .attr("height", d => ctx.y(d.value))
         .attr("fill", (d,i) => i==noiseindex?noisecolor:colorScale(i))
         .on("mouseover", function (d) {
-            tooltip.text("Size: "+d);
+            tooltip.text("Size: "+d.value);
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {

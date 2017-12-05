@@ -2,8 +2,8 @@ var eps = 40;
 var minPTS = 4;
 var maxdist = 60;
 var distbetween;
-var cutoff=25;
-var clustersizes;
+var cutoff1=25;
+var cutoff2=25;
 var clusterOrderSave;
 
 function seteps(neweps){
@@ -18,17 +18,28 @@ function setmaxdist(newmaxdist){
 function setdistbetween(newdistbetween) {
     distbetween=newdistbetween;
 }
+
 function setcutoff(newcutoff) {
-    cutoff=newcutoff;
+    cutoff1=newcutoff;
+    cutoff2=newcutoff;
+}
+function setcutoffs(newcutoff1,newcutoff2) {
+    cutoff1=newcutoff1;
+    cutoff2=newcutoff2;
+}
+function setcutoff1(newcutoff) {
+    cutoff1=newcutoff;
+}
+function setcutoff2(newcutoff) {
+    cutoff2=newcutoff;
 }
 
-function getClusterSizes() {
-    return clustersizes;
-}
 
 function getClusterOrder(){
     return clusterOrderSave;
 };
+
+function getcutoff(){return cutoff1;}
 
 //TODO maybe there is a better way?
 Array.prototype.contains = function (obj) {
@@ -119,22 +130,42 @@ function reCalculateClusters(){
 }
 
 function calculateClusters(clusterOrder) {
-    clusterer=[];
-    var datalength= clusterOrder.length;
-    var curindex=0;
-    clusterer[0]=1;
-    for(var i=1;i<datalength;++i) {
-        if (clusterOrder[i].distance > cutoff) {
-            clusterer[++curindex] = 0;
+    if(cutoff1==cutoff2) {
+        var clusterer = [];
+        var datalength = clusterOrder.length;
+        var curindex = 0;
+        clusterer[0] = 1;
+        for (var i = 1; i < datalength; ++i) {
+            if (clusterOrder[i].distance > cutoff1) {
+                clusterer[++curindex] = 0;
+            }
+            ++clusterer[curindex];
         }
-        ++clusterer[curindex];
+        tag(clusterOrder, clusterer);
     }
-    tag(clusterOrder,clusterer);
+    else{
+        var clusterer1 = [];
+        var clusterer2 = [];
+        var datalength = clusterOrder.length;
+        var curindex1 = 0;
+        var curindex2 = 0;
+        clusterer1[0] = 1;
+        clusterer2[0] = 1;
+        for (var i = 1; i < datalength; ++i) {
+            if (clusterOrder[i].distance > cutoff1) {
+                clusterer1[++curindex1] = 0;
+            }
+            if (clusterOrder[i].distance > cutoff2) {
+                clusterer2[++curindex2] = 0;
+            }
+            ++clusterer1[curindex1];
+            ++clusterer2[curindex2];
+        }
+        tag2(clusterOrder, clusterer1,clusterer2);
+    }
 }
 
 function  tag(clusterOrder,clusterer){
-    var curindex=0;
-    var clusters=[];
     var noise=0;
     var index=0;
     for(var i=0;i<clusterer.length;++i) {
@@ -143,14 +174,52 @@ function  tag(clusterOrder,clusterer){
             clusterOrder[index++].tag=-1;
         }
         else {
-            clusters[curindex++] = clusterer[i];
             var count=clusterer[i];
             for(var j=0;j<count;++j)
                 clusterOrder[index++].tag=i-noise;
         }
     }
-    clusters[curindex]=noise;
-    clustersizes=clusters;
+    clusterOrderSave=clusterOrder;
+}
+
+function  tag2(clusterOrder,clusterer1,clusterer2){
+    var noise=0;
+    var index=0;
+    for(var i=0;i<clusterer1.length;++i) {
+        if (clusterer1[i] == 1) {
+            noise++;
+            clusterOrder[index++].tag=-1;
+        }
+        else {
+            var count=clusterer1[i];
+            for(var j=0;j<count;++j)
+                clusterOrder[index++].tag=i-noise;
+        }
+    }
+
+    var noise2=0;
+    var retag=0;
+    var oldtag=-1;
+    index=0;
+    for(var i=0;i<clusterer2.length;++i) {
+        if (clusterer2[i] == 1) {
+            if(oldtag!=clusterOrder[index].tag){retag=i; noise2=0}
+            else{noise2++;}
+            clusterOrder[index].subtag=-1;
+            oldtag=clusterOrder[index].tag
+            ++index;
+        }
+        else {
+            var count=clusterer2[i];
+            if(oldtag!=clusterOrder[index].tag){retag=i; noise2=0}
+            for(var j=0;j<count;++j) {
+                clusterOrder[index].subtag = i - noise2 - retag;
+                ++index;
+            }
+            oldtag=clusterOrder[index].tag
+        }
+    }
+
     clusterOrderSave=clusterOrder;
 }
 
