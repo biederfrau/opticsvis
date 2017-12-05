@@ -29,7 +29,8 @@ function filter(state) {
 
 }
 
-// https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f
+// https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f <- density estimation
+// https://bl.ocks.org/skokenes/a85800be6d89c76c1ca98493ae777572 <- lassoing
 // setup_density {{{
 function setup_density(state) {
     var canvas = d3.select("#density"),
@@ -41,7 +42,7 @@ function setup_density(state) {
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Estimated density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle points.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle points. Drag to select points.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     var x = d3.scaleLinear().range([margins.left, width - margins.right]),
@@ -60,6 +61,11 @@ function setup_density(state) {
     canvas.append("g")
         .classed("legend", true)
         .attr("transform", "translate(" + [width - 100, margins.top] + ")");
+
+    canvas.on("dblclick", () => {
+        var points = canvas.selectAll(".point");
+        points.style("display", points.style("display") == "none" ? null : "none");
+    });
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_density(state.output_data, state, ctx);
@@ -97,21 +103,17 @@ function draw_density(data, state, ctx) {
         .attr("d", d3.geoPath());
 
     contours.exit().remove();
-    canvas.selectAll(".point").remove();
 
-    canvas.on("dblclick", () => {
-        var points = canvas.selectAll(".point");
+    var points = canvas.selectAll(".point").data(data);
 
-        if(points.empty()) {
-            points.data(data)
-                .enter()
-                .append("circle").classed("point", true)
-                .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
-                .attr("r", 4)
-				.attr("stroke-color", "white")
-                .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
-        } else { points.remove(); }
-    });
+    points.enter()
+        .append("circle").classed("point", true)
+        .merge(points)
+        .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+        .attr("r", 4)
+        .attr("stroke-color", "white")
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
+        .style("display", "none");
 
     var legend = d3.legendColor()
         .title("Est. density")
@@ -125,10 +127,23 @@ function draw_density(data, state, ctx) {
 
     canvas.select(".legend").call(legend);
 
+    var lasso = d3.lasso()
+        .closePathSelect(true)
+        .closePathDistance(100)
+        .items(canvas.selectAll(".point"))
+        .targetArea(canvas)
+        .on("end", () => {
+            lasso.selectedItems().attr("r", 8);
+            console.log(lasso.selectedItems().data())
+            lasso.notSelectedItems().attr("r", 4);
+        });
+
+    canvas.call(lasso);
+
     state.dispatcher.call("drawn");
 } // }}}
 
-// draw_reach {{{
+// setup_reach {{{
 function setup_reach(state) {
     var canvas = d3.select("#reach"),
         style = window.getComputedStyle(document.getElementById("reach")),
@@ -138,6 +153,7 @@ function setup_reach(state) {
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
+
 //TODO: adjust x tickmarks
     var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
     y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
@@ -152,14 +168,11 @@ function setup_reach(state) {
 
     state.dispatcher.on("data:change.reach", data => {
         draw_reach(data[1], state, ctx);
-});
-    var interactioncanvas=canvas.append("g").classed("interaction", true);
+    });
 
+    var interactioncanvas=canvas.append("g").classed("interaction", true);
     var barbottom=ctx.height-ctx.margins.bottom;
     var max=d3.max(state.output_data, function(d) { return d.distance; });
-
-    var max=d3.max(state.output_data, function(d) { return d.distance; });
-
 
     const rectwidth=12;
 
@@ -214,7 +227,6 @@ function setup_reach(state) {
         cutoff1=d3.event.y;
         setcutoff1(ctx.y.invert(cutoff1-ctx.margins.top));
         cutoffchanged();
-
     }
 
     function dragged2(d) {
@@ -231,15 +243,20 @@ function setup_reach(state) {
         reCalculateClusters();
         state.clustersizes= getClusterSizes(state.output_data);
         colorScale.domain([0, state.clustersizes.length-1]);
+
+        console.log(state.output_data);
         state.dispatcher.call("size",this,[state.input_data,state.output_data]);
+
         var rects = d3.select("#reach").select(".data").selectAll(".bar");
         rects.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+
         var points = d3.select("#density").selectAll(".point");
         if(!points.empty()){
             points.data(state.output_data)
                 .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
         }
+
         points = d3.select("#jumps").selectAll(".point");
         points.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
