@@ -104,7 +104,7 @@ function draw_density(data, state, ctx) {
 
     var legend = d3.legendColor()
         .shapeWidth(20)
-        .cells(30)
+        .cells(Math.floor(ctx.height / 20))
         .orient("vertical")
         .labelFormat(d3.format(".04f"))
         .ascending(true)
