@@ -120,6 +120,8 @@ function draw_density(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .style("display", "none");
 
+    points.exit().remove();
+
     var legend = d3.legendColor()
         .title("Est. density")
         .shapeWidth(20)
