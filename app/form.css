@@ -1,0 +1,45 @@
+div#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+label {
+    display: inline-block;
+    width: 15em;
+    text-align: left;
+}
+
+.params input, select {
+    font-size: 1em;
+    width: 15rem;
+}
+
+.params input[type=file] {
+    background-color: #efefef;
+}
+
+.params input[type=submit] {
+    margin-top: 1em;
+}
+
+button#back-butt {
+    margin: 1em;
+    margin-bottom: 0em;
+}
+
+div#top-bar {
+    height: 3em;
+    /* background-color: #efefef; */
+    width: 100vw;
+    position: absolute;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+}
+
+span#title {
+    padding-top: 1em;
+}

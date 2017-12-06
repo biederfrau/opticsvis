@@ -73,6 +73,10 @@ function setup_density(state) {
     state.dispatcher.on("data:change.density", data => {
         draw_density(data[1], state, ctx);
     });
+
+    state.dispatcher.on("detail:bandwidth.density", data => {
+        draw_density(state.output_data, state, ctx);
+    });
 } // }}}
 
 // draw_density {{{
@@ -89,7 +93,8 @@ function draw_density(data, state, ctx) {
     var densityEstimator = d3.contourDensity()
         .x(d => ctx.x(d[0]))
         .y(d => ctx.y(d[1]))
-        .size([ctx.width, ctx.height]);
+        .size([ctx.width, ctx.height])
+        .bandwidth(state.density_map_bandwidth);
 
     var estimated = densityEstimator(data),
         contours = canvas.select(".contours-bg").selectAll(".contour").data(estimated);
@@ -557,7 +562,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "size"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "detail:bandwidth", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
@@ -572,6 +577,7 @@ function do_the_things() {//{{{
                 }
             });
         },
+        density_map_bandwidth: 20
     };
 
     // ui crap {{{
@@ -611,7 +617,22 @@ function do_the_things() {//{{{
 
         compute(data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
-    }); // }}}
+    });
+
+    $("input#bandwidth").on("change", function() {
+        state.density_map_bandwidth = +$(this).val();
+        $("span#bandwidth-cur").text(state.density_map_bandwidth);
+        state.dispatcher.call("detail:bandwidth");
+    });
+
+    $("input#minpts").on("change", function() {
+        console.log($(this).val())
+    });
+
+    $("input#eps").on("change", function() {
+        console.log($(this).val())
+    });
+    // }}}
 
     // state.thinking(5);
     var ssv = d3.dsvFormat(" ");
