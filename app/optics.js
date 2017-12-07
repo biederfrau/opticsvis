@@ -2,8 +2,8 @@ var eps = 40;
 var minPTS = 4;
 var maxdist = 60;
 var distbetween;
-var cutoff1=25;
-var cutoff2=25;
+var cutoff1=20;
+var cutoff2=15;
 var clusterOrderSave;
 
 function seteps(neweps){
@@ -260,7 +260,12 @@ function query(input, range, start, distances) {
 
 }
 
-distbetween=function(a, b) {
-    //TODO: maybe change this?
+function euclidian(a, b) {
+    return Math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2);
+}
+
+function manhattan(a, b) {
     return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1])
 }
+
+distbetween=euclidian;

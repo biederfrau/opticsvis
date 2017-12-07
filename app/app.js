@@ -307,6 +307,7 @@ function draw_reach(data, state, ctx) {
         .attr("height", d => ctx.y(d.distance))
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
+            state.dispatcher.call("hover:bar", this, d);
             tooltip.text("Reachability Distance: "+d.distance);
             return tooltip.style("visibility", "visible");
         })
@@ -315,13 +316,14 @@ function draw_reach(data, state, ctx) {
                 (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
         })
         .on("mouseout", function () {
+            state.dispatcher.call("hover:bar", this, null);
             return tooltip.style("visibility", "hidden");
         });
     bars.exit().remove();
 
     ctx.y.domain([max,0])
     canvas=d3.select("#reach");
-    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(""));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
     state.dispatcher.call("drawn");
@@ -355,6 +357,7 @@ function setup_clusters(state) {
 
 // draw_clusters {{{
 function draw_clusters(data, state, ctx) {
+    data.sort(d => +d.key === -1 ? 1 : 0); // keep noise at last index
     var axisleftticks=5;
     var canvas = d3.select("#size");
 
@@ -395,14 +398,14 @@ function draw_clusters(data, state, ctx) {
 function setup_jumps(state) {
     var canvas = d3.select("#jumps"),
         style = window.getComputedStyle(document.getElementById("jumps")),
-        margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
+        margins = {"left": 55, "right": 55, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
-        .text("Jump Path").style("font-weight", "bold").attr("text-anchor", "middle");
+        .text("Jump paths").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Placeholder")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Hover over the bars in the reachability plot to trace the algorithm.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     var x = d3.scaleLinear().range([margins.left, width - margins.right]),
@@ -411,10 +414,42 @@ function setup_jumps(state) {
     canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, 0] + ")");
 
+    canvas.append("defs").append("clipPath")
+        .attr("id", "clip-jumps")
+        .append("svg:rect")
+        .attr("width", width - margins.left - margins.right + 5)
+        .attr("transform", "translate(" + [margins.left, margins.top] + ")")
+        .attr("height", height - margins.top - margins.bottom);
+
+    var zoomarea = canvas.append("g").classed("zoomarea", true).attr("clip-path", "url(#clip-jumps)");
+
+    canvas.append("rect")
+        .attr("width", width - margins.left - margins.right)
+        .attr("height", height - margins.top - margins.bottom)
+        .style("opacity", 0)
+        .style("pointer-events", "all")
+        .attr("transform", "translate(" + [margins.left, margins.top] + ")")
+        .call(d3.zoom().scaleExtent([1, 10]).on("zoom", () => {
+            canvas.selectAll(".point, .jumppath").attr("transform", d3.event.transform);
+
+            var new_x = d3.event.transform.rescaleX(x),
+                new_y = d3.event.transform.rescaleY(y);
+
+            canvas.select(".xaxis").call(d3.axisBottom(new_x));
+            canvas.select(".yaxis").call(d3.axisLeft(new_y));
+        }));
+
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
     draw_jumps(state.output_data, state, ctx);
     state.dispatcher.on("data:change.jumps", data => {
-        draw_jumps(data[1], state, ctx);});
+        draw_jumps(data[1], state, ctx);
+    });
+
+    state.dispatcher.on("hover:bar", row => {
+        var jumppaths = canvas.selectAll(".jumppath");
+        if(row === null) { jumppaths.style("stroke-width", null); return; }
+        jumppaths.filter(d => d === row).style("stroke-width", "3px");
+    });
 } // }}}
 
 // draw_jumps {{{
@@ -428,7 +463,7 @@ function draw_jumps(data, state,ctx) {
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
-    var points = canvas.selectAll(".point").data(data);
+    var points = canvas.select(".zoomarea").selectAll(".point").data(data);
 
     points.enter()
         .append("circle").classed("point", true).merge(points)
@@ -438,7 +473,7 @@ function draw_jumps(data, state,ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
     points.exit().remove();
 
-    var jumppaths=canvas.selectAll(".jumppath").data(data);
+    var jumppaths=canvas.select(".zoomarea").selectAll(".jumppath").data(data);
 
     jumppaths
         .enter()
@@ -584,7 +619,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "detail:bandwidth", "size"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "hover:bar", "detail:bandwidth", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
