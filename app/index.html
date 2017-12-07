@@ -109,14 +109,23 @@
         Use the inputs below to change the settings. Changes occur immediately or on enter/defocus.
         </p>
         <form id="settings-form" class="params" onsubmit="return false;">
-          <div class="visible block">
+          <div class="visible block" id="minpts-div">
             <label for="minpts">Minimum points for core</label>
-            <input id="minpts" type="number" placeholder="min pts"/>
+            <input id="minpts" type="range" min="1" step="1" placeholder="min pts" list="ticks"/>
+            (<span id="minpts-cur"></span>)
+
+            <datalist id="ticks">
+            </datalist>
           </div>
 
           <div class="visible block">
-            <label for="eps">Maximum neighbor distance</label>
+            <label for="eps">Maximum neighbor distance (eps)</label>
             <input id="eps" type="number" placeholder="(max) eps"/>
+          </div>
+
+          <div class="visible block">
+            <label for="inf">Faux Infinity (max distance)</label>
+            <input id="inf" type="number" placeholder="(max) eps"/>
           </div>
 
           <div class="visible block">

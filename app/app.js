@@ -118,7 +118,9 @@ function draw_density(data, state, ctx) {
         .attr("r", 4)
         .attr("stroke-color", "white")
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
-        .style("display", "none");
+        .style("display", "none")
+        .on("mouseenter", d => { state.dispatcher.call("hover:point", this, d); })
+        .on("mouseleave", d => { state.dispatcher.call("hover:point", this, [null, null]); });
 
     points.exit().remove();
 
@@ -141,8 +143,9 @@ function draw_density(data, state, ctx) {
         .targetArea(canvas)
         .on("end", () => {
             lasso.selectedItems().attr("r", 8);
-            console.log(lasso.selectedItems().data())
             lasso.notSelectedItems().attr("r", 4);
+
+            state.dispatcher.call("select:points", this, lasso.selectedItems().data());
         });
 
     canvas.call(lasso);
@@ -175,6 +178,24 @@ function setup_reach(state) {
 
     state.dispatcher.on("data:change.reach", data => {
         draw_reach(data[1], state, ctx);
+    });
+
+    state.dispatcher.on("select:points.reach", points => {
+        var bars = canvas.selectAll(".bar");
+        if(points.length == 0) { bars.classed("not-highlighted", false); return; }
+
+        bars.classed("not-highlighted", true);
+        bars.filter(d => _.find(points, x => x[0] == d[0] && x[1] == d[1])).classed("not-highlighted", false);
+    });
+
+    state.dispatcher.on("hover:point.reach", p => {
+        var bars = canvas.selectAll(".bar");
+        bars.classed("framed", false);
+        bars.style("opacity", null);
+
+        var framed_bars = bars.filter(d => d[0] == p[0] && d[1] == p[1]).classed("framed", true);
+
+        if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
     var interactioncanvas=canvas.append("g").classed("interaction", true);
@@ -251,7 +272,6 @@ function setup_reach(state) {
         state.clustersizes= getClusterSizes(state.output_data);
         colorScale.domain([0, state.clustersizes.length-1]);
 
-        console.log(state.output_data);
         state.dispatcher.call("size",this,[state.input_data,state.output_data]);
 
         var rects = d3.select("#reach").select(".data").selectAll(".bar");
@@ -349,7 +369,7 @@ function draw_clusters(data, state, ctx) {
         .attr("y", d => barbottom-ctx.y(d.value))
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d.value))
-        .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(i))
+        .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(d.key))
         .on("mouseover", function (d) {
             tooltip.text("Size: "+d.value);
             return tooltip.style("visibility", "visible");
@@ -564,7 +584,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "detail:bandwidth", "size"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "detail:bandwidth", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
@@ -627,12 +647,34 @@ function do_the_things() {//{{{
         state.dispatcher.call("detail:bandwidth");
     });
 
-    $("input#minpts").on("change", function() {
-        console.log($(this).val())
+    $("input#minpts").attr("value", minPTS);
+    $("span#minpts-cur").text(minPTS);
+
+    $("input#minpts").on("input", function() {
+        $("span#minpts-cur").text(+$(this).val());
     });
 
+    $("input#minpts").on("change", function() {
+        if($(this).val() === "") { return; }
+        setminPTS(+$(this).val());
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
+    });
+
+    $("input#eps").val(eps);
     $("input#eps").on("change", function() {
-        console.log($(this).val())
+        if($(this).val() === "") { return; }
+        seteps(+$(this).val());
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
+    });
+
+    $("input#inf").val(maxdist);
+    $("input#inf").on("change", function() {
+        if($(this).val() === "") { return; }
+        setmaxdist(+$(this).val());
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
     // }}}
 
@@ -651,6 +693,12 @@ function do_the_things() {//{{{
             setup_clusters(state);
             setup_jumps(state);
             setup_heat(state);
+
+            $("input#minpts").attr("max", state.input_data.length);
+            var datalist = $("#minpts-div datalist");
+            for(i = 1; i < state.input_data.length; ++i) {
+                datalist.append('<option value="' + i + '"' + (i % 5 === 0 ? 'label="' + i + '"' : '') + '>');
+            }
     });
 }//}}}
 // vim: set ts=4 sw=4 tw=0 et :
