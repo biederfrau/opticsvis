@@ -174,6 +174,48 @@ function setup_reach(state) {
     canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, ctx.height - ctx.margins.bottom] + ")");
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
 
+    var interactioncanvas=canvas.append("g").classed("interaction", true);
+    var moveable2=interactioncanvas.append("g").classed("moveable2",true);
+    var moveable1=interactioncanvas.append("g").classed("moveable1",true);
+
+    const rectwidth=12;
+
+    moveable2
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => 0)
+        .attr("y1",d => 0)
+        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
+        .attr("y2",d => 0)
+        .attr("stroke-width",1)
+        .attr("stroke","gray");
+
+    moveable2.append("rect").classed("cutoffhandle", true)
+        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
+        .attr("y",d => -rectwidth/2)
+        .attr("height",d => rectwidth)
+        .attr("width",d => rectwidth)
+        .attr("fill","grey");
+
+    moveable2.call(d3.drag()
+        .on("drag", dragged2));
+
+
+    moveable1
+        .append("line").classed("cutoff", true)
+        .attr("x1",d => 0)
+        .attr("y1",d => 0)
+        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y2",d => 0)
+        .attr("stroke-width",1)
+        .attr("stroke","black");
+
+    moveable1.append("rect").classed("cutoffhandle", true)
+        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left)
+        .attr("y",d => -rectwidth/2)
+        .attr("height",d => rectwidth)
+        .attr("width",d => rectwidth)
+        .attr("fill", "black");
+
     draw_reach(state.output_data, state, ctx);
 
     state.dispatcher.on("data:change.reach", data => {
@@ -198,54 +240,14 @@ function setup_reach(state) {
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
-    var interactioncanvas=canvas.append("g").classed("interaction", true);
-    var barbottom=ctx.height-ctx.margins.bottom;
-    var max=d3.max(state.output_data, function(d) { return d.distance; });
-
-    const rectwidth=12;
-
-    var cutoff1=barbottom-ctx.y(max-getcutoff());
-    var cutoff2=cutoff1;
-
-    var moveable2=interactioncanvas.append("g").classed("moveable2",true);
-    moveable2.attr("transform", "translate(" + [ctx.margins.left, cutoff2] + ")")
-        .append("line").classed("cutoff", true)
-        .attr("x1",d => 0)
-        .attr("y1",d => 0)
-        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
-        .attr("y2",d => 0)
-        .attr("stroke-width",1)
-        .attr("stroke","gray");
-
-    moveable2.append("rect").classed("cutoffhandle", true)
-        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left+rectwidth)
-        .attr("y",d => -rectwidth/2)
-        .attr("height",d => rectwidth)
-        .attr("width",d => rectwidth)
-        .attr("fill","grey");
-
-    moveable2.call(d3.drag()
-        .on("drag", dragged2));
-
-    var moveable1=interactioncanvas.append("g").classed("moveable1",true);
-    moveable1.attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
-        .append("line").classed("cutoff", true)
-        .attr("x1",d => 0)
-        .attr("y1",d => 0)
-        .attr("x2",d => ctx.width-ctx.margins.right-ctx.margins.left)
-        .attr("y2",d => 0)
-        .attr("stroke-width",1)
-        .attr("stroke","black");
-
-    moveable1.append("rect").classed("cutoffhandle", true)
-        .attr("x",d => ctx.width-ctx.margins.right-ctx.margins.left)
-        .attr("y",d => -rectwidth/2)
-        .attr("height",d => rectwidth)
-        .attr("width",d => rectwidth)
-        .attr("fill", "black");
-
     moveable1.call(d3.drag()
         .on("drag", dragged));
+
+
+    var barbottom=ctx.height-ctx.margins.bottom;
+    var max=d3.max(state.output_data, function(d) { return d.distance; });
+    var cutoff1=barbottom-ctx.y(max-getcutoff1());
+    var cutoff2=barbottom-ctx.y(max-getcutoff2());
 
     function dragged(d) {
         //TODO: cleanup
@@ -292,6 +294,7 @@ function setup_reach(state) {
 
 // draw_reach {{{
 function draw_reach(data, state, ctx) {
+
     var canvas = d3.select("#reach").select(".data");
 
     var max=d3.max(data, function(d) { return d.distance; });
@@ -325,6 +328,12 @@ function draw_reach(data, state, ctx) {
     canvas=d3.select("#reach");
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(""));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
+
+    var cutoff1=barbottom-ctx.y(max-getcutoff1());
+    var cutoff2=barbottom-ctx.y(max-getcutoff2());
+
+    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, cutoff2] + ")")
+    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
 
     state.dispatcher.call("drawn");
 } // }}}

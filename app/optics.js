@@ -39,7 +39,8 @@ function getClusterOrder(){
     return clusterOrderSave;
 };
 
-function getcutoff(){return cutoff1;}
+function getcutoff1(){return cutoff1;}
+function getcutoff2(){return cutoff2;}
 
 //TODO maybe there is a better way?
 Array.prototype.contains = function (obj) {
