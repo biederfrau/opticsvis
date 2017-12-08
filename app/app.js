@@ -498,6 +498,7 @@ function draw_jumps(data, state,ctx) {
 } // }}}
 
 // setup_heat {{{
+var datacount;
 function setup_heat(state) {
     var closecolor="#000066";
     var distantcolor="#E6F3FF";
@@ -526,11 +527,16 @@ function setup_heat(state) {
             .attr("height",innerheight)
         ;
 
+    var brush=d3.brush().extent([[0,0],[width,height]]).on("brush", brushed).on("end", brushed);;
+    var interactioncanvas=canvas.append("g").classed("brushinteraction", true);
+    interactioncanvas.call(brush);
+    var zoomtransform;
     zoom = d3.zoom()
         .scaleExtent([1, 20])
         .on("zoom", 	function() {
                 var e = d3.event;
-
+                zoomtransform=e.transform;
+            interactioncanvas.call(brush.move, null);
                 e.transform.x = Math.min(0, Math.max(e.transform.x, ctx.width - ctx.width * e.transform.k)),
                     e.transform.y = Math.min(0, Math.max(e.transform.y, ctx.height - ctx.height * e.transform.k));
                 /*
@@ -543,7 +549,41 @@ function setup_heat(state) {
             }
         );
 
+
+
     canvas.call(zoom);
+    function brushed(){
+        var s = d3.event.selection;
+        if(s==null)return;
+        var range;
+        var transformed;
+        if(zoomtransform==null){
+            transformed=false;
+            range=s;
+        }
+        else{
+            transformed=true;
+            range=[zoomtransform.invert(s[0]),zoomtransform.invert(s[1])];
+            console.log(range)
+        }
+
+        range[0][0]-=margins.left;
+        range[0][1]-=margins.top;
+        range[1][0]-=margins.left;
+        range[1][1]-=margins.top;
+        var rectwidth=innerwidth/datacount;
+        var rectheight=innerheight/datacount;
+
+        var index1=Math.min((Math.floor(range[0][0]/rectwidth)),(datacount-Math.floor(range[1][1]/rectheight)))
+        var index2=Math.max((Math.floor(range[1][0]/rectwidth)),(datacount-Math.floor(range[0][1]/rectheight)))
+        index1=index1<0?0:index1;
+        index2=index2>datacount?datacount:index2;
+        console.log(datacount)
+        console.log(index1);
+        console.log(index2);
+
+
+    };
 
     var legendwidth=30;
     var disttomap=10;
@@ -586,6 +626,7 @@ function draw_heat(data, state,ctx) {
     ctx.y.domain([0,data.max]);
     ctx.color.domain([0,data.max])
 	var count=data.length;
+    datacount=count;
 	var rheight=ctx.innerheight/count;
 	var rwidth= ctx.innerwidth/count;
 
