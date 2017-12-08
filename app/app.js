@@ -527,7 +527,7 @@ function setup_heat(state) {
             .attr("height",innerheight)
         ;
 
-    var brush=d3.brush().extent([[0,0],[width,height]]).on("brush", brushed).on("end", brushed);;
+    var brush=d3.brush().extent([[0,0],[width,height]]).on("brush", brushed).on("end",brushend);
     var interactioncanvas=canvas.append("g").classed("brushinteraction", true);
     interactioncanvas.call(brush);
     var zoomtransform;
@@ -536,7 +536,8 @@ function setup_heat(state) {
         .on("zoom", 	function() {
                 var e = d3.event;
                 zoomtransform=e.transform;
-            interactioncanvas.call(brush.move, null);
+            //TODO:maybe calling this every time is expensive (and useless)
+                interactioncanvas.call(brush.move, null);
                 e.transform.x = Math.min(0, Math.max(e.transform.x, ctx.width - ctx.width * e.transform.k)),
                     e.transform.y = Math.min(0, Math.max(e.transform.y, ctx.height - ctx.height * e.transform.k));
                 /*
@@ -552,9 +553,16 @@ function setup_heat(state) {
 
 
     canvas.call(zoom);
+    var endbrush=false;
     function brushed(){
+
         var s = d3.event.selection;
-        if(s==null)return;
+        if(s===null)return;
+
+        if(endbrush){
+            endbrush=false;
+            return;}
+
         var range;
         var transformed;
         if(zoomtransform==null){
@@ -564,7 +572,6 @@ function setup_heat(state) {
         else{
             transformed=true;
             range=[zoomtransform.invert(s[0]),zoomtransform.invert(s[1])];
-            console.log(range)
         }
 
         range[0][0]-=margins.left;
@@ -574,16 +581,33 @@ function setup_heat(state) {
         var rectwidth=innerwidth/datacount;
         var rectheight=innerheight/datacount;
 
-        var index1=Math.min((Math.floor(range[0][0]/rectwidth)),(datacount-Math.floor(range[1][1]/rectheight)))
-        var index2=Math.max((Math.floor(range[1][0]/rectwidth)),(datacount-Math.floor(range[0][1]/rectheight)))
+        var index1=Math.min((Math.floor(range[0][0]/rectwidth)),(datacount-Math.floor(range[1][1]/rectheight)));
+        index1=Math.min(datacount,index1);
+        var index2=Math.max((Math.floor(range[1][0]/rectwidth)),(datacount-Math.floor(range[0][1]/rectheight)));
+        index2=Math.max(0,index2);
         index1=index1<0?0:index1;
         index2=index2>datacount?datacount:index2;
-        console.log(datacount)
         console.log(index1);
         console.log(index2);
+            endbrush=true;
+            interactioncanvas.call(brush.move,
+                [ [ ((index1) * rectwidth)+margins.left,(innerheight - ((index2) * (rectheight)))+margins.top],
+                    [((index2) * rectwidth)+margins.left,(innerheight - ((index1) * (rectheight)))+margins.top]
+                   ]);
+
+        //TODO: set highlight index1=first selected index && index2-1=last selected index
+        //TODO: if(index1>index2-1)=> nothing selected/invalid selection
 
 
     };
+
+    function brushend(){
+        var s = d3.event.selection;
+        if(s===null) {
+            console.log("brush removed");
+            //TODO:remove highlights
+        }
+    }
 
     var legendwidth=30;
     var disttomap=10;
