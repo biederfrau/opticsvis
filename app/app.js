@@ -250,20 +250,28 @@ function setup_reach(state) {
     function dragged(d) {
         //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
-        if(d3.event.y>scutoff2)d3.event.y=scutoff2;
+        if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
+        if(d3.event.y>scutoff2){
+            moveable2.attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
+            scutoff2=d3.event.y;
+        }
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
         scutoff1=d3.event.y;
-        setcutoff1(ctx.y.invert(scutoff1-ctx.margins.top));
+        setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
         cutoffchanged();
     }
 
     function dragged2(d) {
         //TODO: cleanup
-        if(d3.event.y<scutoff1)d3.event.y=scutoff1;
+        if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
+        if(d3.event.y<scutoff1){
+            moveable1.attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
+            scutoff1=d3.event.y;
+        }
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
         scutoff2=d3.event.y;
-        setcutoff2(ctx.y.invert(scutoff2-ctx.margins.top));
+        setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
         cutoffchanged();
     }
 
