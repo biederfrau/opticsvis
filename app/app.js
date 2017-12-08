@@ -80,6 +80,8 @@ function setup_density(state) {
 } // }}}
 
 // draw_density {{{
+
+
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateYlGnBu);
@@ -154,6 +156,8 @@ function draw_density(data, state, ctx) {
 } // }}}
 
 // setup_reach {{{
+var scutoff1;
+var scutoff2;
 function setup_reach(state) {
     var canvas = d3.select("#reach"),
         style = window.getComputedStyle(document.getElementById("reach")),
@@ -243,29 +247,23 @@ function setup_reach(state) {
     moveable1.call(d3.drag()
         .on("drag", dragged));
 
-
-    var barbottom=ctx.height-ctx.margins.bottom;
-    var max=d3.max(state.output_data, function(d) { return d.distance; });
-    var cutoff1=barbottom-ctx.y(max-getcutoff1());
-    var cutoff2=barbottom-ctx.y(max-getcutoff2());
-
     function dragged(d) {
         //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
-        if(d3.event.y>cutoff2)d3.event.y=cutoff2;
+        if(d3.event.y>scutoff2)d3.event.y=scutoff2;
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
-        cutoff1=d3.event.y;
-        setcutoff1(ctx.y.invert(cutoff1-ctx.margins.top));
+        scutoff1=d3.event.y;
+        setcutoff1(ctx.y.invert(scutoff1-ctx.margins.top));
         cutoffchanged();
     }
 
     function dragged2(d) {
         //TODO: cleanup
-        if(d3.event.y<cutoff1)d3.event.y=cutoff1;
+        if(d3.event.y<scutoff1)d3.event.y=scutoff1;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
-        cutoff2=d3.event.y;
-        setcutoff2(ctx.y.invert(cutoff2-ctx.margins.top));
+        scutoff2=d3.event.y;
+        setcutoff2(ctx.y.invert(scutoff2-ctx.margins.top));
         cutoffchanged();
     }
 
@@ -329,11 +327,11 @@ function draw_reach(data, state, ctx) {
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x).tickFormat(""));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
-    var cutoff1=barbottom-ctx.y(max-getcutoff1());
-    var cutoff2=barbottom-ctx.y(max-getcutoff2());
+    scutoff1=barbottom-ctx.y(max-getcutoff1());
+    scutoff2=barbottom-ctx.y(max-getcutoff2());
 
-    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, cutoff2] + ")")
-    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, cutoff1] + ")")
+    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
+    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
 
     state.dispatcher.call("drawn");
 } // }}}
