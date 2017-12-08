@@ -590,10 +590,19 @@ function setup_heat(state) {
         console.log(index1);
         console.log(index2);
             endbrush=true;
+        if(zoomtransform==null){
             interactioncanvas.call(brush.move,
                 [ [ ((index1) * rectwidth)+margins.left,(innerheight - ((index2) * (rectheight)))+margins.top],
                     [((index2) * rectwidth)+margins.left,(innerheight - ((index1) * (rectheight)))+margins.top]
-                   ]);
+                ]);
+        }
+        else{
+            interactioncanvas.call(brush.move,
+                [ [ zoomtransform.applyX(((index1) * rectwidth)+margins.left),zoomtransform.applyY((innerheight - ((index2) * (rectheight)))+margins.top)],
+                    [zoomtransform.applyX(((index2) * rectwidth)+margins.left),zoomtransform.applyY((innerheight - ((index1) * (rectheight)))+margins.top)]
+                ]);
+        }
+
 
         //TODO: set highlight index1=first selected index && index2-1=last selected index
         //TODO: if(index1>index2-1)=> nothing selected/invalid selection
