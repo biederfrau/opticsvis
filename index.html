@@ -896,13 +896,13 @@
         We implemented sliders for all parameters for which they make sense. With Epsilon and the Max Distance it didn't,
         because those parameters are not caped.<br/><br/>
         Data sets:<br/>
-        For now we decided to  stick with 2-Dimensional data with a default data set, that can be swapped out for a user
+        For now we decided to stick with 2-Dimensional data and a default data set, that can be swapped out for a user
         defined data set. Often the clusters may be visually obvious to the user, but our goal is to show what the algorithm
         finds with which parameter set.<br/><br/>
         Pie Chart:<br/>
         We decided to not use a pie chart. It would have been hard to read and not given any benefit over the small bar
         chart, that we implemented for a quick overview.<br/><br/>
-        2D-Projection<br/>
+        2D-Projection:<br/>
         Our idea was to allow to only show 2 selected dimensions. This would have given the user the possibility to
         explore different dimensions and he could see which of those already give nice visual clusters.
         For now we did not implement this, because it does not add any educational benefit and only makes it harder to
@@ -910,16 +910,16 @@
         Heat-Map:<br/>
         The heat-map shows how far points are away from each other (their real distance color coded). In general the
         algorithm works with reachability distance, that differs from the actual distance between two points. The idea
-        is, that if OPTICS worked well points close by(in the output) should also be close to each other. Therefor the
-        heat-map gives a good idea about clusters and sub clusters without even looking at the data set. This would even
-        work for multi dimensional data and data in a non euclidean space.<br/><br/>
+        is, that if OPTICS worked well points close by(in the output) should also be close to each other(real distance).
+        Therefor the heat-map gives a good idea about clusters and sub clusters without even looking at the data set.
+        This would even work for multi dimensional data and data in a non euclidean space.<br/><br/>
         Bubble charts:<br/>
         More fun is really not enough to justify this chart. We found it not as intuitive as what we settled for and
         therefor dropped this idea.<br/><br/>
         Points classified over time:<br/>
         The idea would have been to show the runtime complexity by visualizing how many points were put through the algorithm
         after how much time. Our focus was on exploring the output and usefulness of the algorithm though, which is the
-        reason we decided against this chart.
+        reason why we decided against this chart.
       </section>
       <section>
         <h3>Example use</h3>
