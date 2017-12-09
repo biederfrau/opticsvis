@@ -166,3 +166,7 @@ textarea {
 #size .bar:hover {
     opacity: 0.7;
 }
+
+#reach .bar:hover {
+    opacity: 0.7;
+}
