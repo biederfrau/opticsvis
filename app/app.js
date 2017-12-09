@@ -255,22 +255,11 @@ function setup_reach(state) {
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
-    state.dispatcher.on("select:region.reach", p => {
-        //TODO: was this what you wanted?
-        var bars = canvas.selectAll(".bar");
-        bars.classed("framed2", false);
-        bars.style("opacity", null);
-    if(p==null)return;
-
-    var framed_bars = bars.filter((d,i) => i >= p[0] && i <= p[1]).classed("framed2", true);
-
-    if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed2).not-highlighted").style("opacity", 0.3)
-});
-
     moveable1.call(d3.drag()
         .on("drag", dragged));
 
     function dragged(d) {
+        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y>scutoff2){
@@ -284,6 +273,7 @@ function setup_reach(state) {
     }
 
     function dragged2(d) {
+        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y<scutoff1){
@@ -596,7 +586,7 @@ function setup_heat(state) {
 	var data=state.output_data;
 
 	var style = window.getComputedStyle(document.getElementById("heat")),
-        margins = {"left": 20, "right": 80, "top": 50, "bottom": 20},
+        margins = {"left": 20, "right": 80, "top": 20, "bottom": 20},
         width = parseFloat(style.width),
         height = parseFloat(style.height),
         color = d3.scaleLinear()
@@ -608,11 +598,6 @@ function setup_heat(state) {
     var innerwidth=width-margins.left-margins.right;
 
     var canvas = d3.select("#heat");
-    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
-        .text("Symetric Heat-Map").style("font-weight", "bold").attr("text-anchor", "middle");
-
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Actual distance between Points, ordered by the OPTICS output")
-        .style("font-size", "12px").attr("text-anchor", "middle");
 
     var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
             .classed("heatmapcanvas", true)
@@ -697,7 +682,7 @@ function setup_heat(state) {
                 ]);
         }
 
-        state.dispatcher.call("select:region",this,[index1,index2-1]);
+
         //TODO: set highlight index1=first selected index && index2-1=last selected index
         //TODO: if(index1>index2-1)=> nothing selected/invalid selection
 
@@ -779,7 +764,6 @@ function draw_heat(data, state,ctx) {
 				.attr("height",rheight)
                 .attr("fill", d=>ctx.color(d))
 				.attr("stroke","transparent");
-    /*
     heatmapcanvas.selectAll(".rect")
                 .on("mouseover", function (d) {
                     tooltip.text("Distance: "+d);
@@ -792,7 +776,6 @@ function draw_heat(data, state,ctx) {
                 .on("mouseout", function () {
                     return tooltip.style("visibility", "hidden");
                 });
-     */
 
     canvas.select(".yaxis").call(d3.axisRight(ctx.y));
 
