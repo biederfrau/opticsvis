@@ -259,7 +259,6 @@ function setup_reach(state) {
         .on("drag", dragged));
 
     function dragged(d) {
-        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y>scutoff2){
@@ -273,7 +272,6 @@ function setup_reach(state) {
     }
 
     function dragged2(d) {
-        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y<scutoff1){
@@ -635,9 +633,7 @@ function setup_heat(state) {
             }
         );
 
-
-
-    // canvas.call(zoom);
+    //canvas.call(zoom);
     var endbrush=false,
         index1, index2;
     function brushed(){
@@ -686,12 +682,6 @@ function setup_heat(state) {
                     [zoomtransform.applyX(((index2) * rectwidth)+margins.left),zoomtransform.applyY((innerheight - ((index1) * (rectheight)))+margins.top)]
                 ]);
         }
-
-
-        //TODO: set highlight index1=first selected index && index2-1=last selected index
-        //TODO: if(index1>index2-1)=> nothing selected/invalid selection
-
-
     };
 
     function brushend(){
@@ -769,6 +759,7 @@ function draw_heat(data, state,ctx) {
 				.attr("height",rheight)
                 .attr("fill", d=>ctx.color(d))
 				.attr("stroke","transparent");
+    /*
     heatmapcanvas.selectAll(".rect")
                 .on("mouseover", function (d) {
                     tooltip.text("Distance: "+d);
@@ -781,6 +772,7 @@ function draw_heat(data, state,ctx) {
                 .on("mouseout", function () {
                     return tooltip.style("visibility", "hidden");
                 });
+                */
 
     canvas.select(".yaxis").call(d3.axisRight(ctx.y));
 
