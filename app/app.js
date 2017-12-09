@@ -514,7 +514,7 @@ function setup_heat(state) {
 	var data=state.output_data;
 
 	var style = window.getComputedStyle(document.getElementById("heat")),
-        margins = {"left": 20, "right": 80, "top": 20, "bottom": 20},
+        margins = {"left": 20, "right": 80, "top": 50, "bottom": 20},
         width = parseFloat(style.width),
         height = parseFloat(style.height),
         color = d3.scaleLinear()
@@ -526,6 +526,11 @@ function setup_heat(state) {
     var innerwidth=width-margins.left-margins.right;
 
     var canvas = d3.select("#heat");
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
+        .text("Symetric Heat-Map").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Actual distance between Points, ordered by the OPTICS output")
+        .style("font-size", "12px").attr("text-anchor", "middle");
 
     var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
             .classed("heatmapcanvas", true)
@@ -595,8 +600,8 @@ function setup_heat(state) {
         index2=Math.max(0,index2);
         index1=index1<0?0:index1;
         index2=index2>datacount?datacount:index2;
-        console.log(index1);
-        console.log(index2);
+       // console.log(index1);
+       // console.log(index2);
             endbrush=true;
         if(zoomtransform==null){
             interactioncanvas.call(brush.move,
@@ -688,6 +693,7 @@ function draw_heat(data, state,ctx) {
 				.attr("height",rheight)
                 .attr("fill", d=>ctx.color(d))
 				.attr("stroke","transparent");
+    /*
     heatmapcanvas.selectAll(".rect")
                 .on("mouseover", function (d) {
                     tooltip.text("Distance: "+d);
@@ -700,6 +706,7 @@ function draw_heat(data, state,ctx) {
                 .on("mouseout", function () {
                     return tooltip.style("visibility", "hidden");
                 });
+     */
 
     canvas.select(".yaxis").call(d3.axisRight(ctx.y));
 
