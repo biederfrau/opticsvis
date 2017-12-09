@@ -317,7 +317,7 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
-            tooltip.text("Reachability Distance: "+d.distance);
+            tooltip.text("Reachability Distance: "+d.distance.toFixed(2));
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
