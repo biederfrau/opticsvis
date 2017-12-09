@@ -586,7 +586,7 @@ function setup_heat(state) {
 	var data=state.output_data;
 
 	var style = window.getComputedStyle(document.getElementById("heat")),
-        margins = {"left": 20, "right": 80, "top": 20, "bottom": 20},
+        margins = {"left": 20, "right": 80, "top": 50, "bottom": 20},
         width = parseFloat(style.width),
         height = parseFloat(style.height),
         color = d3.scaleLinear()
@@ -598,6 +598,11 @@ function setup_heat(state) {
     var innerwidth=width-margins.left-margins.right;
 
     var canvas = d3.select("#heat");
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
+        .text("Symmetric Heat-Map").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Actual distance between Points, ordered by the OPTICS output")
+        .style("font-size", "12px").attr("text-anchor", "middle");
 
     var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
             .classed("heatmapcanvas", true)
