@@ -876,7 +876,132 @@
 
     <section id="m3">
       <h2>Milestone 3</h2>
-      coming soonish
+      <section>
+        <h3>Reminder of our problem</h3>
+        The problem we wanted to address is that the OPTICS-Algorithm is quite difficult to understand and is therefor
+        probably often misused. On one hand we want our users to be able to explore the algorithm to see if it could
+        fit their problems, on the other hand we hope to assist them in getting a feeling for parameters and their intrinsic meaning.
+        Generally said our visualization aims to show what output OPTICS produces and to give a better understanding
+        for what the meaning behind it is.
+      </section>
+      <section>
+        <h3>Milestone 2 feedback</h3>
+        Parameters:<br/>
+        For the parameters we agree that it is important to let the user explore a broad range of the design space.
+        We therefor implemented sliders and numerical text boxes, that allow for quickly changing them and comparing
+        different combinations in a short time. We think, that showing multiple outputs with parameter ranges would not
+        improve the understanding of the algorithm, because the amount of visual data would be overwhelming and changes
+        may no longer be relatable to which parameter had which effect.<br/><br/>
+        Scented Widgets:<br/>
+        We implemented sliders for all parameters for which they make sense. With Epsilon and the Max Distance it didn't,
+        because those parameters are not caped.<br/><br/>
+        Data sets:<br/>
+        For now we decided to stick with 2-Dimensional data and a default data set, that can be swapped out for a user
+        defined data set. Often the clusters may be visually obvious to the user, but our goal is to show what the algorithm
+        finds with which parameter set.<br/><br/>
+        Pie Chart:<br/>
+        We decided to not use a pie chart. It would have been hard to read and not given any benefit over the small bar
+        chart, that we implemented for a quick overview.<br/><br/>
+        2D-Projection:<br/>
+        Our idea was to allow to only show 2 selected dimensions. This would have given the user the possibility to
+        explore different dimensions and he could see which of those already give nice visual clusters.
+        For now we did not implement this, because it does not add any educational benefit and only makes it harder to
+        understand whats going on. This is the opposite of what we want to achieve. <br/><br/>
+        Heat-Map:<br/>
+        The heat-map shows how far points are away from each other (their real distance color coded). In general the
+        algorithm works with reachability distance, that differs from the actual distance between two points. The idea
+        is, that if OPTICS worked well points close by(in the output) should also be close to each other(real distance).
+        Therefor the heat-map gives a good idea about clusters and sub clusters without even looking at the data set.
+        This would even work for multi dimensional data and data in a non euclidean space.<br/><br/>
+        Bubble charts:<br/>
+        More fun is really not enough to justify this chart. We found it not as intuitive as what we settled for and
+        therefor dropped this idea.<br/><br/>
+        Points classified over time:<br/>
+        The idea would have been to show the runtime complexity by visualizing how many points were put through the algorithm
+        after how much time. Our focus was on exploring the output and usefulness of the algorithm though, which is the
+        reason why we decided against this chart.
+      </section>
+      <section>
+        <h3>Example use</h3>
+        bla
+      </section>
+      <section>
+        <h3>Use-Cases</h3>
+        bla
+      </section>
+      <section>
+        <h3>Changes to the original visualization design</h3>
+        bla
+      </section>
+      <section>
+        <h3>Challenges/Problems</h3>
+        Christian Permann:
+        <ul>
+          <li>
+          I found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since
+            the x and y-Axis are mirrored, any non square selection doesn't make sense.
+          </li>
+        </ul>
+        Sonja Biedermann:
+        <ul>
+          <li>
+
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Separation of Tasks</h3>
+        <table width="100%">
+          <tr>
+            <th></th>
+            <th>Sonja</th>
+            <th>Christian</th>
+          </tr>
+
+          <tr>
+            <th>Skeleton with Settings</th>
+            <td>90%</td>
+            <td>10%</td>
+          </tr>
+
+          <tr>
+            <th>Charts (non interactive)</th>
+            <td>40%</td>
+            <td>60%</td>
+          </tr>
+
+          <tr>
+            <th>Filter-Interaction</th>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+
+          <tr>
+            <th>Zoom/Pan-Interaction</th>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+
+          <tr>
+            <th>Highlight-Interaction</th>
+            <td>60%</td>
+            <td>40%</td>
+          </tr>
+
+          <tr>
+            <th>Algorithm</th>
+            <td>10%</td>
+            <td>90%</td>
+          </tr>
+
+          <tr>
+            <th>Web summary</th>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+
+        </table>
+      </section>
     </section>
 
     <section id="m4">

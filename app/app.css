@@ -163,6 +163,16 @@ textarea {
     opacity: 1;
 }
 
+.bar.framed2 {
+    stroke: black;
+    stroke-width: 2;
+    opacity: 1;
+}
+
 #size .bar:hover {
+    opacity: 0.7;
+}
+
+#reach .bar:hover {
     opacity: 0.7;
 }
