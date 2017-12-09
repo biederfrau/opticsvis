@@ -1,5 +1,5 @@
 const noisecolor="grey";
-const interpolator="Rainbow";
+const interpolator="Cool";
 const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
 const tooltip = d3.select("body")
@@ -26,7 +26,8 @@ function getClusterSizes(data){
 }
 
 function filter(state) {
-
+    var data = state.output_data.filter(x => state.selected_clusters.length === 0 || _.includes(state.selected_clusters, x.tag));
+    state.dispatcher.call("filter", this, data);
 }
 
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f <- density estimation
@@ -35,7 +36,7 @@ function filter(state) {
 function setup_density(state) {
     var canvas = d3.select("#density"),
         style = window.getComputedStyle(document.getElementById("density")),
-        margins = {"left": 55, "right": 150, "top": 50, "bottom": 35},
+        margins = {"left": 55, "right": 100, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
@@ -60,7 +61,7 @@ function setup_density(state) {
 
     canvas.append("g")
         .classed("legend", true)
-        .attr("transform", "translate(" + [width - 100, margins.top] + ")");
+        .attr("transform", "translate(" + [width - 70, margins.top] + ")");
 
     canvas.on("dblclick", () => {
         var points = canvas.selectAll(".point");
@@ -80,8 +81,6 @@ function setup_density(state) {
 } // }}}
 
 // draw_density {{{
-
-
 function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateYlGnBu);
@@ -127,10 +126,10 @@ function draw_density(data, state, ctx) {
     points.exit().remove();
 
     var legend = d3.legendColor()
-        .title("Est. density")
-        .shapeWidth(20)
-        .shapeHeight(20)
-        .cells(Math.floor((ctx.height - ctx.margins.bottom - ctx.margins.top) / 25))
+        .shapeWidth(15)
+        .shapeHeight(15)
+        .cells(5)
+        .labels(["low", "", "mid", "", "high"])
         .orient("vertical")
         .labelFormat(d3.format(".04f"))
         .ascending(true)
@@ -234,6 +233,18 @@ function setup_reach(state) {
         bars.filter(d => _.find(points, x => x[0] == d[0] && x[1] == d[1])).classed("not-highlighted", false);
     });
 
+    state.dispatcher.on("select:range.reach", range => {
+        var bars = canvas.selectAll(".bar");
+        if(range === null) { bars.classed("not-highlighted", false); return; }
+
+        bars.classed("not-highlighted", true);
+        bars.filter((d, i) => range[0] <= i && i < range[1]).classed("not-highlighted", false);
+    });
+
+    state.dispatcher.on("filter.reach", data => {
+        draw_reach(data, state, ctx);
+    });
+
     state.dispatcher.on("hover:point.reach", p => {
         var bars = canvas.selectAll(".bar");
         bars.classed("framed", false);
@@ -317,7 +328,7 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
-            tooltip.text("Reachability Distance: "+d.distance);
+            tooltip.text("Reachability Distance: "+_.round(d.distance, 2));
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
@@ -380,6 +391,16 @@ function draw_clusters(data, state, ctx) {
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
+    var subclustersize_per_cluster = state.output_data.reduce((acc, x) => {
+        if(!acc[x.tag]) { acc[x.tag] = {}; }
+        if(!acc[x.tag][x.subtag]) { acc[x.tag][x.subtag] = 0; }
+        acc[x.tag][x.subtag] += 1;
+
+        return acc;
+    }, {});
+
+    canvas.selectAll(".separator").remove();
+
     var barbottom=ctx.height-ctx.margins.bottom;
     var bars = canvas.selectAll(".bar").data(data);
     bars.enter().append("rect").classed("bar",true).merge(bars)
@@ -389,7 +410,7 @@ function draw_clusters(data, state, ctx) {
         .attr("height", d => ctx.y(d.value))
         .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(d.key))
         .on("mouseover", function (d) {
-            tooltip.text("Size: "+d.value);
+            tooltip.text("Size: "+d.value+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v));
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
@@ -398,7 +419,53 @@ function draw_clusters(data, state, ctx) {
         })
         .on("mouseout", function () {
             return tooltip.style("visibility", "hidden");
+        })
+        .on("click", function(d, i, e) {
+            var bar = d3.select(this),
+                selected = !bar.classed("selected");
+
+            bar.classed("selected", selected).style("opacity", undefined);
+
+            if(selected) {
+                state.selected_clusters.push(+d.key);
+                canvas.selectAll(".bar:not(.selected)").style("opacity", 0.3);
+            } else {
+                _.pull(state.selected_clusters, +d.key);
+                bar.style("opacity", 0.3);
+                if(state.selected_clusters.length === 0) { canvas.selectAll(".bar").style("opacity", undefined); }
+            }
+
+            filter(state);
+        })
+        .each(function(d, i, e) {
+            var cluster = +d.key,
+                subcluster_sizes = _.map(subclustersize_per_cluster[cluster], (v, k) => v),
+                bottom = barbottom;
+
+            if(subcluster_sizes.length > 1) {
+                var x = +d3.select(this).attr("x"),
+                    width = +d3.select(this).attr("width");
+
+                subcluster_sizes.sort();
+                subcluster_sizes.pop();
+                subcluster_sizes.forEach(size => {
+                    var y = ctx.y(size);
+
+                    canvas.append("line")
+                        .attr("x1", x)
+                        .attr("y1", bottom - y)
+                        .attr("x2", x + width)
+                        .attr("y2", bottom - y)
+                        .classed("separator", true)
+                        .style("stroke", "white")
+                        .style("stroke-width", "2px")
+                        .style("stroke-dasharray", "2, 2")
+
+                    bottom -= y;
+                });
+            }
         });
+
     bars.exit().remove();
 
     ctx.y.domain([max,0])
@@ -447,6 +514,9 @@ function setup_jumps(state) {
         .call(d3.zoom().scaleExtent([1, 10]).on("zoom", () => {
             canvas.selectAll(".point, .jumppath").attr("transform", d3.event.transform);
 
+            canvas.selectAll(".point").attr("r", 4 / d3.event.transform.k);
+            canvas.selectAll(".jumppath").attr("stroke-width", 1 / d3.event.transform.k)
+
             var new_x = d3.event.transform.rescaleX(x),
                 new_y = d3.event.transform.rescaleY(y);
 
@@ -463,7 +533,9 @@ function setup_jumps(state) {
     state.dispatcher.on("hover:bar", row => {
         var jumppaths = canvas.selectAll(".jumppath");
         if(row === null) { jumppaths.style("stroke-width", null); return; }
-        jumppaths.filter(d => d === row).style("stroke-width", "3px");
+
+        var strokewidth = jumppaths.attr("stroke-width");
+        jumppaths.filter(d => d === row).style("stroke-width", 3*strokewidth);
     });
 } // }}}
 
@@ -560,8 +632,9 @@ function setup_heat(state) {
 
 
 
-    canvas.call(zoom);
-    var endbrush=false;
+    // canvas.call(zoom);
+    var endbrush=false,
+        index1, index2;
     function brushed(){
 
         var s = d3.event.selection;
@@ -589,14 +662,12 @@ function setup_heat(state) {
         var rectwidth=innerwidth/datacount;
         var rectheight=innerheight/datacount;
 
-        var index1=Math.min((Math.floor(range[0][0]/rectwidth)),(datacount-Math.floor(range[1][1]/rectheight)));
+        index1=Math.min((Math.floor(range[0][0]/rectwidth)),(datacount-Math.floor(range[1][1]/rectheight)));
         index1=Math.min(datacount,index1);
-        var index2=Math.max((Math.floor(range[1][0]/rectwidth)),(datacount-Math.floor(range[0][1]/rectheight)));
+        index2=Math.max((Math.floor(range[1][0]/rectwidth)),(datacount-Math.floor(range[0][1]/rectheight)));
         index2=Math.max(0,index2);
         index1=index1<0?0:index1;
         index2=index2>datacount?datacount:index2;
-        console.log(index1);
-        console.log(index2);
             endbrush=true;
         if(zoomtransform==null){
             interactioncanvas.call(brush.move,
@@ -621,8 +692,9 @@ function setup_heat(state) {
     function brushend(){
         var s = d3.event.selection;
         if(s===null) {
-            console.log("brush removed");
-            //TODO:remove highlights
+            state.dispatcher.call("select:range", this, null);
+        } else {
+            state.dispatcher.call("select:range", this, [index1, index2]);
         }
     }
 
@@ -644,6 +716,10 @@ function setup_heat(state) {
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
         draw_heat(data[1], state,ctx);
+    });
+
+    state.dispatcher.on("filter.heat", data => {
+        draw_heat(data, state, ctx);
     });
 } // }}}
 
@@ -708,7 +784,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "hover:bar", "detail:bandwidth", "size"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "select:range", "hover:point", "hover:bar", "detail:bandwidth", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
@@ -723,7 +799,8 @@ function do_the_things() {//{{{
                 }
             });
         },
-        density_map_bandwidth: 20
+        density_map_bandwidth: 20,
+        selected_clusters: []
     };
 
     // ui crap {{{
