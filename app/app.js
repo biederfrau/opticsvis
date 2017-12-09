@@ -244,11 +244,22 @@ function setup_reach(state) {
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
+    state.dispatcher.on("select:region.reach", p => {
+        //TODO: was this what you wanted?
+        var bars = canvas.selectAll(".bar");
+        bars.classed("framed2", false);
+        bars.style("opacity", null);
+    if(p==null)return;
+
+    var framed_bars = bars.filter((d,i) => i >= p[0] && i <= p[1]).classed("framed2", true);
+
+    if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed2).not-highlighted").style("opacity", 0.3)
+});
+
     moveable1.call(d3.drag()
         .on("drag", dragged));
 
     function dragged(d) {
-        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y>scutoff2){
@@ -262,7 +273,6 @@ function setup_reach(state) {
     }
 
     function dragged2(d) {
-        //TODO: cleanup
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y<scutoff1){
@@ -616,7 +626,7 @@ function setup_heat(state) {
                 ]);
         }
 
-
+        state.dispatcher.call("select:region",this,[index1,index2-1]);
         //TODO: set highlight index1=first selected index && index2-1=last selected index
         //TODO: if(index1>index2-1)=> nothing selected/invalid selection
 
@@ -626,7 +636,7 @@ function setup_heat(state) {
     function brushend(){
         var s = d3.event.selection;
         if(s===null) {
-            console.log("brush removed");
+            state.dispatcher.call("select:region",this,null);
             //TODO:remove highlights
         }
     }
@@ -715,7 +725,7 @@ function draw_heat(data, state,ctx) {
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "hover:bar", "detail:bandwidth", "size"),
+        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "hover:point", "hover:bar","select:region", "detail:bandwidth", "size"),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
