@@ -139,7 +139,7 @@ function draw_density(data, state, ctx) {
                 .attr("ry", eps * length_1_y)
                 .attr("fill", "grey")
                 .style("pointer-events", "none")
-                .style("opacity", 0.1)
+                .style("opacity", 0.15)
                 .style("stroke", "black")
                 .style("stroke-width", 2);
         })
@@ -451,7 +451,7 @@ function draw_clusters(data, state, ctx) {
         .attr("height", d => ctx.y(d.value))
         .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(d.key))
         .on("mouseover", function (d) {
-            tooltip.text("Size: "+d.value+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v));
+            tooltip.text("Size: "+d.value+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v).length);
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {
