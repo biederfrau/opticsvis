@@ -979,6 +979,13 @@ function do_the_things() {//{{{
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
 
+    $("input#eps").on("input", function() {
+        if($(this).val() === "") { return; }
+        seteps(+$(this).val());
+        compute(state.input_data, state);
+        state.dispatcher.call("config:changed", this, [state.input_data, state.output_data]);
+    })
+
     $("input#inf").val(maxdist);
     $("input#inf").on("change", function() {
         if($(this).val() === "") { return; }
