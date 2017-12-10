@@ -138,7 +138,9 @@ function draw_density(data, state, ctx) {
                 .attr("r", eps)
                 .attr("fill", "grey")
                 .style("pointer-events", "none")
-                .style("opacity", 0.3);
+                .style("opacity", 0.3)
+                .style("stroke", "black")
+                .style("stroke-width", 2);
         })
         .on("mouseleave", d => {
             canvas.select(".eps-neighborhood").remove();
