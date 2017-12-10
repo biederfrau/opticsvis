@@ -26,7 +26,7 @@
     </div>
 
     <div class="elem">
-      <a href="app">HiFi Prototype</a>
+      <a href="app/index.html">HiFi Prototype</a>
     </div>
 
     <div class="elem">
@@ -888,52 +888,303 @@
         Generally said our visualization aims to show what output OPTICS produces and to give a better understanding
         for what the meaning behind it is.
       </section>
+
       <section>
         <h3>Milestone 2 feedback</h3>
-        Parameters:<br/>
-        For the parameters we agree that it is important to let the user explore a broad range of the design space.
-        We therefor implemented sliders and numerical text boxes, that allow for quickly changing them and comparing
-        different combinations in a short time. We think, that showing multiple outputs with parameter ranges would not
-        improve the understanding of the algorithm, because the amount of visual data would be overwhelming and changes
-        may no longer be relatable to which parameter had which effect.<br/><br/>
-        Scented Widgets:<br/>
-        We implemented sliders for all parameters for which they make sense. With Epsilon and the Max Distance it didn't,
-        because those parameters are not caped.<br/><br/>
-        Data sets:<br/>
-        For now we decided to stick with 2-Dimensional data and a default data set, that can be swapped out for a user
-        defined data set. Often the clusters may be visually obvious to the user, but our goal is to show what the algorithm
-        finds with which parameter set.<br/><br/>
-        Pie Chart:<br/>
-        We decided to not use a pie chart. It would have been hard to read and not given any benefit over the small bar
-        chart, that we implemented for a quick overview.<br/><br/>
-        2D-Projection:<br/>
-        Our idea was to allow to only show 2 selected dimensions. This would have given the user the possibility to
-        explore different dimensions and he could see which of those already give nice visual clusters.
-        For now we did not implement this, because it does not add any educational benefit and only makes it harder to
-        understand whats going on. This is the opposite of what we want to achieve. <br/><br/>
-        Heat-Map:<br/>
-        The heat-map shows how far points are away from each other (their real distance color coded). In general the
-        algorithm works with reachability distance, that differs from the actual distance between two points. The idea
-        is, that if OPTICS worked well points close by(in the output) should also be close to each other(real distance).
-        Therefor the heat-map gives a good idea about clusters and sub clusters without even looking at the data set.
-        This would even work for multi dimensional data and data in a non euclidean space.<br/><br/>
-        Bubble charts:<br/>
-        More fun is really not enough to justify this chart. We found it not as intuitive as what we settled for and
-        therefor dropped this idea.<br/><br/>
-        Points classified over time:<br/>
-        The idea would have been to show the runtime complexity by visualizing how many points were put through the algorithm
-        after how much time. Our focus was on exploring the output and usefulness of the algorithm though, which is the
-        reason why we decided against this chart.
+
+        <dl>
+          <dt>Influence of Parameters</dt>
+          <dd>
+          <p>
+          For the parameters we agree that it is important to let the user explore a broad range of the design space.
+          We therefor implemented sliders and numerical text boxes, that allow for quickly changing them and comparing
+          different combinations in a short time. We think, that showing multiple outputs with parameter ranges would not
+          improve the understanding of the algorithm, because the amount of visual data would be overwhelming and changes
+          may no longer be relatable to which parameter had which effect.
+          </p>
+          </dd>
+
+          <dt>Scented Widgets</dt>
+          <dd>
+          <p>
+          We implemented a scented widget.
+          </p>
+          </dd>
+
+          <dt>Data sets</dt>
+          <dd>
+          <p>
+          For now we decided to stick with 2-Dimensional data and a default data set, that can be swapped out for a user
+          defined data set. Often the clusters may be visually obvious to the user, but our goal is to show what the algorithm
+          finds with which parameter set.
+          </p>
+          </dd>
+
+          <dt>Pie Chart</dt>
+          <dd>
+          <p>
+          We decided to not use a pie chart. It would have been hard to read and not given any benefit over the small bar
+          chart, that we implemented for a quick overview. So we agree with the feedback.
+          </p>
+          </dd>
+
+          <dt>Split Dimensions and Hue</dt>
+          <dd>
+          <p>
+          Yeah that was a dumb idea, sorry. Maybe the bars would be better off if they just changed their height.
+          But this idea was not used in the hifi prototype anyway.
+          </p>
+          </dd>
+
+          <dt>2D-Projection</dt>
+          <dd>
+          <p>
+          Our idea was to allow to only show 2 selected dimensions. This would have given the user the possibility to
+          explore different dimensions and he could see which of those already give nice visual clusters.
+          For now we did not implement this, because it does not add any educational benefit and only makes it harder to
+          understand whats going on. This is the opposite of what we want to achieve.
+          </p>
+          </dd>
+
+          <dt>Heat-Map</dt>
+          <dd>
+          <p>
+          The heat-map shows how far points are away from each other (their real distance color coded). In general the
+          algorithm works with reachability distance, that differs from the actual distance between two points. The idea
+          is, that if OPTICS worked well points close by(in the output) should also be close to each other(real distance).
+          Therefor the heat-map gives a good idea about clusters and sub clusters without even looking at the data set.
+          This would even work for multi dimensional data and data in a non euclidean space.
+          </p>
+          </dd>
+
+          <dt>Bubble charts</dt>
+          <dd>
+          <p>
+          More fun is really not enough to justify this chart. We agree that it is not as intuitive as other solutions,
+          e.g. a bar chart, which is why we dropped the idea.
+          </p>
+          </dd>
+
+          <dt>Points classified over time</dt>
+          <dd>
+          <p>
+          The idea would have been to show the runtime complexity by visualizing how many points were put through the algorithm
+          after how much time. Our focus was on exploring the output and usefulness of the algorithm though, which is the
+          reason why we decided against this chart.
+          </p>
+          </dd>
+        </dl>
       </section>
+
       <section>
         <h3>Example use</h3>
-        bla
+
+        <p>
+        We're running with our example data set for this example.
+        </p>
+
+        <p>
+        The initial view that is presented to the user is shown below. This includes (numbered
+        clock-wise, from top left) a density map, a bar chart showing cluster sizes, a scatterplot
+        showing the path the algorithm took (as lines between points), a heat map, and finally the
+        reachability plot, which is a bar chart.
+        </p>
+
+        <img width="100%" src="m3/img/initial.png"/>
+        <div class="img-subtext">Initial view</div>
+
+        <p>
+        The largest chart is the density map. The main goal of this is to show the outline of
+        the data using densities. These densities are estimated from the input points, using a
+        Gaussian kernel so they tend to the round size. The contours of the estimated density
+        curve are drawn. Since this is estimated data, it is possible to toggle on the actual
+        data points, which results in the chart below. Since there is no natural ordering between
+        faint yellow and dark blue, a legend is shown to clear that up.
+        </p>
+
+        <img width="100%" src="m3/img/density-toggled.png"/>
+        <div class="img-subtext">Initial view with toggled points</div>
+
+        <p>
+          When the points are visible, they can be interacted with. Hovering a point displays
+          the epsilon neighborhood of that point (squished to account for different scale domains),
+          and highlights the corresponding bar of the reachability chart. This shows that this
+          point was the fourth point visited, coming from the purple cluster, and that since the
+          epsilon neighborhood contains plenty of other points (the minPTS was set to 4, for reference),
+          OPTICS clearly found that this point is part of the cluster (as evidenced by coloring).
+        </p>
+
+        <p>
+        For clarity, entire groups of points can be selected. This is shown below. This is
+        meant for presentation purposes, e.g. "Look at these clusters, if we increased the cutoff,
+        these would likely be considered to be part of the same cluster."
+        </p>
+
+        <img width="50%" src="m3/img/density-grab.png" align="left"/>
+        <img width="50%" src="m3/img/density-grabbed.png" align="left"/>
+
+        <p>&nbsp;</p>
+
+        <p>
+        Case in point, let's increase the cutoff. This is done by dragging the black
+        rectangle. We were right, and a cutoff of 25 results in the purple cluster taking
+        over. Note that we left the secondary, grey cutoff bar alone. Looking at the cluster
+        size chart, it shows the purple bar as segmented into three parts, showing the user
+        that this cluster might actually be three clusters, i.e. contains hierachical clusters.
+        </p>
+
+        <img width="100%" src="m3/img/cutoff-changed.png"/>
+
+        <p>
+        The bars of the reachability chart can also be hovered. They highlight
+        the corresponding edge (the height of the bar is the length of that
+        edge) in the density chart and the corresponding point (the target of
+        the edge) in the density chart, should they be toggled. Also, a tooltip
+        pops up telling you the reachability distance of that point. We can see
+        that this jump went from the previously blue to the previously green
+        cluster, and a distance of 22 is indeed higher than the previous
+        cutoff, which is why these clusters used to be separate, but higher
+        than the current secondary cutoff (the cause of the segmented bar of
+        the purple cluster).
+        </p>
+
+        <img width="100%" src="m3/img/reach-hover.png"/>
+
+        <p>
+          Since some points are very close together, the jumppath allows for zooming,
+          which the density chart doesn't, to allow clear view of the edges and nodes
+          if that should be desired. Below is an example, hovering over an edge between
+          two points that are <em>very</em> close together.
+        </p>
+
+        <img width="100%" src="m3/img/jump-zoom.png"/>
+
+        <p>
+          Let's finally look at this mysterious heat map. At the first glance, it reveals
+          the structure of the data set by displaying the distances between points as color hues,
+          and keeping the order computed by the OPTICS algorithm.
+        </p>
+
+        <img width="80%" src="m3/img/heatmap.png"/>
+
+        <p>
+          Four squares are readily apparent---they correspond to the four clusters found in
+          the initial configuration. A bit less apparent, but still here, is a square that
+          encompasses the first three squares---this is the large purple cluster that we
+          have currently configured. To confirm this, lets drop the lasso-selection, lower
+          the cutoff back to where it was before, and apply a brush to this larger square.
+        </p>
+
+        <img width="100%" src="m3/img/heatmap-brush.png"/>
+
+        <p>
+          Indeed this highlights everything that was purple just now, so it would've pointed us
+          to this larger cluster if we hadn't found it by dragging the cutoff bar around. A more
+          experienced user would probably start his evaluation of the output with this heatmap.
+        </p>
+
+        <p>
+          Finally, the output can be filtered by clicking on the bars of the desired clusters
+          in the cluster size bar chart. Do note that selecting clusters that are not contiguous
+          in the reachability plot will then appear to be continuous, which is a lie.
+          This filtering is especially useful for getting a better view at portions of the
+          reachability plot (especially for hovering) since it may get pretty crowded, but also
+          filters the heat map, which may show if two clusters have similar composition regarding
+          internal distances (by looking for patterns).
+        </p>
+
+        <img width="100%" src="m3/img/filter-cluster.png"/>
+
+        <p>
+          Let's look at the settings. Below is the expanded view of the settings tab.
+        </p>
+
+        <img width="60%" src="m3/img/settings.png"/>
+
+        <p>
+          This shows a scented widget and inputs for the minimum points and
+          epsilon parameters.  It also shows an input  for "faux infinity",
+          which is what the algorithm uses to label "unreachable" points---this
+          must be kept low since we are also drawing the bars that are
+          unreachable. This could maybe be predetermined automatically but for
+          this prototype, we left it in---if this is picked too large,
+          small distances would disappear in the reachability plot.
+        </p>
+
+        <p>
+          We also provide a knob to tweak the bandwidth used during the density
+          estimation.  Unfortunately, the estimated density is dependent on the
+          size of the svg in pixels---so it looks different on different
+          resolutions, although the data is the same.
+        </p>
+
+        <p>
+          So OPTICS has two parameters, minPTS (minimum points that need to be in an eps-neighborhood query
+          so the point is not immediately dropped due to too sparse neighborhood), and eps itself.
+        </p>
+
+        <p>
+          The eps parameter can, strictly speaking, be always set to infinity
+          and yield perfect results, however this results in OPTICS being
+          quadratic which is troublesome for big data sets. Thus, this
+          parameter is mostly a performance tuning kinda deal. A rule of thumb
+          behind setting this parameter is "so large the cluster/noise ratio
+          stabilizes", although sometimes it can be useful to set it lower. A
+          too low eps results in many points being classified as noise as the
+          density of most clusters falls below the density required to have
+          them classified as clusters with the given eps. Lets try it out and
+          set eps = 5.
+        </p>
+
+        <img width="100%" src="m3/img/eps-5.png"/>
+
+        <p>
+          With this configuration, the algorithm clearly struggles, but still finds the cores of
+          the purple cluster, which are quite dense compared to other clusters.
+          We also see a great disturbance within the heat map. Clearly this configuration is
+          bad. To further convince ourselves, we can hover a point of the density map to see
+          just how ridiculously small this eps is compared to how the data is laid out.
+        </p>
+
+        <img width="100%" src="m3/img/eps-neigh.png"/>
+
+        <p>
+          The minPTS parameter is more interesting insofar that it is more than
+          just a tuning parameter and actually influences how the algorithm
+          makes decisions. The core idea is that small choice of minPTS could
+          result in many micro clusters (doesn't have to and also depends on
+          the choice of eps and the data of course), while a too large minPTS
+          leads to points being classified as noise which might not be
+          accurate. The bars of the scented widget update while dragging, letting
+          go updates all views.
+        </p>
+
+        <img width="100%" src="m3/img/eps-neigh.png"/>
+
+        <p>
+          Increasing minPTS to 11 results in much noise, as most areas that were previously
+          regarded as some clusters don't even have that many points in total. The purple cluster
+          survives as it is the densest of the lot.
+        </p>
+
+        <p>
+          Maybe if we were to set the eps very low, but also try to compensate by setting the minPTS
+          very low, the results would be better? This turns out to not be quite true, and results
+          in micro clusters.
+        </p>
+
+        <img width="100%" src="m3/img/eps-5-minpts-1.png"/>
       </section>
+
       <section>
         <h3>Use-Cases</h3>
+        <p>
         The use-cases for our project did not change from what we planed for in Milestone 2.
         The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits
-        given data and problem.<br/><br/>
+        given data and problem.
+        </p>
+
+        <p>
         Teachers can either use our default data set or load a custom data set and explain how the algorithm works.
         Once the very basics are explained with our density map and the points (that show epsilon on mouse over),
         the reachability plot would be the next logical step. With its help and seeing what line corresponds to which
@@ -942,16 +1193,34 @@
         edited to see how a change of min points and epsilon counteracts small links between clusters.
         At last there may be a discussion about how a good selection of parameters is likely to produce a nice heat map,
         that may give a good overview over the general cluster structure and is easier to read than the reachability
-        plot.<br/><br/>
+        plot.
+        </p>
+
+        <p>
         The second use-case in our mind was for researchers or anyone interested to find out if they want to do future
         work with this algorithm. For this they will probably just play around with our implementation to see if they
         want to put further work into OPTICS.
-
+        </p>
       </section>
+
       <section>
         <h3>Changes to the original visualization design</h3>
-        bla
+
+        <p>
+        Core changes were minimal. We picked mockup 3, but dropped the area chart depicting
+        the different cluster sizes over time, and instead introduced the heatmap. The heatmap is
+        an absolutely worthwhile chart to have, while the area chart would have been finicky to implement
+        and would probably lead to no major insights that couldn't have been achieved by fiddling with
+        the cutoff bar.
+        </p>
+
+        <p>
+          On a lesser note, we introduced small things like displaying the epsilon neighborhood
+          of a point on hover, depicting subcluster makeup by size in the cluster overview, and
+          zooming of the jumppath plot.
+        </p>
       </section>
+
       <section>
         <h3>Challenges/Problems</h3>
         Christian Permann:
@@ -962,11 +1231,23 @@
           </li>
         </ul>
         Sonja Biedermann:
-        <ul>
-          <li>
+        <p>
+          I think the main problem that remains is how to make it behave well with larger inputs.
+          Given a bad configuration (mainly a very large eps), OPTICS runs in quadratic time, and some
+          components such as our scented widget will call the algorithm every time an input event is
+          triggered, which may lead to an explosion of calls which all take n^2 time. This can't really
+          be avoided (the output is needed to render the scented part), but maybe caching would cushion
+          this effect. However, this depends on how often the same configurations would reappear,
+          which may not be all that often.
+        </p>
 
-          </li>
-        </ul>
+        <p>
+          Another issue is with the second cutoff bar. I think it would be nice if the subclusters would
+          be assigned new IDs, however this seems to not be straightforward to implement. Since we're not
+          too sure if it would be worth it, we decided to drop it and instead assign sub-cluster IDs. The
+          relative sizes of the subclusters are then displayed in the cluster sizes chart as dashed lines,
+          sort of cutting the main cluster into parts. That's not all that great and might be confusing.
+        </p>
       </section>
       <section>
         <h3>Separation of Tasks</h3>
