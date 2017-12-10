@@ -85,8 +85,8 @@ function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateYlGnBu);
 
-    ctx.x.domain(d3.extent(data, x => x[0])).nice();
-    ctx.y.domain(d3.extent(data, x => x[1])).nice();
+    ctx.x.domain([0, d3.max(data, x => x[0])]).nice();
+    ctx.y.domain([0, d3.max(data, x => x[1])]).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
@@ -542,8 +542,8 @@ function draw_jumps(data, state,ctx) {
     var canvas = d3.select("#jumps"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
-    ctx.x.domain(d3.extent(data, x => x[0])).nice();
-    ctx.y.domain(d3.extent(data, x => x[1])).nice();
+    ctx.x.domain([0, d3.max(data, x => x[0])]).nice();
+    ctx.y.domain([0, d3.max(data, x => x[1])]).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
@@ -800,13 +800,14 @@ function setup_scented_widget(state) {
 
     draw_scented_widget(state.output_data, state, ctx);
 
-    state.dispatcher.on("data:change.widget", data => {
+    state.dispatcher.on("data:change.widget config:changed.widget", data => {
         draw_scented_widget(data[1], state, ctx);
     });
 }
 
 function draw_scented_widget(data, state, ctx) {
-    var cluster_noise = data.reduce((acc, x) => {
+    var canvas = d3.select("#scented-widget"),
+        cluster_noise = data.reduce((acc, x) => {
         if(x.tag === -1) {
             acc.noise += 1;
         } else {
@@ -815,12 +816,35 @@ function draw_scented_widget(data, state, ctx) {
         return acc;
     }, { cluster: 0, noise: 0 });
 
-    console.log(cluster_noise);
+    ctx.x.domain(["cluster", "noise"]);
+    ctx.y.domain([0, d3.max([cluster_noise.cluster, cluster_noise.noise])]).nice();
+
+    var bars = canvas.selectAll(".bar").data(_.map(cluster_noise, (v, k) => [k, v]));
+
+    bars.enter()
+        .append("rect")
+        .classed("bar", true)
+        .merge(bars)
+        .attr("x", d => ctx.x(d[0]))
+        .attr("y", d => ctx.height - ctx.margins.bottom - ctx.y(d[1]))
+        .attr("height", d => ctx.y(d[1]))
+        .attr("width", ctx.x.bandwidth())
+        .attr("fill", d => d[0] === "cluster" ? "blue" : noisecolor);
+
+    bars.exit().remove();
+
+    ctx.y.domain(ctx.y.domain().reverse());
+    canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
+    canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 }
 
 function do_the_things() {//{{{
     state = {
-        dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "select:range", "hover:point", "hover:bar", "detail:bandwidth", "size"),
+        dispatcher: d3.dispatch(
+            "drawn", "filter", "data:change", "config:changed",
+            "select:points", "select:clusters", "select:range", "hover:point",
+            "hover:bar", "detail:bandwidth", "size"
+        ),
         start: performance.now(),
         thinking: function(n = 4) {
             d3.selectAll(".loading").style("display", undefined);
@@ -889,6 +913,11 @@ function do_the_things() {//{{{
 
     $("input#minpts").on("input", function() {
         $("span#minpts-cur").text(+$(this).val());
+        if($(this).val() === "") { return; }
+        setminPTS(+$(this).val());
+
+        compute(state.input_data, state);
+        state.dispatcher.call("config:changed", this, [state.input_data, state.output_data]);
     });
 
     $("input#minpts").on("change", function() {
