@@ -153,8 +153,20 @@ textarea {
     fill-opacity:.5;
 }
 
-.bar.not-highlighted {
-    opacity: 0.3;
+.bar.not-highlighted-lasso {
+    opacity: 0.3 !important;
+}
+
+.bar.highlighted-lasso {
+    opacity: 1 !important;
+}
+
+.bar.not-highlighted-range {
+    opacity: 0.3 !important;
+}
+
+.bar.highlighted-range {
+    opacity: 1 !important;
 }
 
 .bar.framed {

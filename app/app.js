@@ -250,20 +250,29 @@ function setup_reach(state) {
         draw_reach(data[1], state, ctx);
     });
 
+    var lassoed = false;
     state.dispatcher.on("select:points.reach", points => {
+        console.log("lassoed", lassoed)
+        console.log("points", points.length)
         var bars = canvas.selectAll(".bar");
-        if(points.length == 0) { bars.classed("not-highlighted", false); return; }
+        bars.classed("highlighted-lasso", false);
+        if(lassoed && points.length == 0) { lassoed = false; bars.classed("not-highlighted-lasso", false); return; }
 
-        bars.classed("not-highlighted", true);
-        bars.filter(d => _.find(points, x => x[0] == d[0] && x[1] == d[1])).classed("not-highlighted", false);
+        if(points.length !== 0) {
+            bars.classed("not-highlighted-lasso", true);
+            lassoed = true;
+        }
+
+        bars.filter(d => _.find(points, x => x[0] == d[0] && x[1] == d[1])).classed("not-highlighted-lasso", false).classed("highlighted-lasso", true);
     });
 
     state.dispatcher.on("select:range.reach", range => {
         var bars = canvas.selectAll(".bar");
-        if(range === null) { bars.classed("not-highlighted", false); return; }
+        bars.classed("highlighted-range", false);
+        if(range === null) { bars.classed("not-highlighted-range", false); return; }
 
-        bars.classed("not-highlighted", true);
-        bars.filter((d, i) => range[0] <= i && i < range[1]).classed("not-highlighted", false);
+        bars.classed("not-highlighted-range", true);
+        bars.filter((d, i) => range[0] <= i && i < range[1]).classed("not-highlighted-range", false).classed("highlighted-range", true);
     });
 
     state.dispatcher.on("filter.reach", data => {
