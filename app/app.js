@@ -378,12 +378,15 @@ function draw_reach(data, state, ctx) {
 function setup_clusters(state) {
     var canvas = d3.select("#size"),
         style = window.getComputedStyle(document.getElementById("size")),
-        margins = {"left": 35, "right": 20, "top": 30, "bottom": 25},
+        margins = {"left": 35, "right": 20, "top": 40, "bottom": 25},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
-    canvas.append("text").attr("x", width / 2).attr("y", margins.top*2/3)
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top/2)
         .text("Cluster Sizes").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2 + 14)
+        .text("Select to filter by cluster(s). Double click to clear filter.").style("font-size", "12px").attr("text-anchor", "middle");
 
     var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2),
         y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
@@ -392,6 +395,12 @@ function setup_clusters(state) {
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
 
     var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+
+    canvas.on("dblclick", () => {
+        canvas.selectAll(".bar").style("opacity", undefined);
+        state.selected_clusters = [];
+        filter(state);
+    });
 
     draw_clusters(state.clustersizes, state, ctx);
 
