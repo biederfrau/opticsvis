@@ -176,3 +176,7 @@ textarea {
 #reach .bar:hover {
     opacity: 0.7;
 }
+
+#scented-widget {
+    width: 30vw;
+}
