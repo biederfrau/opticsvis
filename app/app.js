@@ -131,12 +131,12 @@ function draw_density(data, state, ctx) {
         .style("display", "none")
         .on("mouseenter", d => {
             state.dispatcher.call("hover:point", this, d);
-            canvas.append("circle")
+            canvas.insert("circle", "circle")
                 .classed("eps-neighborhood", true)
                 .attr("cx", ctx.x(d[0]))
                 .attr("cy", ctx.y(d[1]))
                 .attr("r", eps)
-                .attr("fill", "red")
+                .attr("fill", "grey")
                 .style("pointer-events", "none")
                 .style("opacity", 0.3);
         })
