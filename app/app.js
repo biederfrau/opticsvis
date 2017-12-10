@@ -78,11 +78,8 @@ function setup_density(state) {
     state.dispatcher.on("hover:bar.density", row => {
         var points = canvas.selectAll(".point");
         if(row === null) { points.classed("framed", false); return; }
-
-        console.log(points.empty());
-        console.log(points.filter(d => d === row).size());
         points.filter(d => d === row).classed("framed", true);
-    })
+    });
 
     state.dispatcher.on("detail:bandwidth.density", data => {
         draw_density(state.output_data, state, ctx);
@@ -811,7 +808,6 @@ function setup_scented_widget(state) {
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
-    console.log(width)
     canvas.append("text").attr("x", width / 2).attr("y", margins.top*2/3)
         .text("Cluster-noise ratio").style("font-weight", "bold").attr("text-anchor", "middle");
 
