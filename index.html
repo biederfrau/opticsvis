@@ -1222,6 +1222,59 @@
       </section>
 
       <section>
+        <h3>Techniques Used</h3>
+
+        We used the following techniques:
+
+        <dl>
+          <dt>Filtering</dt>
+          <dd>
+          <p>
+          Clicking on a cluster filters two views.
+          </p>
+          </dd>
+
+          <dt>Linking and brushing</dt>
+          <dd>
+          <p>
+          Multiple views are linked, the heatmap can be brushed.
+          </p>
+          </dd>
+
+          <dt>Tooltips</dt>
+          <dd>
+          <p>
+            Hovering over the reachability bars or the cluster size bar displays a tooltip.
+            Other views would have had tooltips too, but some d3 behaviors need to have pointer-event
+            stealing components overlaid (e.g. zoom, brush) which makes implementing tooltips on top
+            difficult.
+          </p>
+          </dd>
+
+          <dt>Zoom</dt>
+          <dd>
+          <p>
+            Jumppath chart can be zoomed into.
+          </p>
+          </dd>
+
+          <dt>Heat map</dt>
+          <dd>
+            <p>
+            We have a heat map for showing cluster structures based on order and distances.
+            </p>
+          </dd>
+
+          <dt>Scented widgets</dt>
+          <dd>
+            <p>
+              We implemented a scented widget for the two relevant parameters.
+            </p>
+          </dd>
+        </dl>
+      </section>
+
+      <section>
         <h3>Challenges/Problems</h3>
         Christian Permann:
         <ul>
