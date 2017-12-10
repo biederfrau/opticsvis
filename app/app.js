@@ -364,8 +364,8 @@ function setup_clusters(state) {
     canvas.append("text").attr("x", width / 2).attr("y", margins.top*2/3)
         .text("Cluster Sizes").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
-    y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
+    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2),
+        y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
 
     canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
@@ -376,7 +376,7 @@ function setup_clusters(state) {
 
     state.dispatcher.on("data:change.size size", data => {
         draw_clusters(state.clustersizes, state, ctx);
-});
+    });
 } // }}}
 
 // draw_clusters {{{
@@ -779,6 +779,45 @@ function draw_heat(data, state,ctx) {
     state.dispatcher.call("drawn");
 } // }}}
 
+function setup_scented_widget(state) {
+    var canvas = d3.select("#scented-widget"),
+        style = window.getComputedStyle(document.getElementById("scented-widget")),
+        margins = {"left": 35, "right": 20, "top": 30, "bottom": 25},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
+
+    console.log(width)
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top*2/3)
+        .text("Cluster-noise ratio").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2),
+        y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
+
+    canvas.append("g").classed("xaxis", true).attr("transform", "translate(" + [0, height - margins.bottom] + ")");
+    canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [margins.left, margins.top] + ")");
+
+    var ctx = {"x": x, "y": y, "margins": margins, "width": width, "height": height};
+
+    draw_scented_widget(state.output_data, state, ctx);
+
+    state.dispatcher.on("data:change.widget", data => {
+        draw_scented_widget(data[1], state, ctx);
+    });
+}
+
+function draw_scented_widget(data, state, ctx) {
+    var cluster_noise = data.reduce((acc, x) => {
+        if(x.tag === -1) {
+            acc.noise += 1;
+        } else {
+            acc.cluster += 1;
+        }
+        return acc;
+    }, { cluster: 0, noise: 0 });
+
+    console.log(cluster_noise);
+}
+
 function do_the_things() {//{{{
     state = {
         dispatcher: d3.dispatch("drawn", "filter", "data:change", "select:points", "select:clusters", "select:range", "hover:point", "hover:bar", "detail:bandwidth", "size"),
@@ -891,6 +930,7 @@ function do_the_things() {//{{{
             setup_clusters(state);
             setup_jumps(state);
             setup_heat(state);
+            setup_scented_widget(state);
 
             $("input#minpts").attr("max", state.input_data.length);
             var datalist = $("#minpts-div datalist");
