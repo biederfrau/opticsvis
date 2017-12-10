@@ -94,6 +94,9 @@ function draw_density(data, state, ctx) {
     ctx.x.domain([0, d3.max(data, x => x[0])]).nice();
     ctx.y.domain([0, d3.max(data, x => x[1])]).nice();
 
+    var length_1_x = ctx.x(1) - ctx.x(0),
+        length_1_y = ctx.y(0) - ctx.y(1);
+
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
@@ -128,14 +131,15 @@ function draw_density(data, state, ctx) {
         .style("display", "none")
         .on("mouseenter", d => {
             state.dispatcher.call("hover:point", this, d);
-            canvas.insert("circle", "circle")
+            canvas.insert("ellipse", "circle")
                 .classed("eps-neighborhood", true)
                 .attr("cx", ctx.x(d[0]))
                 .attr("cy", ctx.y(d[1]))
-                .attr("r", eps)
+                .attr("rx", eps * length_1_x)
+                .attr("ry", eps * length_1_y)
                 .attr("fill", "grey")
                 .style("pointer-events", "none")
-                .style("opacity", 0.3)
+                .style("opacity", 0.1)
                 .style("stroke", "black")
                 .style("stroke-width", 2);
         })
