@@ -75,6 +75,15 @@ function setup_density(state) {
         draw_density(data[1], state, ctx);
     });
 
+    state.dispatcher.on("hover:bar.density", row => {
+        var points = canvas.selectAll(".point");
+        if(row === null) { points.classed("framed", false); return; }
+
+        console.log(points.empty());
+        console.log(points.filter(d => d === row).size());
+        points.filter(d => d === row).classed("framed", true);
+    })
+
     state.dispatcher.on("detail:bandwidth.density", data => {
         draw_density(state.output_data, state, ctx);
     });
@@ -120,8 +129,21 @@ function draw_density(data, state, ctx) {
         .attr("stroke-color", "white")
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .style("display", "none")
-        .on("mouseenter", d => { state.dispatcher.call("hover:point", this, d); })
-        .on("mouseleave", d => { state.dispatcher.call("hover:point", this, [null, null]); });
+        .on("mouseenter", d => {
+            state.dispatcher.call("hover:point", this, d);
+            canvas.append("circle")
+                .classed("eps-neighborhood", true)
+                .attr("cx", ctx.x(d[0]))
+                .attr("cy", ctx.y(d[1]))
+                .attr("r", eps)
+                .attr("fill", "red")
+                .style("pointer-events", "none")
+                .style("opacity", 0.3);
+        })
+        .on("mouseleave", d => {
+            canvas.select(".eps-neighborhood").remove();
+            state.dispatcher.call("hover:point", this, [null, null]);
+        });
 
     points.exit().remove();
 
@@ -779,6 +801,7 @@ function draw_heat(data, state,ctx) {
     state.dispatcher.call("drawn");
 } // }}}
 
+// setup_scented_widget {{{
 function setup_scented_widget(state) {
     var canvas = d3.select("#scented-widget"),
         style = window.getComputedStyle(document.getElementById("scented-widget")),
@@ -803,8 +826,9 @@ function setup_scented_widget(state) {
     state.dispatcher.on("data:change.widget config:changed.widget", data => {
         draw_scented_widget(data[1], state, ctx);
     });
-}
+} // }}}
 
+// draw_scented_widget {{{
 function draw_scented_widget(data, state, ctx) {
     var canvas = d3.select("#scented-widget"),
         cluster_noise = data.reduce((acc, x) => {
@@ -836,7 +860,7 @@ function draw_scented_widget(data, state, ctx) {
     ctx.y.domain(ctx.y.domain().reverse());
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
-}
+} // }}}
 
 function do_the_things() {//{{{
     state = {

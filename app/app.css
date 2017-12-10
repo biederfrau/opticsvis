@@ -163,9 +163,9 @@ textarea {
     opacity: 1;
 }
 
-.bar.framed2 {
-    stroke: black;
-    stroke-width: 2;
+.point.framed {
+    stroke: black !important;
+    stroke-width: 2 !important;
     opacity: 1;
 }
 
