@@ -1,5 +1,5 @@
 const noisecolor="grey";
-const interpolator="Rainbow";
+const interpolator="Cool";
 const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
 const tooltip = d3.select("body")
