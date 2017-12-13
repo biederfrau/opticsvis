@@ -91,8 +91,8 @@ function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateYlGnBu);
 
-    ctx.x.domain([0, d3.max(data, x => x[0])]).nice();
-    ctx.y.domain([0, d3.max(data, x => x[1])]).nice();
+    ctx.x.domain(d3.extent(data, x => x[0])).nice();
+    ctx.y.domain(d3.extent(data, x => x[1])).nice();
 
     var length_1_x = ctx.x(1) - ctx.x(0),
         length_1_y = ctx.y(0) - ctx.y(1);
@@ -156,7 +156,6 @@ function draw_density(data, state, ctx) {
         .cells(5)
         .labels(["low", "", "mid", "", "high"])
         .orient("vertical")
-        .labelFormat(d3.format(".04f"))
         .ascending(true)
         .scale(color);
 
@@ -193,7 +192,7 @@ function setup_reach(state) {
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
 
 //TODO: adjust x tickmarks
-    var x = d3.scaleBand().rangeRound([margins.left, width - margins.right]).padding(0.2);
+    var x = d3.scaleBand().range([margins.left, width - margins.right]).padding(0.2);
     y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
 
     canvas.append("g").classed("data", true);
@@ -585,8 +584,8 @@ function draw_jumps(data, state,ctx) {
     var canvas = d3.select("#jumps"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
-    ctx.x.domain([0, d3.max(data, x => x[0])]).nice();
-    ctx.y.domain([0, d3.max(data, x => x[1])]).nice();
+    ctx.x.domain(d3.extent(data, x => x[0])).nice();
+    ctx.y.domain(d3.extent(data, x => x[1])).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
