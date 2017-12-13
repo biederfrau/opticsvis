@@ -1,5 +1,5 @@
 const noisecolor="grey";
-const interpolator="Cool";
+const interpolator="Rainbow";
 const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
 const tooltip = d3.select("body")
@@ -58,6 +58,8 @@ function setup_density(state) {
         .attr("stroke", "black")
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round");
+
+    canvas.selectAll("text").raise();
 
     canvas.append("g")
         .classed("legend", true)
