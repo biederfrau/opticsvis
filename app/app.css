@@ -69,10 +69,11 @@ svg text {
     width: 100vw;
     height: 100vh;
     background-color: #efefef;
-    z-index: 1000;
+    z-index: 555;
 }
 
 div.ui-bar {
+    z-index: 666;
     position: absolute;
     right: 0px;
     top: 0px;
@@ -191,4 +192,48 @@ textarea {
 
 #scented-widget {
     width: 30vw;
+}
+
+button.tree-button {
+    position: absolute;
+    top: 1em;
+    left: 76.8vw;
+    padding: 0.2em;
+}
+
+span.tree {
+    font-size: 25px;
+    color: green;
+}
+
+div.dendrogram-overlay {
+    opacity: 0.8;
+    width: 75.6vw;
+    height: 96.9vh;
+    position: absolute;
+    top: 0.9vh;
+}
+
+/* https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b */
+.node circle {
+  fill: #999;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.node--internal circle {
+  fill: #555;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
 }

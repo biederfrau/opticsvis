@@ -30,6 +30,48 @@ function filter(state) {
     state.dispatcher.call("filter", this, data);
 }
 
+function generate_hierarchy(data) {
+    var distances = data.map(d => d.distance).sort((a, b) => b - a),
+        clusterings = [],
+        old_cutoff1 = cutoff1,
+        old_cutoff2 = cutoff2;
+
+    // gather different clusterings
+    distances.forEach(dist => {
+        setcutoff(dist);
+        reCalculateClusters();
+
+        var clustering = data.map(d => d.tag),
+            diff = _.difference(clustering, _.last(clusterings));
+
+        clustering.dist = dist;
+        if(diff.length !== 0 && !_.isEqual(diff, [-1])) {
+            clusterings.push(clustering);
+        }
+    });
+
+    // only take the first 10 levels as dendogram gets too large otherwise
+    clusterings = _.take(clusterings, 10);
+
+    var edges = [];
+    _.range(0, data.length).forEach(i => {
+        var str = "";
+        _.range(0, clusterings.length).forEach(j => {
+            if(clusterings[j][i] === -1) { return; }
+            str += (str === '' ? '' : '.') + clusterings[j][i];
+
+            edges.push(str);
+        });
+    });
+
+    setcutoffs(old_cutoff1, old_cutoff2);
+    reCalculateClusters();
+
+    return _.uniq(edges).map(x => {
+        return { id: x };
+    });
+}
+
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f <- density estimation
 // https://bl.ocks.org/skokenes/a85800be6d89c76c1ca98493ae777572 <- lassoing
 // setup_density {{{
@@ -883,6 +925,64 @@ function draw_scented_widget(data, state, ctx) {
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 } // }}}
 
+// https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b
+function setup_dendrogram(state) {
+    var style = window.getComputedStyle(document.getElementById("dendro")),
+        margins = {"left": 35, "right": 20, "top": 30, "bottom": 25},
+        width = parseFloat(style.width),
+        height = parseFloat(style.height);
+
+    var ctx = { "margins": margins, "width": width, "height": height };
+    draw_dendrogram(state.output_data, state, ctx);
+
+    state.dispatcher.on("data:change.dendro", data => {
+        draw_dendrogram(data[1], state, ctx);
+    });
+}
+
+function draw_dendrogram(data, state, ctx) {
+    var canvas = d3.select('#dendro');
+    canvas.selectAll("g *").remove();
+
+    var cluster = d3.cluster().size([ctx.height, ctx.width - ctx.margins.left - ctx.margins.right]),
+        stratify = d3.stratify().parentId(d => d.id.substring(0, d.id.lastIndexOf('.'))),
+        hierarchy = generate_hierarchy(data);
+
+    var root = stratify(hierarchy).sort((a, b) => a.height - b.height);
+    cluster(root);
+
+    var g = canvas.append("g").attr("transform", "translate(" + [ctx.margins.left, 0] + ")");
+
+    var links = g.selectAll(".link").data(root.descendants().slice(1));
+    links.enter()
+        .append("path").attr("class", "link").merge(links)
+        .attr("d", function(d) {
+            return "M" + d.y + "," + d.x
+                + "C" + (d.parent.y + 100) + "," + d.x
+                + " " + (d.parent.y + 100) + "," + d.parent.x
+                + " " + d.parent.y + "," + d.parent.x;
+        });
+
+    links.exit().remove();
+
+    var nodes = g.selectAll(".node").data(root.descendants());
+
+    nodes = nodes.enter().append("g")
+        .merge(nodes)
+        .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+    nodes.append("circle").attr("r", 2.5);
+
+    nodes.append("text")
+        .attr("dy", 3)
+        .attr("x", function(d) { return d.children ? -8 : 8; })
+        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+        .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
+
+    nodes.exit().remove();
+}
+
 function do_the_things() {//{{{
     state = {
         dispatcher: d3.dispatch(
@@ -891,15 +991,16 @@ function do_the_things() {//{{{
             "hover:bar", "detail:bandwidth", "size"
         ),
         start: performance.now(),
-        thinking: function(n = 4) {
+        thinking: function(n = 5) {
             d3.selectAll(".loading").style("display", undefined);
+            $('.loading').show();
 
             waiter = n;
             this.dispatcher.on("drawn", _e => {
                 waiter -= 1;
 
                 if(waiter == 0) {
-                    d3.selectAll(".loading").style("display", "none");
+                    $('.loading').hide();
                     console.log("finished waiting at " + _.round(performance.now() - state.start, 2) + "ms");
                 }
             });
@@ -943,6 +1044,7 @@ function do_the_things() {//{{{
             .map(_.trim).filter(line => line !== "")
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
 
+        state.thinking();
         compute(data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
@@ -968,6 +1070,8 @@ function do_the_things() {//{{{
     $("input#minpts").on("change", function() {
         if($(this).val() === "") { return; }
         setminPTS(+$(this).val());
+
+        state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
@@ -976,6 +1080,8 @@ function do_the_things() {//{{{
     $("input#eps").on("change", function() {
         if($(this).val() === "") { return; }
         seteps(+$(this).val());
+
+        state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
@@ -983,6 +1089,7 @@ function do_the_things() {//{{{
     $("input#eps").on("input", function() {
         if($(this).val() === "") { return; }
         seteps(+$(this).val());
+
         compute(state.input_data, state);
         state.dispatcher.call("config:changed", this, [state.input_data, state.output_data]);
     })
@@ -991,12 +1098,18 @@ function do_the_things() {//{{{
     $("input#inf").on("change", function() {
         if($(this).val() === "") { return; }
         setmaxdist(+$(this).val());
+
+        state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
+
+    $('.tree-button').on('click', () => {
+        $('.dendrogram-overlay').toggle();
+    });
     // }}}
 
-    // state.thinking(5);
+    state.thinking(5);
     var ssv = d3.dsvFormat(" ");
     d3.request("default.dat")
         .mimeType("text/plain")
@@ -1013,11 +1126,15 @@ function do_the_things() {//{{{
             setup_heat(state);
             setup_scented_widget(state);
 
+            setup_dendrogram(state);
+
             $("input#minpts").attr("max", state.input_data.length);
             var datalist = $("#minpts-div datalist");
             for(i = 1; i < state.input_data.length; ++i) {
                 datalist.append('<option value="' + i + '"' + (i % 5 === 0 ? 'label="' + i + '"' : '') + '>');
             }
+
+            $('.dendrogram-overlay').hide();
     });
 }//}}}
 // vim: set ts=4 sw=4 tw=0 et :
