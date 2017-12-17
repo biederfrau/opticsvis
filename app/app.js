@@ -406,6 +406,12 @@ function cutoffchanged(state){
 
     state.dispatcher.call("size",this,[state.input_data,state.output_data]);
 
+    // dirty hack to avoid transition when filtering, only show when dragging and not constantly
+    // retrigger (as cutoffchanged is constantly called while dragging)
+    d3.selectAll(".bar").style("transition", "fill 500ms").transition().duration(500).on("end", () => {
+        d3.selectAll(".bar").style("transition", undefined);
+    });
+
     var rects = d3.select("#reach").select(".data").selectAll(".bar");
     rects.data(state.output_data)
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
@@ -990,11 +996,11 @@ function setup_dendrogram(state) {
     draw_dendrogram(state.output_data, state, ctx);
 
     canvas.on("dblclick", () => {
-        // canvas.transition().duration(750).attr("width", 0).on("end", () => {
-            // $('.dendrogram-overlay').hide()
-            // canvas.attr("width", width);
-        // });
+        canvas.transition().duration(750).attr("width", 0).on("end", () => {
             $('.dendrogram-overlay').hide()
+            canvas.attr("width", width);
+        });
+            // $('.dendrogram-overlay').hide()
     });
 
     state.dispatcher.on("data:change.dendro", data => {
@@ -1002,8 +1008,8 @@ function setup_dendrogram(state) {
     });
 
     state.dispatcher.on("toggle:dendrogram", () => {
-        // canvas.attr("width", 0);
-        // canvas.transition().duration(750).attr("width", width);
+        canvas.attr("width", 0);
+        canvas.transition().duration(750).attr("width", width);
     });
 }//}}}
 

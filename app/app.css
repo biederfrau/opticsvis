@@ -206,6 +206,10 @@ span.tree {
     color: green;
 }
 
+.point {
+    transition: fill 500ms;
+}
+
 div.dendrogram-overlay {
     opacity: 0.9;
     width: 75.6vw;
