@@ -343,6 +343,12 @@ function setup_reach(state) {
     });
 
     state.dispatcher.on("filter.reach", data => {
+        if(state.selected_clusters.length === 0) {
+            canvas.selectAll(".cutoffhandle").style("cursor", undefined);
+        } else {
+            canvas.selectAll(".cutoffhandle").style("cursor", "not-allowed");
+        }
+
         draw_reach(data, state, ctx);
     });
 
@@ -360,6 +366,7 @@ function setup_reach(state) {
         .on("drag", dragged));
 
     function dragged(d) {
+        if(state.selected_clusters.length !== 0) { return; }
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y>scutoff2){
@@ -373,6 +380,7 @@ function setup_reach(state) {
     }
 
     function dragged2(d) {
+        if(state.selected_clusters.length !== 0) { return; }
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
         if(d3.event.y<scutoff1){

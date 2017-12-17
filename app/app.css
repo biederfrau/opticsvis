@@ -231,6 +231,10 @@ div.dendrogram-overlay {
     opacity: 0.5;
 }
 
+.cutoffhandle {
+    cursor: move;
+}
+
 #reach .xaxis .tick line {
     visibility: hidden;
 }
