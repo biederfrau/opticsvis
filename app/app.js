@@ -135,7 +135,7 @@ function setup_density(state) {
         draw_density(data[1], state, ctx);
     });
 
-    state.dispatcher.on("hover:bar.density", row => {
+    state.dispatcher.on("hover:bar.density hover:point.density", row => {
         var points = canvas.selectAll(".point"),
             length_1_x = (x(x.domain()[1]) - x(x.domain()[0])) / (x.domain()[1] - x.domain()[0]),
             length_1_y = (y(y.domain()[0]) - y(y.domain()[1])) / (y.domain()[1] - y.domain()[0]);
@@ -210,7 +210,7 @@ function draw_density(data, state, ctx) {
         .on("mouseenter", d => {
             state.dispatcher.call("hover:point", this, d);
         }).on("mouseleave", d => {
-            state.dispatcher.call("hover:point", this, [null, null]);
+            state.dispatcher.call("hover:point", this, null);
         });
 
     points.exit().remove();

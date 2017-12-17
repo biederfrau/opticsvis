@@ -177,9 +177,10 @@ textarea {
 }
 
 .point.framed {
-    stroke: black !important;
-    stroke-width: 2 !important;
+    /* stroke: black !important; */
+    /* stroke-width: 2 !important; */
     opacity: 1;
+    r: 10;
 }
 
 #size .bar:hover {
@@ -232,7 +233,7 @@ div.dendrogram-overlay {
 }
 
 .clustering-group {
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .cutoffhandle {
