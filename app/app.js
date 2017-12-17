@@ -144,6 +144,28 @@ function setup_density(state) {
     state.dispatcher.on("detail:bandwidth.density", data => {
         draw_density(state.output_data, state, ctx);
     });
+
+    state.dispatcher.on("hover:point", row => {
+        var length_1_x = ctx.x(1) - ctx.x(0),
+            length_1_y = ctx.y(0) - ctx.y(1);
+
+        if(row[0] === null && row[1] === null) {
+            canvas.select(".eps-neighborhood").remove();
+            return;
+        }
+
+        canvas.insert("ellipse", "circle")
+            .classed("eps-neighborhood", true)
+            .attr("cx", ctx.x(row[0]))
+            .attr("cy", ctx.y(row[1]))
+            .attr("rx", eps * length_1_x)
+            .attr("ry", eps * length_1_y)
+            .attr("fill", "grey")
+            .style("pointer-events", "none")
+            .style("opacity", 0.15)
+            .style("stroke", "black")
+            .style("stroke-width", 2);
+    });
 } // }}}
 
 // draw_density {{{
@@ -153,9 +175,6 @@ function draw_density(data, state, ctx) {
 
     ctx.x.domain(d3.extent(data, x => x[0])).nice();
     ctx.y.domain(d3.extent(data, x => x[1])).nice();
-
-    var length_1_x = ctx.x(1) - ctx.x(0),
-        length_1_y = ctx.y(0) - ctx.y(1);
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
@@ -191,20 +210,7 @@ function draw_density(data, state, ctx) {
         .style("display", "none")
         .on("mouseenter", d => {
             state.dispatcher.call("hover:point", this, d);
-            canvas.insert("ellipse", "circle")
-                .classed("eps-neighborhood", true)
-                .attr("cx", ctx.x(d[0]))
-                .attr("cy", ctx.y(d[1]))
-                .attr("rx", eps * length_1_x)
-                .attr("ry", eps * length_1_y)
-                .attr("fill", "grey")
-                .style("pointer-events", "none")
-                .style("opacity", 0.15)
-                .style("stroke", "black")
-                .style("stroke-width", 2);
-        })
-        .on("mouseleave", d => {
-            canvas.select(".eps-neighborhood").remove();
+        }).on("mouseleave", d => {
             state.dispatcher.call("hover:point", this, [null, null]);
         });
 
@@ -435,6 +441,7 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
+            state.dispatcher.call("hover:point", this, d);
             tooltip.text("Reachability Distance: "+_.round(d.distance, 2));
             return tooltip.style("visibility", "visible");
         })
@@ -444,6 +451,7 @@ function draw_reach(data, state, ctx) {
         })
         .on("mouseout", function () {
             state.dispatcher.call("hover:bar", this, null);
+            state.dispatcher.call("hover:point", this, [null, null]);
             return tooltip.style("visibility", "hidden");
         });
     bars.exit().remove();
