@@ -545,6 +545,7 @@ function draw_clusters(data, state, ctx) {
             return tooltip.style("visibility", "hidden");
         })
         .on("click", function(d, i, e) {
+            if(+d.key === -1) { return; }
             var bar = d3.select(this),
                 selected = !bar.classed("selected");
 
