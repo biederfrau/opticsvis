@@ -154,6 +154,7 @@ function setup_density(state) {
             return;
         }
 
+        if(canvas.selectAll(".point").style("display") === "none") { return; }
         canvas.insert("ellipse", "circle")
             .classed("eps-neighborhood", true)
             .attr("cx", ctx.x(row[0]))
