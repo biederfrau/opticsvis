@@ -56,7 +56,7 @@ function generate_hierarchy(data) {
         // }
     });
 
-    // only take the first 10 levels as dendogram gets too large otherwise
+    // only take the first 10 levels as dendrogram gets too large otherwise
     clusterings = _.take(clusterings, 10);
 
     var edges = [];
@@ -250,6 +250,14 @@ function setup_reach(state) {
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to show a (partial) dendrogram instead.")
+        .style("font-size", "12px").attr("text-anchor", "middle");
+
+    canvas.on("dblclick", () => {
+        state.dispatcher.call("toggle:dendrogram");
+        $(".dendrogram-overlay").show()
+    });
 
 //TODO: adjust x tickmarks
     var x = d3.scaleBand().range([margins.left, width - margins.right]).padding(0.2);
@@ -516,6 +524,7 @@ function draw_clusters(data, state, ctx) {
         .attr("width", ctx.x.bandwidth())
         .attr("height", d => ctx.y(d.value))
         .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(d.key))
+        .attr("cursor", d => d.key == -1 ? "not-allowed" : undefined)
         .on("mouseover", function (d) {
             tooltip.text("Size: "+d.value+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v).length);
             return tooltip.style("visibility", "visible");
@@ -966,8 +975,21 @@ function setup_dendrogram(state) {
     var ctx = { "margins": margins, "width": width, "height": height };
     draw_dendrogram(state.output_data, state, ctx);
 
+    canvas.on("dblclick", () => {
+        // canvas.transition().duration(750).attr("width", 0).on("end", () => {
+            // $('.dendrogram-overlay').hide()
+            // canvas.attr("width", width);
+        // });
+            $('.dendrogram-overlay').hide()
+    });
+
     state.dispatcher.on("data:change.dendro", data => {
         draw_dendrogram(data[1], state, ctx);
+    });
+
+    state.dispatcher.on("toggle:dendrogram", () => {
+        // canvas.attr("width", 0);
+        // canvas.transition().duration(750).attr("width", width);
     });
 }//}}}
 
@@ -1057,7 +1079,8 @@ function do_the_things() {//{{{
         dispatcher: d3.dispatch(
             "drawn", "filter", "data:change", "config:changed",
             "select:points", "select:clusters", "select:range", "hover:point",
-            "hover:bar", "detail:bandwidth", "size", "select:level"
+            "hover:bar", "detail:bandwidth", "size", "select:level",
+            "toggle:dendrogram"
         ),
         start: performance.now(),
         thinking: function(n = 5) {

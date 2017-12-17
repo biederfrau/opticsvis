@@ -230,3 +230,7 @@ div.dendrogram-overlay {
 .clustering-group {
     opacity: 0.5;
 }
+
+#reach .xaxis .tick line {
+    visibility: hidden;
+}
