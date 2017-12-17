@@ -5,7 +5,8 @@ const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 const tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
-    .text("a simple tooltip");
+    .text("a simple tooltip")
+    .style("pointer-events", "none");
 
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
