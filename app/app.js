@@ -136,25 +136,18 @@ function setup_density(state) {
     });
 
     state.dispatcher.on("hover:bar.density", row => {
-        var points = canvas.selectAll(".point");
-        if(row === null) { points.classed("framed", false); return; }
-        points.filter(d => d === row).classed("framed", true);
-    });
-
-    state.dispatcher.on("detail:bandwidth.density", data => {
-        draw_density(state.output_data, state, ctx);
-    });
-
-    state.dispatcher.on("hover:point", row => {
-        var length_1_x = (x(x.domain()[1]) - x(x.domain()[0])) / (x.domain()[1] - x.domain()[0]),
+        var points = canvas.selectAll(".point"),
+            length_1_x = (x(x.domain()[1]) - x(x.domain()[0])) / (x.domain()[1] - x.domain()[0]),
             length_1_y = (y(y.domain()[0]) - y(y.domain()[1])) / (y.domain()[1] - y.domain()[0]);
 
-        if(row[0] === null && row[1] === null) {
+        if(row === null || canvas.selectAll(".point").style("display") === "none") {
             canvas.select(".eps-neighborhood").remove();
+            points.classed("framed", false);
             return;
         }
 
-        if(canvas.selectAll(".point").style("display") === "none") { return; }
+        points.filter(d => d === row).classed("framed", true);
+
         canvas.insert("ellipse", "circle")
             .classed("eps-neighborhood", true)
             .attr("cx", ctx.x(row[0]))
@@ -167,6 +160,11 @@ function setup_density(state) {
             .style("stroke", "black")
             .style("stroke-width", 2);
     });
+
+    state.dispatcher.on("detail:bandwidth.density", data => {
+        draw_density(state.output_data, state, ctx);
+    });
+
 } // }}}
 
 // draw_density {{{
@@ -442,7 +440,6 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
-            state.dispatcher.call("hover:point", this, d);
             tooltip.text("Reachability Distance: "+_.round(d.distance, 2));
             return tooltip.style("visibility", "visible");
         })
@@ -452,7 +449,6 @@ function draw_reach(data, state, ctx) {
         })
         .on("mouseout", function () {
             state.dispatcher.call("hover:bar", this, null);
-            state.dispatcher.call("hover:point", this, [null, null]);
             return tooltip.style("visibility", "hidden");
         });
     bars.exit().remove();
@@ -468,7 +464,7 @@ function draw_reach(data, state, ctx) {
     d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
     d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
 
-    state.dispatcher.on("select:level", () => {
+    state.dispatcher.on("select:level.reach", () => {
         scutoff1=barbottom-ctx.y(max-getcutoff1());
         scutoff2=barbottom-ctx.y(max-getcutoff2());
         d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
