@@ -207,7 +207,7 @@ span.tree {
 }
 
 div.dendrogram-overlay {
-    opacity: 0.8;
+    opacity: 0.9;
     width: 75.6vw;
     height: 96.9vh;
     position: absolute;
@@ -215,20 +215,9 @@ div.dendrogram-overlay {
 }
 
 /* https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b */
-.node circle {
-  fill: #999;
-}
 
 .node text {
   font: 10px sans-serif;
-}
-
-.node--internal circle {
-  fill: #555;
-}
-
-.node--internal text {
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
 
 .link {
@@ -236,4 +225,8 @@ div.dendrogram-overlay {
   stroke: #555;
   stroke-opacity: 0.4;
   stroke-width: 1.5px;
+}
+
+.clustering-group {
+    opacity: 0.5;
 }

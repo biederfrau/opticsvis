@@ -1,5 +1,5 @@
 const noisecolor="grey";
-const interpolator="Cool";
+const interpolator="Rainbow";
 const colorScale = d3.scaleSequential(d3["interpolate" + interpolator]);
 
 const tooltip = d3.select("body")
@@ -30,11 +30,14 @@ function filter(state) {
     state.dispatcher.call("filter", this, data);
 }
 
+// generate_hierarchy {{{
 function generate_hierarchy(data) {
-    var distances = data.map(d => d.distance).sort((a, b) => b - a),
+    var distances = _.uniq(data.map(d => d.distance).sort((a, b) => b - a)),
         clusterings = [],
         old_cutoff1 = cutoff1,
         old_cutoff2 = cutoff2;
+
+    distances.shift();
 
     // gather different clusterings
     distances.forEach(dist => {
@@ -48,6 +51,10 @@ function generate_hierarchy(data) {
         if(diff.length !== 0 && !_.isEqual(diff, [-1])) {
             clusterings.push(clustering);
         }
+
+        // if(!_.isEqual(clustering, _.last(clusterings))) {
+            // clusterings.push(clustering)
+        // }
     });
 
     // only take the first 10 levels as dendogram gets too large otherwise
@@ -64,13 +71,23 @@ function generate_hierarchy(data) {
         });
     });
 
+    var aggregated_edges = edges.reduce((acc, edge) => {
+        var level = +_.sumBy(edge, c => c === '.'),
+            total_at_this_level = _.max(clusterings[level]) + 1;
+
+        if(!acc[edge]) { acc[edge] = [level, 0, total_at_this_level, clusterings[level].dist]; }
+        acc[edge][1] += 1;
+
+        return acc;
+    }, {});
+
     setcutoffs(old_cutoff1, old_cutoff2);
     reCalculateClusters();
 
-    return _.uniq(edges).map(x => {
-        return { id: x };
+    return _.toPairs(aggregated_edges).map(a => {
+        return { id: a[0], level: a[1][0], count: a[1][1], total: a[1][2], dist: a[1][3] };
     });
-}
+} // }}}
 
 // https://bl.ocks.org/mbostock/7f5f22524bd1d824dd53c535eda0187f <- density estimation
 // https://bl.ocks.org/skokenes/a85800be6d89c76c1ca98493ae777572 <- lassoing
@@ -345,7 +362,7 @@ function setup_reach(state) {
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
         scutoff1=d3.event.y;
         setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
-        cutoffchanged();
+        cutoffchanged(state);
     }
 
     function dragged2(d) {
@@ -358,31 +375,31 @@ function setup_reach(state) {
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
         scutoff2=d3.event.y;
         setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
-        cutoffchanged();
+        cutoffchanged(state);
     }
+} // }}}
 
-    function cutoffchanged(){
-        reCalculateClusters();
-        state.clustersizes= getClusterSizes(state.output_data);
-        colorScale.domain([0, state.clustersizes.length-1]);
+function cutoffchanged(state){
+    reCalculateClusters();
+    state.clustersizes= getClusterSizes(state.output_data);
+    colorScale.domain([0, state.clustersizes.length-1]);
 
-        state.dispatcher.call("size",this,[state.input_data,state.output_data]);
+    state.dispatcher.call("size",this,[state.input_data,state.output_data]);
 
-        var rects = d3.select("#reach").select(".data").selectAll(".bar");
-        rects.data(state.output_data)
-            .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+    var rects = d3.select("#reach").select(".data").selectAll(".bar");
+    rects.data(state.output_data)
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
 
-        var points = d3.select("#density").selectAll(".point");
-        if(!points.empty()){
-            points.data(state.output_data)
-                .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
-        }
-
-        points = d3.select("#jumps").selectAll(".point");
+    var points = d3.select("#density").selectAll(".point");
+    if(!points.empty()){
         points.data(state.output_data)
             .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
     }
-} // }}}
+
+    points = d3.select("#jumps").selectAll(".point");
+    points.data(state.output_data)
+        .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
+}
 
 // draw_reach {{{
 function draw_reach(data, state, ctx) {
@@ -426,6 +443,13 @@ function draw_reach(data, state, ctx) {
 
     d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
     d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
+
+    state.dispatcher.on("select:level", () => {
+        scutoff1=barbottom-ctx.y(max-getcutoff1());
+        scutoff2=barbottom-ctx.y(max-getcutoff2());
+        d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
+        d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
+    });
 
     state.dispatcher.call("drawn");
 } // }}}
@@ -925,12 +949,20 @@ function draw_scented_widget(data, state, ctx) {
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 } // }}}
 
+// setup_dendrogram {{{
 // https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b
 function setup_dendrogram(state) {
-    var style = window.getComputedStyle(document.getElementById("dendro")),
-        margins = {"left": 35, "right": 20, "top": 30, "bottom": 25},
+    var canvas = d3.select("#dendro"),
+        style = window.getComputedStyle(document.getElementById("dendro")),
+        margins = {"left": 55, "right": 55, "top": 30, "bottom": 25},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
+
+    canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
+        .text("Dendrogram").style("font-weight", "bold").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: does not represent all clusterings.")
+        .style("font-size", "12px").attr("text-anchor", "middle");
 
     var ctx = { "margins": margins, "width": width, "height": height };
     draw_dendrogram(state.output_data, state, ctx);
@@ -938,20 +970,21 @@ function setup_dendrogram(state) {
     state.dispatcher.on("data:change.dendro", data => {
         draw_dendrogram(data[1], state, ctx);
     });
-}
+}//}}}
 
+// draw_dendrogram {{{
 function draw_dendrogram(data, state, ctx) {
     var canvas = d3.select('#dendro');
     canvas.selectAll("g *").remove();
 
-    var cluster = d3.cluster().size([ctx.height, ctx.width - ctx.margins.left - ctx.margins.right]),
+    var cluster = d3.cluster().size([ctx.height - ctx.margins.top - ctx.margins.bottom, ctx.width - ctx.margins.left - ctx.margins.right]),
         stratify = d3.stratify().parentId(d => d.id.substring(0, d.id.lastIndexOf('.'))),
         hierarchy = generate_hierarchy(data);
 
     var root = stratify(hierarchy).sort((a, b) => a.height - b.height);
     cluster(root);
 
-    var g = canvas.append("g").attr("transform", "translate(" + [ctx.margins.left, 0] + ")");
+    var g = canvas.append("g").attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
 
     var links = g.selectAll(".link").data(root.descendants().slice(1));
     links.enter()
@@ -969,26 +1002,63 @@ function draw_dendrogram(data, state, ctx) {
 
     nodes = nodes.enter().append("g")
         .merge(nodes)
-        .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+        .attr("class", function(d) { return "node level-" + d.data.level; })
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-    nodes.append("circle").attr("r", 2.5);
+    var circle_range = d3.scaleLinear().range([5, 20]).domain([0, state.output_data.length]),
+        color = d3.scaleSequential(d3["interpolate" + interpolator]);
 
-    nodes.append("text")
-        .attr("dy", 3)
-        .attr("x", function(d) { return d.children ? -8 : 8; })
-        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-        .text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
+    nodes.append("circle")
+        .attr("r", d => circle_range(d.data.count))
+        .attr("fill", d => {
+            color.domain([0, d.data.total]);
+            return color(d.id.substring(d.id.lastIndexOf(".") + 1));
+        })
+        .style("pointer-events", "none");
+
+    _.range(0, root.height + 1).forEach(level => {
+        var min, max, x, cutoff;
+        canvas.selectAll(".level-" + level + ' circle').each(d => {
+            x = d.y;
+            cutoff = d.data.dist;
+            if(!min || !max) { min = max = d.x; }
+            if(d.x < min) { min = d.x; }
+            if(d.x > max) { max = d.x; }
+        })
+
+        g.insert("rect", ".node")
+            .classed("clustering-group", true)
+            .attr("fill", "silver")
+            .attr("rx", 10)
+            .attr("ry", 10)
+            .attr("x", x - 25)
+            .attr("y", min - 40)
+            .attr("height", max - min + 80)
+            .attr("width", 50)
+            .style("opacity", 0)
+            .on("mouseenter", function() {
+                console.log(cutoff);
+                d3.select(this).style("opacity", undefined);
+            })
+            .on("mouseleave", function() {
+                d3.select(this).style("opacity", 0);
+            })
+            .on("click", () => {
+                setcutoffs(cutoff, cutoff);
+                cutoffchanged(state);
+                state.dispatcher.call("select:level");
+            });
+    });
 
     nodes.exit().remove();
-}
+}//}}}
 
 function do_the_things() {//{{{
     state = {
         dispatcher: d3.dispatch(
             "drawn", "filter", "data:change", "config:changed",
             "select:points", "select:clusters", "select:range", "hover:point",
-            "hover:bar", "detail:bandwidth", "size"
+            "hover:bar", "detail:bandwidth", "size", "select:level"
         ),
         start: performance.now(),
         thinking: function(n = 5) {
