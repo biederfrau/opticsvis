@@ -146,8 +146,8 @@ function setup_density(state) {
     });
 
     state.dispatcher.on("hover:point", row => {
-        var length_1_x = ctx.x(1) - ctx.x(0),
-            length_1_y = ctx.y(0) - ctx.y(1);
+        var length_1_x = (x(x.domain()[1]) - x(x.domain()[0])) / (x.domain()[1] - x.domain()[0]),
+            length_1_y = (y(y.domain()[0]) - y(y.domain()[1])) / (y.domain()[1] - y.domain()[0]);
 
         if(row[0] === null && row[1] === null) {
             canvas.select(".eps-neighborhood").remove();
