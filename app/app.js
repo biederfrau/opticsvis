@@ -953,14 +953,14 @@ function draw_scented_widget(data, state, ctx) {
 function setup_dendrogram(state) {
     var canvas = d3.select("#dendro"),
         style = window.getComputedStyle(document.getElementById("dendro")),
-        margins = {"left": 55, "right": 55, "top": 30, "bottom": 25},
+        margins = {"left": 55, "right": 55, "top": 50, "bottom": 25},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Dendrogram").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: does not represent all clusterings.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: only represents first 10 levels, and only those that have more clusters than their predecessor.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     var ctx = { "margins": margins, "width": width, "height": height };
