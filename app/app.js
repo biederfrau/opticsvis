@@ -37,8 +37,6 @@ function generate_hierarchy(data) {
         old_cutoff1 = cutoff1,
         old_cutoff2 = cutoff2;
 
-    distances.shift();
-
     // gather different clusterings
     distances.forEach(dist => {
         setcutoff(dist);
@@ -382,7 +380,7 @@ function setup_reach(state) {
 function cutoffchanged(state){
     reCalculateClusters();
     state.clustersizes= getClusterSizes(state.output_data);
-    colorScale.domain([0, state.clustersizes.length-1]);
+    colorScale.domain([0, state.clustersizes.length === 1 ? 1 : state.clustersizes.length-1]);
 
     state.dispatcher.call("size",this,[state.input_data,state.output_data]);
 
