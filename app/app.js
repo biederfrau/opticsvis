@@ -1155,6 +1155,14 @@ function do_the_things() {//{{{
 
         state.thinking();
         compute(data, state);
+
+        $("input#minpts").attr("max", state.input_data.length);
+        var datalist = $("#minpts-div datalist");
+        datalist.empty();
+        for(i = 1; i < state.input_data.length; ++i) {
+            datalist.append('<option value="' + i + '">');
+        }
+
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
 
