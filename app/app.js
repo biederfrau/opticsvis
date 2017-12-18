@@ -1016,7 +1016,7 @@ function draw_dendrogram(data, state, ctx) {
     var canvas = d3.select('#dendro');
     canvas.selectAll("g *").remove();
 
-    var cluster = d3.cluster().size([ctx.height - ctx.margins.top - ctx.margins.bottom, ctx.width - ctx.margins.left - ctx.margins.right]),
+    var cluster = d3.tree().size([ctx.height - ctx.margins.top - ctx.margins.bottom, ctx.width - ctx.margins.left - ctx.margins.right]),
         stratify = d3.stratify().parentId(d => d.id.substring(0, d.id.lastIndexOf('.'))),
         hierarchy = generate_hierarchy(data);
 
