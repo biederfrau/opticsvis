@@ -324,8 +324,6 @@ function setup_reach(state) {
 
     var lassoed = false;
     state.dispatcher.on("select:points.reach", points => {
-        console.log("lassoed", lassoed)
-        console.log("points", points.length)
         var bars = canvas.selectAll(".bar");
         bars.classed("highlighted-lasso", false);
         if(lassoed && points.length == 0) { lassoed = false; bars.classed("not-highlighted-lasso", false); return; }
@@ -362,8 +360,8 @@ function setup_reach(state) {
         bars.classed("framed", false);
         bars.style("opacity", null);
 
+        if(p === null) { return; }
         var framed_bars = bars.filter(d => d[0] == p[0] && d[1] == p[1]).classed("framed", true);
-
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
@@ -436,7 +434,7 @@ function draw_reach(data, state, ctx) {
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
-    var bars = canvas.selectAll(".bar").data(data);
+    var bars = canvas.selectAll(".bar").data(data, d => d);
     var barbottom=ctx.height-ctx.margins.bottom;
     bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
@@ -536,7 +534,7 @@ function draw_clusters(data, state, ctx) {
     canvas.selectAll(".separator").remove();
 
     var barbottom=ctx.height-ctx.margins.bottom;
-    var bars = canvas.selectAll(".bar").data(data);
+    var bars = canvas.selectAll(".bar").data(data, d => d.key);
     bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
         .attr("y", d => barbottom-ctx.y(d.value))
@@ -1078,7 +1076,6 @@ function draw_dendrogram(data, state, ctx) {
             .attr("width", 50)
             .style("opacity", 0)
             .on("mouseenter", function() {
-                console.log(cutoff);
                 d3.select(this).style("opacity", undefined);
             })
             .on("mouseleave", function() {

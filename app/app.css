@@ -211,6 +211,10 @@ span.tree {
     transition: fill 500ms;
 }
 
+.bar {
+    transition: x 200ms;
+}
+
 div.dendrogram-overlay {
     opacity: 0.9;
     width: 75.6vw;
