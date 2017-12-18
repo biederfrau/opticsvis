@@ -411,7 +411,7 @@ function cutoffchanged(state){
     });
 
     var rects = d3.select("#reach").select(".data").selectAll(".bar");
-    rects.data(state.output_data)
+    rects.data(state.output_data, d => [d[0], d[1]])
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
 
     var points = d3.select("#density").selectAll(".point");
@@ -434,7 +434,7 @@ function draw_reach(data, state, ctx) {
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
-    var bars = canvas.selectAll(".bar").data(data, d => d);
+    var bars = canvas.selectAll(".bar").data(data, d => [d[0], d[1]]);
     var barbottom=ctx.height-ctx.margins.bottom;
     bars.enter().append("rect").classed("bar",true).merge(bars)
         .attr("x", (d, i) => ctx.x(i))
