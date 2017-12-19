@@ -32,7 +32,7 @@ function filter(state) {
 }
 
 // generate_hierarchy {{{
-function generate_hierarchy(data) {
+function generate_hierarchy(data, n) {
     var distances = _.uniq(data.map(d => d.distance).sort((a, b) => b - a)),
         clusterings = [],
         old_cutoff1 = cutoff1,
@@ -44,9 +44,10 @@ function generate_hierarchy(data) {
         reCalculateClusters();
 
         var clustering = data.map(d => d.tag),
-            diff = _.difference(clustering, _.last(clusterings));
+            diff = _.uniq(_.difference(clustering, _.last(clusterings)));
 
         clustering.dist = dist;
+        console.log(diff);
         if(diff.length !== 0 && !_.isEqual(diff, [-1])) {
             clusterings.push(clustering);
         }
@@ -56,8 +57,8 @@ function generate_hierarchy(data) {
         // }
     });
 
-    // only take the first 10 levels as dendrogram gets too large otherwise
-    clusterings = _.take(clusterings, 10);
+    // only take the first n levels as dendrogram gets too large otherwise
+    clusterings = _.take(clusterings, n);
 
     var edges = [];
     _.range(0, data.length).forEach(i => {
@@ -980,14 +981,17 @@ function draw_scented_widget(data, state, ctx) {
 function setup_dendrogram(state) {
     var canvas = d3.select("#dendro"),
         style = window.getComputedStyle(document.getElementById("dendro")),
-        margins = {"left": 55, "right": 55, "top": 50, "bottom": 25},
+        margins = {"left": 55, "right": 55, "top": 70, "bottom": 25},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
-        .text("Dendrogram").style("font-weight", "bold").attr("text-anchor", "middle");
+        .text("Modified Dendrogram").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: only represents first 10 levels, and only those that have more clusters than their predecessor.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: only represents a maximum of the first 30 levels, and only those that have more clusters than their predecessor.")
+        .style("font-size", "12px").attr("text-anchor", "middle");
+
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 28).text("Clusterings are drawn on the same level of the tree. Click to select a clustering.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     var ctx = { "margins": margins, "width": width, "height": height };
@@ -1018,7 +1022,7 @@ function draw_dendrogram(data, state, ctx) {
 
     var cluster = d3.tree().size([ctx.height - ctx.margins.top - ctx.margins.bottom, ctx.width - ctx.margins.left - ctx.margins.right]),
         stratify = d3.stratify().parentId(d => d.id.substring(0, d.id.lastIndexOf('.'))),
-        hierarchy = generate_hierarchy(data);
+        hierarchy = generate_hierarchy(data, 30);
 
     var root = stratify(hierarchy).sort((a, b) => a.height - b.height);
     cluster(root);
@@ -1030,8 +1034,8 @@ function draw_dendrogram(data, state, ctx) {
         .append("path").attr("class", "link").merge(links)
         .attr("d", function(d) {
             return "M" + d.y + "," + d.x
-                + "C" + (d.parent.y + 100) + "," + d.x
-                + " " + (d.parent.y + 100) + "," + d.parent.x
+                + "C" + (d.parent.y + (d.y - d.parent.y)/2) + "," + d.x
+                + " " + (d.parent.y + (d.y - d.parent.y)/2) + "," + d.parent.x
                 + " " + d.parent.y + "," + d.parent.x;
         });
 
