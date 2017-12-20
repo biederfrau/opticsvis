@@ -223,6 +223,10 @@ div.dendrogram-overlay {
     top: 0.9vh;
 }
 
+rect.rect {
+    shape-rendering: optimizeSpeed !important;
+}
+
 /* https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b */
 
 .node text {
