@@ -739,6 +739,19 @@ function setup_heat(state) {
     canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Actual distance between Points, ordered by the OPTICS output")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
+    var legendwidth=30;
+    var disttomap=10;
+    var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
+
+    var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
+    legend.append("stop").attr("offset", "0%").attr("stop-color", color.range()[1]);
+    legend.append("stop").attr("offset", "100%").attr("stop-color", color.range()[0]);
+    key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", margins.top).style("fill", "url(#gradient)");
+    var y = d3.scaleLinear().range([ innerheight, 0]);
+    key.append("g")
+        .attr("class", "yaxis")
+        .attr("transform", "translate("+legendwidth+","+margins.top+")");
+
     var heatmapcanvas=canvas.append("g").classed("transfromablemap", true).append("svg")
             .classed("heatmapcanvas", true)
             .attr("x", margins.left)
@@ -829,21 +842,7 @@ function setup_heat(state) {
             state.dispatcher.call("select:range", this, [index1, index2]);
         }
     }
-
-    var legendwidth=30;
-    var disttomap=10;
-    var key = canvas.append("svg").attr("width", legendwidth*2).attr("height", height).attr("x",width-margins.right+disttomap).attr("y",0);
-
-    var legend = canvas.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
-    legend.append("stop").attr("offset", "0%").attr("stop-color", color.range()[1]);
-    legend.append("stop").attr("offset", "100%").attr("stop-color", color.range()[0]);
-    key.append("rect").attr("width", legendwidth).attr("height", innerheight).attr("y", margins.top).style("fill", "url(#gradient)");
-    var y = d3.scaleLinear().range([ innerheight, 0]);
-    key.append("g")
-        .attr("class", "yaxis")
-        .attr("transform", "translate("+legendwidth+","+margins.top+")");
-
-
+    
     var ctx = {"y":y,"margins": margins, "width": width, "height": height, "color":color, "innerheight":innerheight, "innerwidth":innerwidth};
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
