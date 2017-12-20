@@ -122,7 +122,10 @@ function optics(input) {
         }
 
     }
+
     calculateClusters(clusterOrder);
+    clusterOrder.forEach((p, i) => p.idx = i);
+
     return clusterOrder;
 }
 
