@@ -139,7 +139,9 @@ function calculateClusters(clusterOrder) {
         var datalength = clusterOrder.length;
         var curindex = 0;
         clusterer[0] = 1;
+        clusterOrder[0].subtag=0;
         for (var i = 1; i < datalength; ++i) {
+            clusterOrder[i].subtag=0;
             if (clusterOrder[i].distance > cutoff1) {
                 clusterer[++curindex] = 0;
             }
