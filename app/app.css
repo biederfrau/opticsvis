@@ -251,3 +251,7 @@ rect.rect {
 #reach .xaxis .tick line {
     visibility: hidden;
 }
+
+#heat .yaxis .tick text {
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}

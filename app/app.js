@@ -770,7 +770,7 @@ function setup_heat(state) {
             }
         );
 
-    //canvas.call(zoom);
+    canvas.call(zoom);
     var endbrush=false,
         index1, index2;
     function brushed(){
