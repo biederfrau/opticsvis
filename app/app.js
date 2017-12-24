@@ -1162,12 +1162,6 @@ function do_the_things() {//{{{
                 compute(data, state);
 
                 $("input#minpts").attr("max", state.input_data.length);
-                var datalist = $("#minpts-div datalist");
-                datalist.empty();
-                for(i = 1; i < state.input_data.length; ++i) {
-                    datalist.append('<option value="' + i + '">');
-                }
-
                 state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
             });
     });
@@ -1181,12 +1175,6 @@ function do_the_things() {//{{{
         compute(data, state);
 
         $("input#minpts").attr("max", state.input_data.length);
-        var datalist = $("#minpts-div datalist");
-        datalist.empty();
-        for(i = 1; i < state.input_data.length; ++i) {
-            datalist.append('<option value="' + i + '">');
-        }
-
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
 
@@ -1270,11 +1258,6 @@ function do_the_things() {//{{{
             setup_dendrogram(state);
 
             $("input#minpts").attr("max", state.input_data.length);
-            var datalist = $("#minpts-div datalist");
-            for(i = 1; i < state.input_data.length; ++i) {
-                datalist.append('<option value="' + i + '"' + (i % 5 === 0 ? 'label="' + i + '"' : '') + '>');
-            }
-
             $('.dendrogram-overlay').hide();
     });
 }//}}}
