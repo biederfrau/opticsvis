@@ -1106,6 +1106,7 @@ function do_the_things() {//{{{
         thinking: function(n = 5) {
             d3.selectAll(".loading").style("display", undefined);
             $('.loading').show();
+            this.start = performance.now();
 
             waiter = n;
             this.dispatcher.on("drawn", _e => {
@@ -1159,6 +1160,7 @@ function do_the_things() {//{{{
             .get((err, data) => {
                 if(err) { throw err; }
 
+                state.thinking();
                 compute(data, state);
 
                 $("input#minpts").attr("max", state.input_data.length);
