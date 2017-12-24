@@ -161,8 +161,8 @@ function setup_density(state) {
 
         canvas.insert("ellipse", "circle")
             .classed("eps-neighborhood", true)
-            .attr("cx", ctx.x(row[0]))
-            .attr("cy", ctx.y(row[1]))
+            .attr("cx", ctx.x(row[state.dim1]))
+            .attr("cy", ctx.y(row[state.dim2]))
             .attr("rx", eps * length_1_x)
             .attr("ry", eps * length_1_y)
             .attr("fill", "grey")
@@ -182,15 +182,15 @@ function draw_density(data, state, ctx) {
     var canvas = d3.select("#density"),
         color = d3.scaleSequential(d3.interpolateYlGnBu);
 
-    ctx.x.domain(d3.extent(data, x => x[0])).nice();
-    ctx.y.domain(d3.extent(data, x => x[1])).nice();
+    ctx.x.domain(d3.extent(data, x => x[state.dim1])).nice();
+    ctx.y.domain(d3.extent(data, x => x[state.dim2])).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
     var densityEstimator = d3.contourDensity()
-        .x(d => ctx.x(d[0]))
-        .y(d => ctx.y(d[1]))
+        .x(d => ctx.x(d[state.dim1]))
+        .y(d => ctx.y(d[state.dim2]))
         .size([ctx.width, ctx.height])
         .bandwidth(state.density_map_bandwidth);
 
@@ -212,7 +212,7 @@ function draw_density(data, state, ctx) {
     points.enter()
         .append("circle").classed("point", true)
         .merge(points)
-        .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+        .attr("cx", d => ctx.x(d[state.dim1])).attr("cy", d => ctx.y(d[state.dim2]))
         .attr("r", 4)
         .attr("stroke-color", "white")
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
@@ -331,7 +331,7 @@ function setup_reach(state) {
             lassoed = true;
         }
 
-        bars.filter(d => _.find(points, x => x[0] == d[0] && x[1] == d[1])).classed("not-highlighted-lasso", false).classed("highlighted-lasso", true);
+        bars.filter(d => _.find(points, x => x[state.dim1] == d[state.dim1] && x[state.dim2] == d[state.dim2])).classed("not-highlighted-lasso", false).classed("highlighted-lasso", true);
     });
 
     state.dispatcher.on("select:range.reach", range => {
@@ -359,7 +359,7 @@ function setup_reach(state) {
         bars.style("opacity", null);
 
         if(p === null) { return; }
-        var framed_bars = bars.filter(d => d[0] == p[0] && d[1] == p[1]).classed("framed", true);
+        var framed_bars = bars.filter(d => d[state.dim1] == p[state.dim1] && d[state.dim2] == p[state.dim2]).classed("framed", true);
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
@@ -676,8 +676,8 @@ function draw_jumps(data, state,ctx) {
     var canvas = d3.select("#jumps"),
         color = d3.scaleSequential(d3.interpolateBlues).domain([0, .004]);
 
-    ctx.x.domain(d3.extent(data, x => x[0])).nice();
-    ctx.y.domain(d3.extent(data, x => x[1])).nice();
+    ctx.x.domain(d3.extent(data, x => x[state.dim1])).nice();
+    ctx.y.domain(d3.extent(data, x => x[state.dim2])).nice();
 
     canvas.select(".xaxis").call(d3.axisBottom(ctx.x));
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
@@ -686,7 +686,7 @@ function draw_jumps(data, state,ctx) {
 
     points.enter()
         .append("circle").classed("point", true).merge(points)
-        .attr("cx", d => ctx.x(d[0])).attr("cy", d => ctx.y(d[1]))
+        .attr("cx", d => ctx.x(d[state.dim1])).attr("cy", d => ctx.y(d[state.dim2]))
         .attr("r", 4)
         .attr("stroke-color", "white")
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag));
@@ -697,10 +697,10 @@ function draw_jumps(data, state,ctx) {
     jumppaths
         .enter()
         .insert("line", ".point").classed("jumppath", true).merge(jumppaths)
-        .attr("x1",d => ctx.x(d[0]))
-        .attr("y1",d => ctx.y(d[1]))
-        .attr("x2",d => d.from<0?ctx.x(d[0]):ctx.x(data[d.from][0]))
-        .attr("y2",d => d.from<0?ctx.y(d[1]):ctx.y(data[d.from][1]))
+        .attr("x1",d => ctx.x(d[state.dim1]))
+        .attr("y1",d => ctx.y(d[state.dim2]))
+        .attr("x2",d => d.from<0?ctx.x(d[state.dim1]):ctx.x(data[d.from][state.dim1]))
+        .attr("y2",d => d.from<0?ctx.y(d[state.dim2]):ctx.y(data[d.from][state.dim2]))
         .attr("stroke-width",1)
         .attr("stroke","black");
 
@@ -1116,7 +1116,9 @@ function do_the_things() {//{{{
             });
         },
         density_map_bandwidth: 20,
-        selected_clusters: []
+        selected_clusters: [],
+        dim1: 0,
+        dim2: 1
     };
 
     // ui crap {{{
@@ -1242,8 +1244,26 @@ function do_the_things() {//{{{
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
 
-    $('.tree-button').on('click', () => {
-        $('.dendrogram-overlay').toggle();
+    $("select#dim-1").on("change", function() {
+        var dim1 = +$(this).val(),
+            dim2 = +$("select#dim-2").val();
+
+        state.dim1 = dim1;
+        if(dim1 === dim2) { return; }
+
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
+    });
+
+    $("select#dim-2").on("change", function() {
+        var dim1 = +$("select#dim-1").val(),
+            dim2 = +$(this).val();
+
+        state.dim2 = dim2;
+        if(dim1 === dim2) { return; }
+
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
     // }}}
 
@@ -1268,6 +1288,16 @@ function do_the_things() {//{{{
 
             $("input#minpts").attr("max", state.input_data.length);
             $('.dendrogram-overlay').hide();
+
+            var dim_selectors = $("select#dim-1, select#dim-2");
+            dim_selectors.empty();
+
+            for(let i = 0; i < data[0].length; ++i) {
+                dim_selectors.append("<option value=\"" + i + "\">" + i + "</option>");
+            }
+
+            $("select#dim-1").val(state.dim1);
+            $("select#dim-2").val(state.dim2);
     });
 }//}}}
 // vim: set ts=4 sw=4 tw=0 et :
