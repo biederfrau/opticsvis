@@ -105,21 +105,23 @@ function optics(input) {
 
                 //TODO: a min heap would save us sorting every itteration maybe consider this (or some ordered list)
                 //TODO: for the seedlist
-                if (seedlist.length > 1) {
-                    var minval = Number.MAX_VALUE;
-                    var index = -1;
-                    for (var y = 0; y < seedlist.length; y++) {
-                        if (seedlist[y].distance < minval) {
-                            index = y;
-                            minval = seedlist[y].distance;
-                        }
-                    }
-                    var temp = seedlist[0];
-                    seedlist[0] = seedlist[index];
-                    seedlist[index] = temp;
+
                 }
             }
+        if (seedlist.length > 1) {
+            var minval = Number.MAX_VALUE;
+            var index = -1;
+            for (var y = 0; y < seedlist.length; y++) {
+                if (seedlist[y].distance < minval) {
+                    index = y;
+                    minval = seedlist[y].distance;
+                }
+            }
+            var temp = seedlist[0];
+            seedlist[0] = seedlist[index];
+            seedlist[index] = temp;
         }
+
 
     }
 
@@ -232,8 +234,9 @@ function  tag2(clusterOrder,clusterer1,clusterer2){
 function coredist(distances, minPTS) {
     //TODO: maybe this can somehow be improved?
     var lowerbound = -1;
-    var smalest = distances[0];
-    var count = 1;
+    var smalest = Number.MAX_VALUE;
+    var count = 0;
+    var count2=0;
     for (var i = 0; i < minPTS - 1; i++) {
         for (var j = 0; j < distances.length; j++) {
             var distance = distances[j];
@@ -243,7 +246,9 @@ function coredist(distances, minPTS) {
             }
             else if (distance == lowerbound) count++;
         }
-        if (i + count >= minPTS - 1) return smalest;
+        //if (i + count >= minPTS - 1) return smalest;
+        count2+=count;
+        if(count2 > minPTS-1)return  smalest;
         count = 0;
         lowerbound = smalest;
         smalest = Number.MAX_VALUE;
