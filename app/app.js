@@ -255,7 +255,7 @@ function setup_reach(state) {
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to show a (partial) dendrogram instead.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Double click to toggle a (partial) dendrogram instead.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
     canvas.on("dblclick", () => {
@@ -263,7 +263,6 @@ function setup_reach(state) {
         $(".dendrogram-overlay").show()
     });
 
-//TODO: adjust x tickmarks
     var x = d3.scaleBand().range([margins.left, width - margins.right]).padding(0.2);
     y = d3.scaleLinear().range([0, height - margins.top -margins.bottom]);
 
@@ -443,7 +442,6 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
-            console.log(d)
             tooltip.text("Reachability Distance: "+_.round(d.distance, 2));
             return tooltip.style("visibility", "visible");
         })
@@ -979,18 +977,18 @@ function draw_scented_widget(data, state, ctx) {
 function setup_dendrogram(state) {
     var canvas = d3.select("#dendro"),
         style = window.getComputedStyle(document.getElementById("dendro")),
-        margins = {"left": 55, "right": 55, "top": 70, "bottom": 25},
+        margins = {"left": 55, "right": 55, "top": 50, "bottom": 30},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Modified Dendrogram").style("font-weight", "bold").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Note: only represents a maximum of the first 30 levels, and only those that have more clusters than their predecessor.")
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 14).text("Clusterings are drawn on the same level of the tree. Click to select a clustering.")
         .style("font-size", "12px").attr("text-anchor", "middle");
 
-    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 28).text("Clusterings are drawn on the same level of the tree. Click to select a clustering.")
-        .style("font-size", "12px").attr("text-anchor", "middle");
+    canvas.append("text").attr("x", width/2).attr("y", margins.top / 2 + 28).text("Note: only represents a maximum of the first 30 levels, and only those that have more clusters than their predecessor.")
+        .style("font-size", "10px").attr("text-anchor", "middle");
 
     var ctx = { "margins": margins, "width": width, "height": height };
     draw_dendrogram(state.output_data, state, ctx);
@@ -1018,14 +1016,14 @@ function draw_dendrogram(data, state, ctx) {
     var canvas = d3.select('#dendro');
     canvas.selectAll("g *").remove();
 
-    var cluster = d3.tree().size([ctx.height - ctx.margins.top - ctx.margins.bottom, ctx.width - ctx.margins.left - ctx.margins.right]),
+    var cluster = d3.tree().size([ctx.height - ctx.margins.top - ctx.margins.bottom - 50, ctx.width - ctx.margins.left - ctx.margins.right]),
         stratify = d3.stratify().parentId(d => d.id.substring(0, d.id.lastIndexOf('.'))),
         hierarchy = generate_hierarchy(data, 30);
 
     var root = stratify(hierarchy).sort((a, b) => a.height - b.height);
     cluster(root);
 
-    var g = canvas.append("g").attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
+    var g = canvas.append("g").attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top + 50] + ")");
 
     var links = g.selectAll(".link").data(root.descendants().slice(1));
     links.enter()
