@@ -96,7 +96,8 @@ function setup_density(state) {
         style = window.getComputedStyle(document.getElementById("density")),
         margins = {"left": 55, "right": 100, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
-        height = parseFloat(style.height);
+        height = parseFloat(style.height),
+        color = d3.scaleSequential(d3.interpolateYlGnBu);
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Estimated density regions of data set").style("font-weight", "bold").attr("text-anchor", "middle");
@@ -119,9 +120,19 @@ function setup_density(state) {
 
     canvas.selectAll("text").raise();
 
+    var legend = d3.legendColor()
+        .shapeWidth(15)
+        .shapeHeight(15)
+        .cells(5)
+        .labels(["low", "", "mid", "", "high"])
+        .orient("vertical")
+        .ascending(true)
+        .scale(color);
+
     canvas.append("g")
         .classed("legend", true)
-        .attr("transform", "translate(" + [width - 70, margins.top] + ")");
+        .attr("transform", "translate(" + [width - 70, margins.top] + ")")
+        .call(legend);
 
     canvas.on("dblclick", () => {
         var points = canvas.selectAll(".point");
@@ -164,7 +175,6 @@ function setup_density(state) {
     state.dispatcher.on("detail:bandwidth.density", data => {
         draw_density(state.output_data, state, ctx);
     });
-
 } // }}}
 
 // draw_density {{{
@@ -214,17 +224,6 @@ function draw_density(data, state, ctx) {
         });
 
     points.exit().remove();
-
-    var legend = d3.legendColor()
-        .shapeWidth(15)
-        .shapeHeight(15)
-        .cells(5)
-        .labels(["low", "", "mid", "", "high"])
-        .orient("vertical")
-        .ascending(true)
-        .scale(color);
-
-    canvas.select(".legend").call(legend);
 
     var lasso = d3.lasso()
         .closePathSelect(true)
