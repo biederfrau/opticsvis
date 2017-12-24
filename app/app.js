@@ -47,7 +47,6 @@ function generate_hierarchy(data, n) {
             diff = _.uniq(_.difference(clustering, _.last(clusterings)));
 
         clustering.dist = dist;
-        console.log(diff);
         if(diff.length !== 0 && !_.isEqual(diff, [-1])) {
             clusterings.push(clustering);
         }
@@ -445,6 +444,7 @@ function draw_reach(data, state, ctx) {
         .attr("fill", (d) => d.tag==-1?noisecolor:colorScale(d.tag))
         .on("mouseover", function (d) {
             state.dispatcher.call("hover:bar", this, d);
+            console.log(d)
             tooltip.text("Reachability Distance: "+_.round(d.distance, 2));
             return tooltip.style("visibility", "visible");
         })
@@ -842,7 +842,7 @@ function setup_heat(state) {
             state.dispatcher.call("select:range", this, [index1, index2]);
         }
     }
-    
+
     var ctx = {"y":y,"margins": margins, "width": width, "height": height, "color":color, "innerheight":innerheight, "innerwidth":innerwidth};
 	draw_heat(data,state,ctx);
     state.dispatcher.on("data:change.heat", data => {
@@ -1149,6 +1149,27 @@ function do_the_things() {//{{{
 
     $("#settings-input").click(e => {
         $(".ui-bar .settings-entry").toggleClass("visible");
+    });
+
+    $("#select-dataset").on("change", function() {
+        var ssv = d3.dsvFormat(" ");
+        d3.request($(this).val() + ".dat")
+            .mimeType("text/plain")
+            .response(xhr => ssv.parse(xhr.responseText, row => [+row.x, +row.y]))
+            .get((err, data) => {
+                if(err) { throw err; }
+
+                compute(data, state);
+
+                $("input#minpts").attr("max", state.input_data.length);
+                var datalist = $("#minpts-div datalist");
+                datalist.empty();
+                for(i = 1; i < state.input_data.length; ++i) {
+                    datalist.append('<option value="' + i + '">');
+                }
+
+                state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
+            });
     });
 
     $("#data-form").submit(e => {

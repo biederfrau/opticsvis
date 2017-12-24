@@ -98,9 +98,15 @@
       </div>
 
       <div class="data-entry">
-        <p>
-        Use the textfield below to enter data.
-        </p>
+        <p>Select a predefined data set ...</p>
+          <select id="select-dataset">
+            <option value="default">Default (small)</option>
+            <option value="vis17">VIS17</option>
+            <option value="ring">Ring and Sausage</option>
+            <option value="snake">Snake</option>
+          </select>
+        <p>... or use the textfield below to enter data.</p>
+
         <form id="data-form" onsubmit="return false;">
           <textarea id="data-textarea" form="data-form" width="100%" rows="20"></textarea>
           <input type="submit"/>
