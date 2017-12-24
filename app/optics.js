@@ -88,26 +88,24 @@ function optics(input) {
             var distances = [];
             var neighbours = query(input, eps, current, distances);
             if (neighbours.length + 1 >= minPTS) {
-                var coredistance = coredist(distances, minPTS);
-                for (var j = 0; j < neighbours.length; j++) {
-                    var neighbour = neighbours[j];
-                    if (!neighbour.flag) {
-                        var dist = Math.max(distances[j], coredistance);
-                        if ((neighbour.distance) > dist){
-                            neighbour.distance = dist;
-                            //from where did we jump here
-                            neighbour.from=i;
+                    var coredistance = coredist(distances, minPTS);
+                    for (var j = 0; j < neighbours.length; j++) {
+                        var neighbour = neighbours[j];
+                        if (!neighbour.flag) {
+                            var dist = Math.max(distances[j], coredistance);
+                            if ((neighbour.distance) > dist){
+                                neighbour.distance = dist;
+                                //from where did we jump here
+                                neighbour.from=i;
+                            }
+                            //TODO: there may be a better check for this?
+                            if (!seedlist.contains(neighbour)) seedlist.push(neighbour);
                         }
-                        //TODO: there may be a better check for this?
-                        if (!seedlist.contains(neighbour)) seedlist.push(neighbour);
                     }
                 }
-
-                //TODO: a min heap would save us sorting every itteration maybe consider this (or some ordered list)
-                //TODO: for the seedlist
-
-                }
             }
+        //TODO: a min heap would save us sorting every itteration maybe consider this (or some ordered list)
+        //TODO: for the seedlist
         if (seedlist.length > 1) {
             var minval = Number.MAX_VALUE;
             var index = -1;
