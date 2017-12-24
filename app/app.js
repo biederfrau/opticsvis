@@ -1211,6 +1211,11 @@ function do_the_things() {//{{{
         if($(this).val() === "") { return; }
         seteps(+$(this).val());
 
+        if(eps > maxdist) {
+            setmaxdist(eps);
+            $("input#inf").val(maxdist);
+        }
+
         state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
@@ -1219,6 +1224,11 @@ function do_the_things() {//{{{
     $("input#eps").on("input", function() {
         if($(this).val() === "") { return; }
         seteps(+$(this).val());
+
+        if(eps > maxdist) {
+            setmaxdist(eps);
+            $("input#inf").val(maxdist);
+        }
 
         compute(state.input_data, state);
         state.dispatcher.call("config:changed", this, [state.input_data, state.output_data]);
