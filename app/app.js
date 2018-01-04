@@ -10,6 +10,10 @@ const tooltip = d3.select("body")
 
 function compute(data, state) {
     state.input_data = $.extend(true, [], data);
+
+    dim1 = state.dim1;
+    dim2 = state.dim2;
+
     state.output_data = optics(data);
     state.clustersizes= getClusterSizes(state.output_data);
     colorScale.domain([0, state.clustersizes.length-1])
@@ -1171,6 +1175,13 @@ function do_the_things() {//{{{
         data = $("#data-textarea").val().split("\n")
             .map(_.trim).filter(line => line !== "")
             .map(x => x.split(" ")).map(x => x.map(parseFloat));
+
+        var dim_selectors = $("select#dim-1, select#dim-2");
+        dim_selectors.empty();
+
+        for(let i = 0; i < data[0].length; ++i) {
+            dim_selectors.append("<option value=\"" + i + "\">" + i + "</option>");
+        }
 
         state.thinking();
         compute(data, state);

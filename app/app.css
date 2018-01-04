@@ -82,8 +82,8 @@ div.ui-bar {
     opacity: 0.8;
     background-color: #79B2DB;
     transition: width 500ms;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 div.ui-bar .elem {
@@ -192,7 +192,7 @@ textarea {
 }
 
 #scented-widget {
-    width: 30vw;
+    width: 28vw;
 }
 
 button.tree-button {
