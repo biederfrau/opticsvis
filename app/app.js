@@ -1174,6 +1174,7 @@ function do_the_things() {//{{{
     });
 
     $('#checkBox').change(function(event) {
+        if(totaldims==2&&distbetween==euclidian)return;
         var checkbox = event.target;
         if (checkbox.checked) {
             distbetween=euclidianall;
