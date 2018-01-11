@@ -6,6 +6,7 @@ var cutoff1=20;
 var cutoff2=15;
 var clusterOrderSave;
 var dim1 = 0, dim2 = 1;
+var totaldims=2;
 
 function seteps(neweps){
     eps=neweps;
@@ -272,6 +273,14 @@ function query(input, range, start, distances) {
 
 function euclidian(a, b) {
     return Math.sqrt((a[dim1] - b[dim1])**2 + (a[dim2] - b[dim2])**2);
+}
+
+function euclidianall(a, b) {
+    var dist=0;
+    for(var i=0;i<totaldims;++i){
+        dist+=(a[i] - b[i])**2
+    }
+    return Math.sqrt(dist);
 }
 
 function manhattan(a, b) {

@@ -13,6 +13,7 @@ function compute(data, state) {
 
     dim1 = state.dim1;
     dim2 = state.dim2;
+    totaldims= state.input_data[0].length;
 
     state.output_data = optics(data);
     state.clustersizes= getClusterSizes(state.output_data);
@@ -1096,6 +1097,7 @@ function draw_dendrogram(data, state, ctx) {
 }//}}}
 
 function do_the_things() {//{{{
+    $("#checkBox").prop("checked", false);
     state = {
         dispatcher: d3.dispatch(
             "drawn", "filter", "data:change", "config:changed",
@@ -1169,6 +1171,17 @@ function do_the_things() {//{{{
                 $("input#minpts").attr("max", state.input_data.length);
                 state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
             });
+    });
+
+    $('#checkBox').change(function(event) {
+        var checkbox = event.target;
+        if (checkbox.checked) {
+            distbetween=euclidianall;
+        } else {
+            distbetween=euclidian;
+        }
+        compute(state.input_data, state);
+        state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
 
     $("#data-form").submit(e => {
