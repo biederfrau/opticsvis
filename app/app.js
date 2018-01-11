@@ -1181,6 +1181,7 @@ function do_the_things() {//{{{
         } else {
             distbetween=euclidian;
         }
+        state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
     });
