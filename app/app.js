@@ -250,12 +250,14 @@ function draw_density(data, state, ctx) {
 // setup_reach {{{
 var scutoff1;
 var scutoff2;
+var cutofftoplimit;
 function setup_reach(state) {
     var canvas = d3.select("#reach"),
         style = window.getComputedStyle(document.getElementById("reach")),
         margins = {"left": 55, "right": 35, "top": 50, "bottom": 35},
         width = parseFloat(style.width),
         height = parseFloat(style.height);
+    cutofftoplimit=margins.top;
 
     canvas.append("text").attr("x", width / 2).attr("y", margins.top / 2)
         .text("Reachability distances").style("font-weight", "bold").attr("text-anchor", "middle");
@@ -468,14 +470,14 @@ function draw_reach(data, state, ctx) {
     scutoff1=barbottom-ctx.y(max-getcutoff1());
     scutoff2=barbottom-ctx.y(max-getcutoff2());
 
-    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
-    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
+    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
+    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")")
 
     state.dispatcher.on("select:level.reach", () => {
         scutoff1=barbottom-ctx.y(max-getcutoff1());
         scutoff2=barbottom-ctx.y(max-getcutoff2());
-        d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1] + ")")
-        d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2] + ")")
+        d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")")
+        d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
     });
 
     state.dispatcher.call("drawn");
