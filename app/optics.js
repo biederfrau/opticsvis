@@ -224,7 +224,8 @@ function  tag2(clusterOrder,clusterer1,clusterer2){
                 clusterOrder[index].subtag = i - noise2 - retag;
                 ++index;
             }
-            oldtag=clusterOrder[index].tag
+            if(index<clusterOrder.length){
+            oldtag=clusterOrder[index].tag}
         }
     }
 
