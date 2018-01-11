@@ -18,8 +18,9 @@ function compute(data, state) {
     state.output_data = optics(data);
     state.clustersizes= getClusterSizes(state.output_data);
     var hasnoise=false;
-    if(state.clustersizes.length[state.clustersizes.length-1]==-1)hasnoise=true
+    if(state.clustersizes[state.clustersizes.length-1].key==-1)hasnoise=true;
     colorScale.domain([0, state.clustersizes.length-(hasnoise?1:0)]);
+    console.log(state.clustersizes);
 }
 
 function getClusterSizes(data){
@@ -408,7 +409,8 @@ function cutoffchanged(state){
     reCalculateClusters();
     state.clustersizes= getClusterSizes(state.output_data);
     var hasnoise=false;
-    if(state.clustersizes.length[state.clustersizes.length-1]==-1)hasnoise=true
+    if(state.clustersizes[state.clustersizes.length-1].key==-1)hasnoise=true
+    console.log(state.clustersizes);
     colorScale.domain([0, state.clustersizes.length-(hasnoise?1:0)]);
 
     state.dispatcher.call("size",this,[state.input_data,state.output_data]);
