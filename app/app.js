@@ -1273,6 +1273,11 @@ function do_the_things() {//{{{
         if($(this).val() === "") { return; }
         setmaxdist(+$(this).val());
 
+        if(eps > maxdist) {
+            seteps(maxdist);
+            $("input#eps").val(eps);
+        }
+
         state.thinking();
         compute(state.input_data, state);
         state.dispatcher.call("data:change", this, [state.input_data, state.output_data]);
