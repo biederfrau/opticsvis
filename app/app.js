@@ -31,6 +31,7 @@ function getClusterSizes(data){
                 return 1;
             });
         }).entries(data).sort(function(a, b){
+            return a.key=="-1"?1:0;
         });
 }
 
