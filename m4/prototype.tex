@@ -190,13 +190,27 @@ This is something that we do not want to do, as we strongly feel that this is ou
 \end{flushleft}
 
 \subsection{Background information}
-teach/research/explore the algorithm
 \subsubsection{Users}
-teachers, researchers, interested
+\begin{itemize}
+\item Teachers and Students
+\item Researchers
+\item Anyone interested in the OPTICS algorithm
+\end{itemize}
 \subsubsection{Tasks}
-teach, research, get a feeling for the algorithm
+\begin{flushleft}
+The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits given data and problem.
+\end{flushleft}
+
+\begin{flushleft}
+Teachers can either use our default data set or load a custom data set to explain how the algorithm works. They could use our implementation as a means of presentation and to show how parameter changes affect the output. The different views are also supposed to help understanding what the output actually means. Beeing able to play arround with parameters and having different usefull views could be beneficial for understanding the algorithm itself.
+\end{flushleft}
+
+\begin{flushleft}
+The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionaly want to test their data set or part of it with our tool.
+\end{flushleft}
+
 \subsubsection{Data}
-pretty much any data
+We allow to select a preset data set or to load user defined data for analysis. Therefor we do not impose any restrictions on what data set can be visualized. The only requirements are that there have to be at least 2 dimensions, all points have to be of the same dimensionality and all values have to be numeric.
 
 \section{Related work}
 
@@ -269,6 +283,16 @@ takimata sanctus est Lorem ipsum dolor sit amet.
 A full iteration of how someone would teach the algorithm with our implementation + pictures (from webiste possibly + new tree view)
 \subsection{Performance of the system}
 Visual Performance (how it visualy scales with many points) vs Computational Performance (trivial implementation, which could be improved)
+\subsubsection{Computational Performance}
+\begin{flushleft}
+Computationally our tool is currently not well optimized. Since we implemented OPTICS ourselves we took a trivial approach and the runtime complexity for bad input parameters may reach $ O(n^{2}) $. For a more sophisticated implementation a server backend would be usefull as well as better optimized code.
+\end{flushleft}
+\begin{flushleft}
+A drawback of this is, that with current hardware working with a dataset larger than 400 points will result in stutter when interacting with different aspects of our tool.
+\end{flushleft}
+\subsubsection{Visual Performance}
+bla
+
 \subsection{Evaluation/Feedback}
 Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback. 
 
