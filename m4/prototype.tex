@@ -141,7 +141,6 @@ delenit augue duis dolore te feugait nulla facilisi.%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-
 %% The ``\maketitle'' command must be the first command after the
 %% ``\begin{document}'' command. It prepares and prints the title block.
 
@@ -151,30 +150,51 @@ delenit augue duis dolore te feugait nulla facilisi.%
 \maketitle
 
 %% \section{Introduction} %for journal use above \firstsection{..} instead
+
+\begin{flushleft}
 The OPTICS algorithm is a density based clustering algorithm, that outputs a list of points,
  ordered according to the reachability of the points and the logic of the algorithm. 
 This result is usually visualized by plotting this list as a bar chart with the output index as x-value and the 
 computed reachability distance as y-value. This reachability plot then is used to make assumptions about 
 the cluster-hierarchy in the data. 
+\end{flushleft}
+
+\begin{flushleft}
+Our project idea is to visualize the resulting data from running the OPTICS algorithm on a given data set. OPTICS does not generate a simple mapping of points to a cluster ID, but rather outputs a list of reachability data - that is, the length (given by, e.g., the euclidean distance between those two points) that the algorithm had to jump from a given point to another. Short distances are preferred by the algorithm, so a series of short jumps likely marks a cluster.
+\end{flushleft}
+
+\begin{flushleft}
+However, in the end the user is looking at nothing but numbers and has to discern the patterns in the data himself. As such, the first step after running OPTICS is usually to draw a bar chart, which makes this task much easier.
+\end{flushleft}
+
+\begin{flushleft}
+As such, visualization is arguably already a core component of cluster analysis when using OPTICS. Why not allow for further manipulation of the algorithm, allowing to specify parameters such as the minimum point size to qualifiy as a cluster, or the cutoff distance that is applied onto the reachability data to define the actual clusters?
+\end{flushleft}
+
+\begin{flushleft}
+Furthermore, OPTICS is inherently capable of producing hierarchial clusterings, but this information is oftentimes discarded in favor of a simpler representation. Procuring an visualization method that is still simple, but allows for evaluation of hierarchial clusters is surely a worthwile undertaking, and one that we will strive for. 
+\end{flushleft}
 
 \section{Motivation}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.
+\begin{flushleft}
+ Not many tools exist that take on this subject, although notable projects exist, especially Clustervision\cite{Clustervision} and a DBSCAN visualization that we found \cite{DBSCAN}, the latter of which only visualizes how DBSCAN goes about finding clusters (i.e. shows the epsilon neighborhoods). It is notable that DBSCAN results in a simple partition of points into clusters along with some metadata (e.g. core points versus edge points).
+\end{flushleft}
+
+\begin{flushleft}
+Clustervision is an especially powerful tool and takes on a multitude of algorithms (including OPTICS) and offers additional tooling like dimension reduction using TSNE. One of the core tasks of this tool is to validate the results of the algorithm - i.e. enable the user to check out the features of points in a cluster and see the relations between data that caused them to be classified into the same cluster.
+\end{flushleft}
+
+\begin{flushleft}
+This is something that we do not want to do, as we strongly feel that this is out of bounds for us. We want to make an example of simple data (i.e. low dimensional and spatial, a list of real points) and how the results given by OPTICS relate to this data set and the used settings, and show the partition derived from the reachability data. 
+\end{flushleft}
 
 \subsection{Background information about the problem, tasks, users, and data}
 bla
 
 \section{Related work}
 
-Hab ich als Hilfe drinnen gelassen: use \cite{Max:1995:OMF,Kitware:2003} (not \cite{Kitware:2003}\cite{Max:1995:OMF})
+%%Hab ich als Hilfe drinnen gelassen: use \cite{Max:1995:OMF,Kitware:2003} (not \cite{Kitware:2003}\cite{Max:1995:OMF})
 
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
