@@ -233,20 +233,20 @@ bla
 
 \section{Implementation}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.
-
-\subsection{Brief description of how the system was implemented (toolkits, languages, platforms)}
-bla
-\subsection{Any serious implementation challenges you encountered and how you handled them}
-bla
+\subsection{toolkits, languages, platforms}
+\begin{flushleft}
+For our implementation we used the Java Script with the d3 library. We also implemented the OPTICS algorithm ourselves to be able to extract additional information (in comparison to a premade solution) like the jump paths and custom cluster tagging logic.
+\end{flushleft}
+\begin{flushleft}
+We tested our implementation in Google Chrome, Microsoft Edge and Mozilla Firefox, whereas Firefox has some problems with the bigger data sets, we have not been able to combat.
+\end{flushleft}
+\subsection{Implementation challenges}
+\begin{itemize}
+\item The OPTICS implementation isn't the most efficient one and it may be a good idea to have a backend for the calculations.
+\item We found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non square selection doesn't make sense.
+\item We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large eps), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
+\item There seem to be performance issues with Firefox and large data sets, which we were not able to solve yet.
+\end{itemize}
 
 \section{Results}
 
