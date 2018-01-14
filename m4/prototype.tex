@@ -343,13 +343,45 @@ Well working, even with huge datasets:
 \end{itemize}
 \subsection{Evaluation/Feedback}
 Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback.
+\subsubsection{Course Feedback}
+\begin{flushleft}
+First Feedback:
+\end{flushleft}
+\begin{flushleft}
+The first feedback we got was considered and implemented into our tool.
+\end{flushleft}
+\begin{flushleft}
+Seccond Feedback:
+\end{flushleft}
+\begin{flushleft}
+We were told, that our heat map shows ugly lines between the actual squares. This was due to rendering aritfacts from the browser and was easily fixed by changing a shape rendering propperty.
+\end{flushleft}
+\begin{flushleft}
+Another complaint was about the highlighting in the density plot. We have improved the highlighting behaviour and don't think this is a problem any more. We may be missunderstanding this feedback though, it is possible that what was actualy meant was that the highlighting does not work when the points are not visible. We want to keep this behaviour, because the user would otherwise have no idea where his highlighting comes from or be generaly confusing.
+\end{flushleft}
+\begin{flushleft}
+The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot can not be propperly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligable because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
+\end{flushleft}
+\subsubsection{User Feedback}
+bla
 
 \section{Discussion}
 
-teach/research/explore algorithm
-
 \subsection{Strengths and weaknesses}
-what we think is nice
+Strengths of our Tool:
+\begin{itemize}
+\item Allows to quickly explore clusterhirachies in small datasets.
+\item Helps with learning and teaching about the OPTICS algorithm and density based clustering in general.
+\item Helps understanding if the algorithm is fit for the problem the user aims to solve.
+\item Default data sets give a nice overview over the capabilities of OPTICS for other data sets.
+\item Shows additional meta imformation that may give additional insights. (dendogram/heat map)
+\end{itemize}
+Weaknesses of our Tool:
+\begin{itemize}
+\item It may be difficult to understand how OPTICS works without any knowledge about density based clustering or supervision.
+\item May be to slow when working with larger datasets
+\item May not be showing enought information when working with multidimensional data.
+\end{itemize}
 \subsection{Lessons we learned}
 \begin{flushleft}
 Durring this project we learned different new things.
