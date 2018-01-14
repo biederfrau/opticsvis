@@ -269,18 +269,58 @@ We tested our implementation in Google Chrome, Microsoft Edge and Mozilla Firefo
 
 \section{Results}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.
+We feel, that our implementation\cite{Our_Implementation} is most usefull when used to explain OPTICS and learning to understand its output. It is best used with at least a small amount of knowledge about density based clustering or in combination with learning about it. This is possibly the only tool that allows for interactive visual experimentation with this algorithm.
 
 \subsection{Scenarios of use}
-A full iteration of how someone would teach the algorithm with our implementation + pictures (from webiste possibly + new tree view)
+\begin{flushleft}
+A scenario in which a teacher at a university may use our implementation may look something like the following:
+\end{flushleft}
+\begin{flushleft}
+First the teacher could show the default view, that appears when loading the tool, to his students. Here a good parameter set is preselected and we can clearly see the clusterstructure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/1.PNG}
+\begin{flushleft}
+The logical next step is now to talk about the estimated density regions of the dataset where it is somewhat visualy obvious where the clusters are. An interesting question for the students would now be if they think, the left- or rightmost point in the bottom right cluster should still be part of the cluster.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/2.PNG}
+\begin{flushleft}
+Moving the cutoff bar in the reachability plot around reveals, that the left point is removed first when moving the cutoff bar down.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/3.PNG}
+\begin{flushleft}
+This can now be explained by mousing over the bars of the reachability plot and discussing how the reachability distance relates to the output of OPTICS, which is usualy just this reachability data.
+\end{flushleft}
+\begin{flushleft}
+While moving the cutoff bar arround it might also be interesting to see how it affects clusterpoints changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/4.PNG}
+\begin{flushleft}
+Whenever needed the teacher may also want to use the filtering in this plot to focus an a cluster or highlight something using the lasso in the density plot or the brush in the heatmap.
+\end{flushleft}
+\begin{flushleft}
+Explaining the algorithm step by step is supported by the jump paths plot where the teacher can follow each jump, by mousing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not nesseserily equal to the actual distance between the two connected points. It is important to emphasise the influence of the minPoints paramater on this value.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/5.PNG}
+\begin{flushleft}
+Next a general discussion may be had about what a good clustering actualy is. For this it may be a good idea to argue with our heat map.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/6.PNG}
+\begin{flushleft}
+A good clustering will usualy produce a nice heatmap because points close to eachother in the data space will also be close to eachother in this plot and produce a rectangle or other recognizable shapes. Here the teacher can nicely show how a bad parameter set (minPTS=8, eps=10) may produce a bad result.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/7.PNG}
+\begin{flushleft}
+With those parameters no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the teacher can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less then 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing eps may improve the runtime of the algorithm greatly.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/8.PNG}
+\begin{flushleft}
+When the parameters were chosen well and the teacher wants to show and explore different clusterings, our dendogram can be shown.
+\end{flushleft}
+\includegraphics[width=0.5\textwidth]{/pictures/Scenario/9.PNG}
+\begin{flushleft}
+Clicking onto a column and leaving this view allows for quickly changing the cutoff to usefull settings. The cutoff can the be adjusted a little bit to achieve the right filtering of noise points in the data.
+\end{flushleft}
+
 \subsection{Performance of the system}
 \subsubsection{Computational Performance}
 \begin{flushleft}
@@ -290,8 +330,17 @@ Computationally our tool is currently not well optimized. Since we implemented O
 A drawback of this is, that with current hardware working with a dataset larger than 400 points will result in stutter when interacting with different aspects of our tool.
 \end{flushleft}
 \subsubsection{Visual Performance}
-bla
-
+ Problems with huge datasets:
+\begin{itemize}
+\item The points in the plots may overlap a lot. It is possible to work around this by zooming in the jump paths plot and looking at parts of the data at a time.
+\item The reachability plot may not be very nice anymore since the bars would be to thin to propperly distinguish.
+\end{itemize}
+Well working, even with huge datasets:
+\begin{itemize}
+\item The density plot should still give a good overview of the data, since it abstracts from single points.
+\item The clustersizes plot should look the same, as long as there is not also a huge amount of clusters.
+\item The heat map should always look good because it gives a hirachical overview and is zoomable. Shapes should still be recognizable.
+\end{itemize}
 \subsection{Evaluation/Feedback}
 Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback.
 
