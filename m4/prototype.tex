@@ -17,7 +17,7 @@
 %% review process. Some conferences, like IEEE Vis and InfoVis, have NOT
 %% in the past.
 
-%% Figures should be in CMYK or Grey scale format, otherwise, colour 
+%% Figures should be in CMYK or Grey scale format, otherwise, colour
 %% shifting may occur during the printing process.
 
 %% These few lines make a distinction between latex and pdflatex calls and they
@@ -72,7 +72,7 @@
 
 %% Paper title.
 
-\title{Visualization of the OPTICS Algorithm}
+\title{OPTICSvis: Visualizing the OPTICS algorithm}
 
 %% This is how authors are specified in the conference style
 
@@ -114,7 +114,7 @@ accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
 delenit augue duis dolore te feugait nulla facilisi.%
 } % end of abstract
 
-%% ACM Computing Classification System (CCS). 
+%% ACM Computing Classification System (CCS).
 %% See <http://www.acm.org/about/class> for details.
 %% We recommend the 2012 system <http://www.acm.org/about/class/class/2012>
 %% For the 2012 system use the ``\CCScatTwelve'' which command takes four arguments.
@@ -145,7 +145,7 @@ delenit augue duis dolore te feugait nulla facilisi.%
 %% ``\begin{document}'' command. It prepares and prints the title block.
 
 %% the only exception to this rule is the \firstsection command
-\firstsection{Introduction}
+\firstsection{Introduction} % sonja
 
 \maketitle
 
@@ -153,10 +153,10 @@ delenit augue duis dolore te feugait nulla facilisi.%
 
 \begin{flushleft}
 The OPTICS algorithm is a density based clustering algorithm, that outputs a list of points,
- ordered according to the reachability of the points and the logic of the algorithm. 
-This result is usually visualized by plotting this list as a bar chart with the output index as x-value and the 
-computed reachability distance as y-value. This reachability plot then is used to make assumptions about 
-the cluster-hierarchy in the data. 
+ ordered according to the reachability of the points and the logic of the algorithm.
+This result is usually visualized by plotting this list as a bar chart with the output index as x-value and the
+computed reachability distance as y-value. This reachability plot then is used to make assumptions about
+the cluster-hierarchy in the data.
 \end{flushleft}
 
 \begin{flushleft}
@@ -172,10 +172,10 @@ As such, visualization is arguably already a core component of cluster analysis 
 \end{flushleft}
 
 \begin{flushleft}
-Furthermore, OPTICS is inherently capable of producing hierarchial clusterings, but this information is oftentimes discarded in favor of a simpler representation. Procuring an visualization method that is still simple, but allows for evaluation of hierarchial clusters is surely a worthwile undertaking, and one that we will strive for. 
+Furthermore, OPTICS is inherently capable of producing hierarchial clusterings, but this information is oftentimes discarded in favor of a simpler representation. Procuring an visualization method that is still simple, but allows for evaluation of hierarchial clusters is surely a worthwile undertaking, and one that we will strive for.
 \end{flushleft}
 
-\section{Motivation}
+\section{Motivation} %% sonja
 
 \begin{flushleft}
  Not many tools exist that take on this subject, although notable projects exist, especially Clustervision\cite{Clustervision} and a DBSCAN visualization that we found \cite{DBSCAN}, the latter of which only visualizes how DBSCAN goes about finding clusters (i.e. shows the epsilon neighborhoods). It is notable that DBSCAN results in a simple partition of points into clusters along with some metadata (e.g. core points versus edge points).
@@ -186,7 +186,7 @@ Clustervision is an especially powerful tool and takes on a multitude of algorit
 \end{flushleft}
 
 \begin{flushleft}
-This is something that we do not want to do, as we strongly feel that this is out of bounds for us. We want to make an example of simple data (i.e. low dimensional and spatial, a list of real points) and how the results given by OPTICS relate to this data set and the used settings, and show the partition derived from the reachability data. 
+This is something that we do not want to do, as we strongly feel that this is out of bounds for us. We want to make an example of simple data (i.e. low dimensional and spatial, a list of real points) and how the results given by OPTICS relate to this data set and the used settings, and show the partition derived from the reachability data.
 \end{flushleft}
 
 \subsection{Background information}
@@ -233,7 +233,7 @@ Mockups on Website(some text also reusable?)
 (- to both academic and commercial tools used)
 Maybe we don't need this section, since we talk about this elsewhere (e.g. implementation)
 
-\section{Approach}
+\section{Approach} %% sonja
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
 nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
@@ -250,7 +250,7 @@ Lots of images, describe each plot
 \subsection{Reasoning behind design choices}
 Why our chosen plots are better than possible other solutions (e.g. piechart for clustersizes) and heatmap stuff.
 
-\section{Implementation}
+\section{Implementation} %% sonja
 
 \subsection{toolkits, languages, platforms}
 \begin{flushleft}
@@ -293,7 +293,7 @@ A drawback of this is, that with current hardware working with a dataset larger 
 bla
 
 \subsection{Evaluation/Feedback}
-Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback. 
+Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback.
 
 \section{Discussion}
 
@@ -306,7 +306,7 @@ what we think is nice
 Durring this project we learned different new things.
 \end{flushleft}
 \begin{itemize}
-\item On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances. 
+\item On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances.
 \item We learned a lot about creating nice visualizations, not only through the feedback we got, but usually from ourselves, when we did not like how something looked. Reworking what we did not like then showed us how not to visualize some things, which we will be able to apply in later projects.
 \item We also learned about teamwork, especially because our team coordinated very well. We worked with the versioning tool git and besides sometimes needlessly having to merge code snippets, we think our task separation and joining of code parts worked flawlessly.
 \end{itemize}
@@ -330,12 +330,6 @@ amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
 invidunt ut labore et dolore magna aliquyam erat, sed diam
 voluptua. At vero eos et accusam et justo duo dolores et ea
 rebum.
-
-
-%% if specified like this the section will be committed in review mode
-\acknowledgments{
-The authors wish to thank A, B, and C. This work was supported in part by
-a grant from XYZ. Probably not needed?}
 
 %\bibliographystyle{abbrv}
 \bibliographystyle{abbrv-doi}
