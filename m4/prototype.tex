@@ -193,14 +193,54 @@ differing cutoff values.
 
 \subsubsection{OPTICS}
 
+As already discussed, OPTICS is a density-based clustering algorithm that works
+on spatial data. Density-based clustering algorithms typically classify points
+into either cluster points (possibly giving them a cluster ID) or noise, which
+is made up of points that belong to regions that are not dense enough to be
+considered clusters.
+
+More concretely, OPTICS computes its output representation by jumping between
+points (the choice of the first point is left in the open) and performing
+$\varepsilon$-neighborhood queries. The $\varepsilon$ parameter supplied to the
+algorithm is used. Note that $\varepsilon$ may very well be set to an
+outrageously high value, but will then result in an algorithmic complexity of
+$O(n^2)$ as every neighborhood query would likely return the entire data set.
+
+The influence of the \emph{minPts} parameter on the result is twofold: first,
+the \emph{core distance} of a point is defined as the distance to its
+\emph{minPts}th neighbor. Secondly, a point that fails to have \emph{minPts}
+neighbors is considered to be unreachable by the algorithm and will thus
+certainly be labeled as noise later on.
+
 \subsubsection{Data}
 
+Our visualization dashboard is capable of dealing with scalar, two dimensional
+data. We provide both predefined data sets that showcase the very robust
+behavior of OPTICS, e.g. by having data sets that form circles or spirals,
+objects that would not be correctly classified by the likes of k-Means and
+DBSCAN, and a text input field that allows the user to input her own data.
+
+Although higher dimensional data is not supported, more dimensions can be
+supplied and then two dimensions chosen. The other dimensions are not
+considered. Albeit being limited, this still allows to explore a higher
+dimensional data set in slices, and dimensionality reduction can be done
+using external tools if so desired.
+
 \subsubsection{Users}
-\begin{itemize}
-\item Teachers and Students
-\item Researchers
-\item Anyone interested in the OPTICS algorithm
-\end{itemize}
+
+Our visualization design has a strong focus on education. As such, our targeted
+user groups are educational staff, such as lecturers, students (mainly
+undergrad level), but also researchers that have a more casual need for using
+OPTICS or may be casually evaluating the algorithm for further use. Our
+application is not designed to work well with larger data sets, which we
+consider non-casual use, although non-interactive elements are still
+functional---interactive elements, however, often rely on hovering over bars or
+points, which will become unusable if there are many bars or points. These
+aspects are, however, geared towards the educational experience that a student
+may have; and students are unlikely to want to figure out how an algorithm
+works by loading up a large data set. It is also of note that the realized
+product is a browser application and is thus severely limited in terms of
+computational power.
 
 \subsubsection{Tasks}
 \begin{flushleft}
