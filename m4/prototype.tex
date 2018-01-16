@@ -49,11 +49,10 @@
 \usepackage{times}                     % we use Times as the main font
 \renewcommand*\ttdefault{txtt}         % a nicer typewriter font
 \usepackage{cite}                      % needed to automatically sort the references
-\usepackage{tabu}                      % only used for the table example
-\usepackage{booktabs}                  % only used for the table example
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{url}
 %% We encourage the use of mathptmx for consistent usage of times font
 %% throughout the proceedings. However, if you encounter conflicts
 %% with other math-related packages, you may want to disable it.
@@ -68,7 +67,7 @@
 \vgtccategory{Research}
 
 %% allow for this line if you want the electronic option to work properly
-\vgtcinsertpkg
+%% \vgtcinsertpkg
 
 %% In preprint mode you may define your own headline.
 %\preprinttext{To appear in an IEEE VGTC sponsored conference.}
@@ -319,8 +318,8 @@ configuration.
 The heatmap that is next is a rather novel way to help the user find the most
 natural clustering of the given data set as well as show hierarchial clusters.
 For this visualization, we apply the data set to both axes in the order that is
-given by the OPTICS algorithm. For each pair $(p_i, p_j) \in \text{DB} \times
-\text{DB}$, where $DB$ is the data set or data base, we compute the distance
+given by the OPTICS algorithm. For each pair $(p_i, p_j) \in DB \times
+DB$, where $DB$ is the data set or data base, we compute the distance
 $d(p_i, p_j)$ and map it to a hue, with darker hues bound to smaller distances.
 Note that this is the actual distance between points (given by e.g. the
 Euclidian distance function), and not the core dist as defined previously.
@@ -396,7 +395,7 @@ cutoff bar to this position). This way, certain levels of the hierachy can be
 nicely mapped to the reachability chart, which also serves to illustrate how
 hierarchies appear in this more canonical chart type.
 
-\subsection{Reasoning behind design choices}
+\subsection{Reasoning}
 
 Why our chosen plots are better than possible other solutions (e.g. piechart for clustersizes) and heatmap stuff.
 
