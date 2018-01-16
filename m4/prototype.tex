@@ -51,6 +51,9 @@
 \usepackage{cite}                      % needed to automatically sort the references
 \usepackage{tabu}                      % only used for the table example
 \usepackage{booktabs}                  % only used for the table example
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 %% We encourage the use of mathptmx for consistent usage of times font
 %% throughout the proceedings. However, if you encounter conflicts
 %% with other math-related packages, you may want to disable it.
@@ -280,18 +283,118 @@ Maybe we don't need this section, since we talk about this elsewhere (e.g. imple
 
 \section{Approach} %% sonja
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.
+Our visualization design encompasses 6 views showing either the input data or
+different aspects of the output data. Perhaps most central is the reachability
+chart, which is the staple bar chart that was proposed as the go-to
+visualization method by the authors of OPTICS~\cite{optics}. We have extended
+this view to contain an interactive bar that corresponds to the cutoff value.
+Changes to this bar result in a recalculation of the output clustering. We have
+also introduced a second cutoff to separate subclusters from their
+superclusters (e.g. even denser regions in an already dense region).
 
-\subsection{Description visualization design}
-Lots of images, describe each plot
+The top left view shows a density map of the input data. This serves as a reminder
+of what the OPTICS algorithm deals with---densities---and shows the general shapes of
+the data. The density map is estimated using a Gaussian kernel and will thus show
+circular tendencies that may not fit the data perfectly.
+
+The actual data points on this view are hidden, but can be toggled by double clicking
+the canvas. Doing this will show the cluster IDs of the points mapped to a color, and
+also allow the selection of points using a lasso. The corresponding bars of the reachability
+chart will then be highlighted. This is a means to substantiate how each bar of the
+reachability correlates to a point in the data set to be used during e.g. in-class
+discussion of the algorithm.
+
+Going clockwise from this view, the next view shows a bar chart that summarizes the
+clustering by the cluster sizes. Very unbalanced values may be indicative of a bad
+configuration.
+
+The next view visualizes the path that the algorithm took during execution.
+Hovering a bar of the reachability chart will highlight (by increasing the
+stroke width) the corresponding path. This is useful for tracing the algorithm
+on small data sets (e.g. when doing homework on the algorithm) and shows the
+decisions that the algorithm made during a run. Changes to the paths taken when
+changing the configuration do not seem significant as to the quality of the
+configuration.
+
+The heatmap that is next is a rather novel way to help the user find the most
+natural clustering of the given data set as well as show hierarchial clusters.
+For this visualization, we apply the data set to both axes in the order that is
+given by the OPTICS algorithm. For each pair $(p_i, p_j) \in \text{DB} \times
+\text{DB}$, where $DB$ is the data set or data base, we compute the distance
+$d(p_i, p_j)$ and map it to a hue, with darker hues bound to smaller distances.
+Note that this is the actual distance between points (given by e.g. the
+Euclidian distance function), and not the core dist as defined previously.
+
+If the data set has a clustering structure that is apparent with the given
+configuration of $\varepsilon$ and \emph{minPts}, the clusters will become
+apparent as squares of darker color. Figure~\ref{fig:heatmap} shows this for a
+small data set. Other characteristics are also visible---such as having
+circular objects in the data set, which will appear as diagonal lines in the
+heatmap. Although this information is also visible in the reachability
+plot---where clusters appear as valleys---we have experienced that the squares
+are easier to grasp for novices, and squares seem to be easier to perceive
+especially with subcluster structures, which will appear as nested groups of
+squares. This view supports a square brush which can be used to select regions
+of the data set and will highlight the corresponding data points in the
+reachability chart.
+
+A particularly bad choice of parameterization will also become apparent in the
+heatmap, as it will appear rather erratic, as shown in
+Figure~\ref{fig:heatmap-bad}.
+
+\begin{figure}[tb]
+    \centering
+
+    \begin{subfigure}{0.45\columnwidth}
+        \includegraphics[width=\columnwidth]{heatmap}
+        \caption{}
+        \label{fig:heatmap}
+    \end{subfigure}%
+    \hspace{1em}
+    \begin{subfigure}{0.45\columnwidth}
+        \includegraphics[width=\columnwidth]{heatmap-bad}
+        \caption{}
+        \label{fig:heatmap-bad}
+    \end{subfigure}
+    \caption{Heatmap. (a) A good configuration. (b) A bad one.}
+\end{figure}
+
+The final view is hidden initially. By double clicking the reachability plot, a
+large dendrogram view will appear. Due to constraints in visualization estate,
+this dendrogram is flipped on its size and is also not technically a dendrogram---but
+rather a general tree, as leaves are not forcefully pulled to the last level.
+
+A dendrogram is without doubt a good choice when visualizing hierarchies, which
+is our aim. However, it should also be noted that for large data sets, a
+dendrogram does not scale, and analyzing large hierarchies will quickly turn
+into an ordeal.  Possible mitigations include e.g. collapsing parts of the tree
+or zooms, but the original problem still remains. Such was also argued
+in~\cite{optics}, where the authors make a point of highlighting that the
+typical reachability chart is vastly superior to tree-like outputs of
+other---usually hierarchical---algorithms. We want to point out that OPTICS is
+\emph{not} a hierarchical algorithm, but merely \emph{also} mirrors the
+hierarchical structures of the input in its output. Hierarchical clustering
+algorithms typically work by recursively merging (bottom-up) or splitting
+(top-down) a trivial clustering.  OPTICS does not show this behavior.
+
+The question is: how to source the hierarchy given the output? We have chosen a
+rather simplistic approach, consisting of descendingly sorting the algorithm by
+the core distance of each point, and then for every distance, extracting the
+clustering that results when setting the cutoff to this distance. If this
+clustering contains at least one cluster ID that is not present in the last
+clustering (if any), then some cluster must have split---and the current
+clustering is the next hierarchy level.  We completely ignore points that get
+assigned noise status.  However, since points drop out of the clustering, we
+may overlook clusterings that are significantly different, but have as many as
+or less clusters than the previous. Thus, the resulting hierarchy is only
+approximate, but a few radically different clusterings (``cornerstone
+clusterings'') are guaranteed to be contained.
+
+Any level of the hierarchy can be selected, which results in the application of
+the corresponding cutoff to the main visualization (as if having dragged the
+cutoff bar to this position). This way, certain levels of the hierachy can be
+nicely mapped to the reachability chart, which also serves to illustrate how
+hierarchies appear in this more canonical chart type.
 
 \subsection{Reasoning behind design choices}
 
