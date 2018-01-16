@@ -245,33 +245,18 @@ product is a browser application and is thus severely limited in terms of
 computational power.
 
 \subsubsection{Tasks}
-\begin{flushleft}
+
 The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits given data and problem.
-\end{flushleft}
 
-\begin{flushleft}
 Teachers can either use our default data set or load a custom data set to explain how the algorithm works. They could use our implementation as a means of presentation and to show how parameter changes affect the output. The different views are also supposed to help understanding what the output actually means. Beeing able to play arround with parameters and having different usefull views could be beneficial for understanding the algorithm itself.
-\end{flushleft}
 
-\begin{flushleft}
 The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionaly want to test their data set or part of it with our tool.
-\end{flushleft}
 
 
 \section{Related work}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.
-
 \subsection{Other visualization solutions}
-See Motivation; I don't know if we need this section or if we should change Motivation
+ Not many tools exist that take on this subject, although notable projects exist, especially Clustervision\cite{Clustervision} and a DBSCAN visualization that we found \cite{DBSCAN}, the latter of which only visualizes how DBSCAN goes about finding clusters (i.e. shows the epsilon neighborhoods). It is notable that DBSCAN results in a simple partition of points into clusters along with some metadata (e.g. core points versus edge points).
 \subsection{Previous visualization ideas}
 (-that you incorporated into your solution)
 Mockups on Website(some text also reusable?)
@@ -402,18 +387,16 @@ Why our chosen plots are better than possible other solutions (e.g. piechart for
 \section{Implementation} %% sonja
 
 \subsection{toolkits, languages, platforms}
-\begin{flushleft}
+
 For our implementation we used the Java Script with the d3 library. We also implemented the OPTICS algorithm ourselves to be able to extract additional information (in comparison to a premade solution) like the jump paths and custom cluster tagging logic.
-\end{flushleft}
-\begin{flushleft}
+
 We tested our implementation in Google Chrome, Microsoft Edge and Mozilla Firefox, whereas Firefox has some problems with the bigger data sets, we have not been able to combat.
-\end{flushleft}
 
 \subsection{Implementation challenges}
 \begin{itemize}
 \item The OPTICS implementation isn't the most efficient one and it may be a good idea to have a backend for the calculations.
 \item We found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non square selection doesn't make sense.
-\item We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large eps), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
+\item We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large  $\varepsilon$), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
 \item There seem to be performance issues with Firefox and large data sets, which we were not able to solve yet.
 \end{itemize}
 
@@ -423,63 +406,58 @@ We tested our implementation in Google Chrome, Microsoft Edge and Mozilla Firefo
 We feel, that our implementation\cite{Our_Implementation} is most usefull when used to explain OPTICS and learning to understand its output. It is best used with at least a small amount of knowledge about density based clustering or in combination with learning about it. This is possibly the only tool that allows for interactive visual experimentation with this algorithm.
 
 \subsection{Scenarios of use}
-\begin{flushleft}
+
 A scenario in which a teacher at a university may use our implementation may look something like the following:
-\end{flushleft}
-\begin{flushleft}
+
 First the teacher could show the default view, that appears when loading the tool, to his students. Here a good parameter set is preselected and we can clearly see the clusterstructure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/1.PNG}
-\begin{flushleft}
+
 The logical next step is now to talk about the estimated density regions of the dataset where it is somewhat visualy obvious where the clusters are. An interesting question for the students would now be if they think, the left- or rightmost point in the bottom right cluster should still be part of the cluster.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/2.PNG}
-\begin{flushleft}
+
 Moving the cutoff bar in the reachability plot around reveals, that the left point is removed first when moving the cutoff bar down.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/3.PNG}
-\begin{flushleft}
+
 This can now be explained by mousing over the bars of the reachability plot and discussing how the reachability distance relates to the output of OPTICS, which is usualy just this reachability data.
-\end{flushleft}
-\begin{flushleft}
+
 While moving the cutoff bar arround it might also be interesting to see how it affects clusterpoints changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/4.PNG}
-\begin{flushleft}
+
 Whenever needed the teacher may also want to use the filtering in this plot to focus an a cluster or highlight something using the lasso in the density plot or the brush in the heatmap.
-\end{flushleft}
-\begin{flushleft}
-Explaining the algorithm step by step is supported by the jump paths plot where the teacher can follow each jump, by mousing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not nesseserily equal to the actual distance between the two connected points. It is important to emphasise the influence of the minPoints paramater on this value.
-\end{flushleft}
+
+Explaining the algorithm step by step is supported by the jump paths plot where the teacher can follow each jump, by mousing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not nesseserily equal to the actual distance between the two connected points. It is important to emphasise the influence of the  \emph{minPts} paramater on this value.
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/5.PNG}
-\begin{flushleft}
+
 Next a general discussion may be had about what a good clustering actualy is. For this it may be a good idea to argue with our heat map.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/6.PNG}
-\begin{flushleft}
-A good clustering will usualy produce a nice heatmap because points close to eachother in the data space will also be close to eachother in this plot and produce a rectangle or other recognizable shapes. Here the teacher can nicely show how a bad parameter set (minPTS=8, eps=10) may produce a bad result.
-\end{flushleft}
+
+A good clustering will usualy produce a nice heatmap because points close to eachother in the data space will also be close to eachother in this plot and produce a rectangle or other recognizable shapes. Here the teacher can nicely show how a bad parameter set ( \emph{minPts}=8,  $\varepsilon$ =10) may produce a bad result.
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/7.PNG}
-\begin{flushleft}
-With those parameters no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the teacher can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less then 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing eps may improve the runtime of the algorithm greatly.
-\end{flushleft}
+
+With those parameters no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the teacher can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less then 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing  $\varepsilon$ may improve the runtime of the algorithm greatly.
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/8.PNG}
-\begin{flushleft}
+
 When the parameters were chosen well and the teacher wants to show and explore different clusterings, our dendogram can be shown.
-\end{flushleft}
+
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/9.PNG}
-\begin{flushleft}
+
 Clicking onto a column and leaving this view allows for quickly changing the cutoff to usefull settings. The cutoff can the be adjusted a little bit to achieve the right filtering of noise points in the data.
-\end{flushleft}
 
 \subsection{Performance of the system}
 \subsubsection{Computational Performance}
-\begin{flushleft}
+
 Computationally our tool is currently not well optimized. Since we implemented OPTICS ourselves we took a trivial approach and the runtime complexity for bad input parameters may reach $ O(n^{2}) $. For a more sophisticated implementation a server backend would be usefull as well as better optimized code.
-\end{flushleft}
-\begin{flushleft}
+
 A drawback of this is, that with current hardware working with a dataset larger than 400 points will result in stutter when interacting with different aspects of our tool.
-\end{flushleft}
+
 \subsubsection{Visual Performance}
  Problems with huge datasets:
 \begin{itemize}
@@ -495,24 +473,19 @@ Well working, even with huge datasets:
 \subsection{Evaluation/Feedback}
 Mostly answer to the teachers feedback(Website), what we were told by testers(or what we think they would say...). Not just focus on bad feedback.
 \subsubsection{Course Feedback}
-\begin{flushleft}
+
 First Feedback:
-\end{flushleft}
-\begin{flushleft}
+
 The first feedback we got was considered and implemented into our tool.
-\end{flushleft}
-\begin{flushleft}
+
 Seccond Feedback:
-\end{flushleft}
-\begin{flushleft}
+
 We were told, that our heat map shows ugly lines between the actual squares. This was due to rendering aritfacts from the browser and was easily fixed by changing a shape rendering propperty.
-\end{flushleft}
-\begin{flushleft}
+
 Another complaint was about the highlighting in the density plot. We have improved the highlighting behaviour and don't think this is a problem any more. We may be missunderstanding this feedback though, it is possible that what was actualy meant was that the highlighting does not work when the points are not visible. We want to keep this behaviour, because the user would otherwise have no idea where his highlighting comes from or be generaly confusing.
-\end{flushleft}
-\begin{flushleft}
+
 The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot can not be propperly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligable because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
-\end{flushleft}
+
 \subsubsection{User Feedback}
 bla
 
@@ -534,9 +507,9 @@ Weaknesses of our Tool:
 \item May not be showing enought information when working with multidimensional data.
 \end{itemize}
 \subsection{Lessons we learned}
-\begin{flushleft}
+
 Durring this project we learned different new things.
-\end{flushleft}
+
 \begin{itemize}
 \item On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances.
 \item We learned a lot about creating nice visualizations, not only through the feedback we got, but usually from ourselves, when we did not like how something looked. Reworking what we did not like then showed us how not to visualize some things, which we will be able to apply in later projects.
