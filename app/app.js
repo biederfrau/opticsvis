@@ -284,11 +284,13 @@ function setup_reach(state) {
     canvas.append("g").classed("yaxis", true).attr("transform", "translate(" + [ctx.margins.left, ctx.margins.top] + ")");
 
     var interactioncanvas=canvas.append("g").classed("interaction", true);
-    var moveable2=interactioncanvas.append("g").classed("moveable2",true);
+    //var moveable2=interactioncanvas.append("g").classed("moveable2",true);
+    //disabled cutoff2
     var moveable1=interactioncanvas.append("g").classed("moveable1",true);
 
     const rectwidth=12;
 
+   /*
     moveable2
         .append("line").classed("cutoff", true)
         .attr("x1",d => 0)
@@ -307,7 +309,7 @@ function setup_reach(state) {
 
     moveable2.call(d3.drag()
         .on("drag", dragged2));
-
+*/
 
     moveable1
         .append("line").classed("cutoff", true)
@@ -324,6 +326,9 @@ function setup_reach(state) {
         .attr("height",d => rectwidth)
         .attr("width",d => rectwidth)
         .attr("fill", "black");
+
+    moveable1.call(d3.drag()
+        .on("drag", dragged));
 
     draw_reach(state.output_data, state, ctx);
 
@@ -374,23 +379,26 @@ function setup_reach(state) {
         if(!framed_bars.empty()) canvas.selectAll(".bar:not(.framed).not-highlighted").style("opacity", 0.3)
     });
 
-    moveable1.call(d3.drag()
-        .on("drag", dragged));
+
 
     function dragged(d) {
         if(state.selected_clusters.length !== 0) { return; }
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
         if(d3.event.y>ctx.height-ctx.margins.bottom)d3.event.y=ctx.height-ctx.margins.bottom;
+        /*
         if(d3.event.y>scutoff2){
             moveable2.attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
             scutoff2=d3.event.y;
         }
+        */
         d3.select(this).attr("transform", "translate(" + [ctx.margins.left, d3.event.y] + ")");
         scutoff1=d3.event.y;
-        setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
+        //setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
+        setcutoff(ctx.y.invert(scutoff1-ctx.margins.top));
         cutoffchanged(state);
     }
 
+    /*
     function dragged2(d) {
         if(state.selected_clusters.length !== 0) { return; }
         if(d3.event.y<ctx.margins.top)d3.event.y=ctx.margins.top;
@@ -404,6 +412,7 @@ function setup_reach(state) {
         setcutoffs(ctx.y.invert(scutoff1-ctx.margins.top),ctx.y.invert(scutoff2-ctx.margins.top));
         cutoffchanged(state);
     }
+    */
 } // }}}
 
 function cutoffchanged(state){
@@ -554,7 +563,7 @@ function draw_clusters(data, state, ctx) {
         .attr("fill", (d,i) => d.key==-1?noisecolor:colorScale(d.key))
         .attr("cursor", d => d.key == -1 ? "not-allowed" : undefined)
         .on("mouseover", function (d) {
-            tooltip.text("Size: "+d.value+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v).length);
+            tooltip.text("Size: "+d.value/*+", subclusters: " + _.map(subclustersize_per_cluster[+d.key], (v, k) => v).length*/);
             return tooltip.style("visibility", "visible");
         })
         .on("mousemove", function () {

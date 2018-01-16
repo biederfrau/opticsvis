@@ -3,7 +3,7 @@ var minPTS = 4;
 var maxdist = 60;
 var distbetween;
 var cutoff1=20;
-var cutoff2=15;
+var cutoff2=cutoff1;
 var clusterOrderSave;
 var dim1 = 0, dim2 = 1;
 var totaldims=2;
