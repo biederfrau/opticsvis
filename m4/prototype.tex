@@ -379,20 +379,21 @@ hierarchical structures of the input in its output. Hierarchical clustering
 algorithms typically work by recursively merging (bottom-up) or splitting
 (top-down) a trivial clustering.  OPTICS does not show this behavior.
 
-The question is: how to source the hierarchy given the output? We have chosen a
-rather simplistic approach, consisting of descendingly sorting the algorithm
-output by the core distance of each point, and then for every distance,
-extracting the clustering that results when setting the cutoff to this
-distance. If this clustering contains at least one cluster ID that is not
-present in the last clustering (if any), then some cluster must have
-split---and the current clustering is the next hierarchy level.  We completely
-ignore points that get assigned noise status.  However, since points drop out
-of the clustering, we may overlook clusterings that are significantly
-different, but have as many as or less clusters than the previous. Thus, the
-resulting hierarchy is only approximate, but a few radically different
-clusterings (``cornerstone clusterings'') are guaranteed to be contained, and
-each lower hierarchy level is larger than the last, something that is always
-given when working with hierarchial clustering algorithms.
+The question is: how to source the hierarchy given the output, if it is not
+just given by how the algorithm does its clustering? We have chosen a rather
+simplistic approach, consisting of descendingly sorting the algorithm output by
+the core distance of each point, and then for every distance, extracting the
+clustering that results when setting the cutoff to this distance. If this
+clustering contains at least one cluster ID that is not present in the last
+clustering (if any), then some cluster must have split---and the current
+clustering is the next hierarchy level.  We completely ignore points that get
+assigned noise status.  However, since points drop out of the clustering, we
+may overlook clusterings that are significantly different, but have as many as
+or less clusters than the previous. Thus, the resulting hierarchy is only
+approximate, but a few radically different clusterings (``cornerstone
+clusterings'') are guaranteed to be contained, and each lower hierarchy level
+is larger than the last, something that is always given when working with
+hierarchial clustering algorithms.
 
 Any level of the hierarchy can be selected, which results in the application of
 the corresponding cutoff to the main visualization (as if having dragged the
