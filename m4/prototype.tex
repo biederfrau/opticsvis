@@ -193,6 +193,10 @@ differing cutoff values.
 
 \subsection{Background information}
 
+What follows are a few facts that are either needed to understand the rest
+of the paper or are distinguishing general characteristics of the project,
+such as tasks or user target groups.
+
 \subsubsection{OPTICS}
 
 As already discussed, OPTICS is a density-based clustering algorithm that works
@@ -214,6 +218,7 @@ the \emph{core distance} of a point is defined as the distance to its
 neighbors is considered to be unreachable by the algorithm and will thus
 certainly be labeled as noise later on.
 
+
 \subsubsection{Data}
 
 Our visualization dashboard is capable of dealing with scalar, two dimensional
@@ -227,6 +232,7 @@ supplied and then two dimensions chosen. The other dimensions are not
 considered. Albeit being limited, this still allows to explore a higher
 dimensional data set in slices, and dimensionality reduction can be done
 using external tools if so desired.
+
 
 \subsubsection{Users}
 
@@ -244,6 +250,7 @@ works by loading up a large data set. It is also of note that the realized
 product is a browser application and is thus severely limited in terms of
 computational power.
 
+
 \subsubsection{Tasks}
 
 The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits given data and problem.
@@ -253,7 +260,8 @@ Teachers can either use our default data set or load a custom data set to explai
 The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionaly want to test their data set or part of it with our tool.
 
 
-\section{Related work}
+
+\section{Related work} %% sonja
 
 \subsection{Other visualization solutions}
  Not many tools exist that take on this subject, although notable projects exist, especially Clustervision\cite{Clustervision} and a DBSCAN visualization that we found \cite{DBSCAN}, the latter of which only visualizes how DBSCAN goes about finding clusters (i.e. shows the epsilon neighborhoods). It is notable that DBSCAN results in a simple partition of points into clusters along with some metadata (e.g. core points versus edge points).
@@ -265,7 +273,17 @@ Mockups on Website(some text also reusable?)
 Maybe we don't need this section, since we talk about this elsewhere (e.g. implementation)
 
 
+
 \section{Approach} %% sonja
+
+We split our work on the visualization design into two parts: first, we
+designed and implemented the static views, making sure that even without
+interactivity, they display useful information---providing an overview. Only
+afterward we added filtering, brushing and zooming to get at some details that
+are hidden in the overview or provide value during presentations in an
+educational setting (e.g. a classroom).
+
+\subsection{Views}
 
 Our visualization design encompasses 6 views showing either the input data or
 different aspects of the output data. Perhaps most central is the reachability
@@ -362,17 +380,19 @@ algorithms typically work by recursively merging (bottom-up) or splitting
 (top-down) a trivial clustering.  OPTICS does not show this behavior.
 
 The question is: how to source the hierarchy given the output? We have chosen a
-rather simplistic approach, consisting of descendingly sorting the algorithm by
-the core distance of each point, and then for every distance, extracting the
-clustering that results when setting the cutoff to this distance. If this
-clustering contains at least one cluster ID that is not present in the last
-clustering (if any), then some cluster must have split---and the current
-clustering is the next hierarchy level.  We completely ignore points that get
-assigned noise status.  However, since points drop out of the clustering, we
-may overlook clusterings that are significantly different, but have as many as
-or less clusters than the previous. Thus, the resulting hierarchy is only
-approximate, but a few radically different clusterings (``cornerstone
-clusterings'') are guaranteed to be contained.
+rather simplistic approach, consisting of descendingly sorting the algorithm
+output by the core distance of each point, and then for every distance,
+extracting the clustering that results when setting the cutoff to this
+distance. If this clustering contains at least one cluster ID that is not
+present in the last clustering (if any), then some cluster must have
+split---and the current clustering is the next hierarchy level.  We completely
+ignore points that get assigned noise status.  However, since points drop out
+of the clustering, we may overlook clusterings that are significantly
+different, but have as many as or less clusters than the previous. Thus, the
+resulting hierarchy is only approximate, but a few radically different
+clusterings (``cornerstone clusterings'') are guaranteed to be contained, and
+each lower hierarchy level is larger than the last, something that is always
+given when working with hierarchial clustering algorithms.
 
 Any level of the hierarchy can be selected, which results in the application of
 the corresponding cutoff to the main visualization (as if having dragged the
@@ -380,19 +400,32 @@ cutoff bar to this position). This way, certain levels of the hierachy can be
 nicely mapped to the reachability chart, which also serves to illustrate how
 hierarchies appear in this more canonical chart type.
 
-\subsection{Reasoning}
+\subsection{Interactivity}
 
-Why our chosen plots are better than possible other solutions (e.g. piechart for clustersizes) and heatmap stuff.
+\subsection{Discussion}
+
+
 
 \section{Implementation} %% sonja
 
-\subsection{toolkits, languages, platforms}
+The dashboard is implemented using JavaScript and the fantastic d3.js SVG and DOM
+manipulation library. The application is entirely client-side and only needs a
+file server to run. A current version is also available
+online\footnote{\url{https://biederfrau.github.io/opticsvis/app/index.html}}.
 
-For our implementation we used the Java Script with the d3 library. We also implemented the OPTICS algorithm ourselves to be able to extract additional information (in comparison to a premade solution) like the jump paths and custom cluster tagging logic.
+The project also contains a complete implementation of OPTICS which is slightly tweaked to
+generate information used in some charts (e.g. the jump paths). This has the downside
+that our implementation might be a bit slower, although in general, the bottleneck seems
+to be the SVG rendering in the browser.
 
-We tested our implementation in Google Chrome, Microsoft Edge and Mozilla Firefox, whereas Firefox has some problems with the bigger data sets, we have not been able to combat.
+The application was tested on somewhat recent versions of Google Chrome and Mozilla Firefox
+and found to be in good working order in both. However, we noted that Firefox performs noticeably
+worse with regard to SVG rendering, so much so that it actively struggles loading
+some data sets. This seems more pronounced on Windows, whereas on Linux the issue is less pronounced
+(although still significantly worse than Chrome). We thus dearly recommend using it in
+Chrome and hope that Firefox will get its rendering act together sometime soon.
 
-\subsection{Implementation challenges}
+\subsection{Challenges}
 \begin{itemize}
 \item The OPTICS implementation isn't the most efficient one and it may be a good idea to have a backend for the calculations.
 \item We found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non square selection doesn't make sense.
