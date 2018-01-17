@@ -163,7 +163,7 @@ format holds not one, but many clusterings which still need to be extracted.
 This is done by picking a \emph{cutoff}, which then separates all points that
 fall below this value into a cluster. As this is not easy to conceptualize, the
 output of the algorithm is usually visualized using a bar chart---as such, it
-can be argued that visualization is already are core part of working with
+can be argued that visualization is already a core part of working with
 OPTICS, and leads us to our motivation to implement a more sophisticated and
 interactive visualization design.
 
@@ -198,6 +198,7 @@ What follows are a few facts that are either needed to understand the rest
 of the paper or are distinguishing general characteristics of the project,
 such as tasks or user target groups.
 
+
 \subsubsection{OPTICS}
 
 As already discussed, OPTICS is a density-based clustering algorithm that works
@@ -218,7 +219,6 @@ the \emph{core distance} of a point is defined as the distance to its
 \emph{minPts}th neighbor. Secondly, a point that fails to have \emph{minPts}
 neighbors is considered to be unreachable by the algorithm and will thus
 certainly be labeled as noise later on.
-
 
 \subsubsection{Data}
 
@@ -255,12 +255,10 @@ computational power.
 
 \subsubsection{Tasks}
 
-The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits given data and problem.
-
-Lecturers can either use our default data set or load a custom data set to explain how the algorithm works. They could use our implementation as a means of presentation and to show how parameter changes affect the output. The different views are also supposed to help understanding what the output actually means. Being able to play around with parameters and having different useful views could be beneficial for understanding the algorithm itself.
-
-The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionally want to test their data set or part of it with our tool.
-
+As already mentioned, the main aspect of our visualization is an educational one.
+Thus, the main tasks include both aiding presentations in the classroom as well as
+helping students understand the algorithm and its output. An additional, but minor,
+task is allowing researchers to experiment with the tool.
 
 \section{Related Work} %% sonja
 
