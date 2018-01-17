@@ -226,7 +226,8 @@ Our visualization dashboard is capable of dealing with scalar, two dimensional
 data. We provide both predefined data sets that showcase the very robust
 behavior of OPTICS, e.g. by having data sets that form circles or spirals,
 objects that would not be correctly classified by the likes of k-Means and
-DBSCAN, and a text input field that allows the user to input her own data.
+DBSCAN, and a text input field that allows the user to input her own
+space-delimited data.
 
 Although higher dimensional data is not supported, more dimensions can be
 supplied and then two dimensions chosen. The other dimensions are not
@@ -261,21 +262,96 @@ Teachers can either use our default data set or load a custom data set to explai
 The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionaly want to test their data set or part of it with our tool.
 
 
+\section{Related Work} %% sonja
 
-\section{Related work} %% sonja
+Since clustering of data is a fairly interesting and current topic, a few clustering
+visualizations have cropped up, most of them taking an educational angle. However,
+some also fulfill other tasks, such as allowing users to verify clustering output.
 
-\subsection{Other visualization solutions}
- Not many tools exist that take on this subject, although notable projects exist, especially Clustervision\cite{Clustervision} and a DBSCAN visualization that we found \cite{DBSCAN}, the latter of which only visualizes how DBSCAN goes about finding clusters (i.e. shows the epsilon neighborhoods). It is notable that DBSCAN results in a simple partition of points into clusters along with some metadata (e.g. core points versus edge points).
-\subsection{Previous visualization ideas}
-(-that you incorporated into your solution)
-Mockups on Website(some text also reusable?)
-\subsection{References}
-(- to both academic and commercial tools used)
-Maybe we don't need this section, since we talk about this elsewhere (e.g. implementation)
+\subsection{Visualizations}
 
+Harris~\cite{dbscan,kmeans} implemented two visualizations for DBSCAN and
+k-Means, respectively. Both implementations display the input data (which can
+be chosen from a few predefined, but not very exciting, data sets) and overlay
+information derived from the algorithm, e.g. by coloring the points or
+displaying the $\varepsilon$ neighborhood as an overlaid circle.
 
+The $k$-Means visualization~\cite{kmeans} allows to choose from three differen centroid picking
+strategies---user defined, random or farthest from each other---and then allows the
+user to place as many centroids as she pleases. The rest of the visualization consists
+of pressing a button until the algorithm converges and watching the centroids move
+along with their regions. Figure~\ref{fig:kmeans} shows a screenshot.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=\columnwidth]{kmeans}
+    \caption{A $k$-Means visualization}
+    \label{fig:kmeans}
+\end{figure}
+
+The DBSCAN visualization~\cite{dbscan} is similar. To illustrate the meaning of
+both the $\varepsilon$ and \emph{minPts} parameters, the author superimposes a
+grid of circles with radius $\varepsilon$ and colors them red if they overlap
+more than \emph{minPts} points. Figure~\ref{fig:dbscan} shows a screenshot.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.7\columnwidth]{dbscan}
+    \caption{A DBSCAN visualization}
+    \label{fig:dbscan}
+\end{figure}
+
+ClustVis~\cite{clustvis} is a tool for applying the Principal Component Analysis (PCA) method
+to user-defined data, and allows for generating and exporting both scatterplots
+of the resulting two dominant components, as well as heatmaps. It allows tweaking
+the output by choosing different components, inversing axes, as well as row scaling
+and different PCA methods, among others. The clustering occurs by correlation distance
+and average linkage. Figure~\ref{fig:clustvis-heatmap} shows the resulting heatmap of
+the default data set, with the dendrograms derived from the clustering process shown
+on the left and top. There is little explanation of the methods on the tool site, but
+altogether seems to be a tool aimed at experts.
+
+Clustervision~\cite{clustervision} differs from the other tools by the fact
+that its aim is to enable users to verify the clustering output---as put by its
+tagline: \emph{visual supervision of unsupervised clustering}. Clustervision
+allows comparison between many different clustering algorithms (among them are
+DBSCAN, Spectral Clustering, $k$-means and others). The authors argue that
+clustering is often done in an exploratory fashion---trying out, more or less
+blindly, different algorithms with different configurations. Any algorithm may
+provide a new insight into the data set---some algorithms may provide some
+insights that others fail to uncover. Thus, they propose a system that ranks
+different clustering results and urges the user to compare the solutions to ask
+new questions. The tool looks to be excellent and very sophisticated\footnote{https://vimeo.com/232177941},
+however we were unable to try it out.
+
+\begin{figure}[bt]
+    \centering
+    \includegraphics[width=\columnwidth]{clustvis-heat}
+    \caption{ClustVis heatmap}
+    \label{fig:clustvis-heatmap}
+\end{figure}
+
+\subsection{Libraries}
+
+Our implementation is driven by the excellent d3 library~\cite{d3}, using
+multiple plugins. For lassoing the overlaid points on the density chart, we
+used d3-lasso~\cite{d3-lasso}. The density estimation and contour computation
+is done by d3-contour~\cite{d3-contour}. The legend of the density chart is
+generated by d3-legend~\cite{d3-legend}. An important source of inspiration and
+know-how was \url{bl.ocks.org}~\cite{blocks}, the corresponding sources are
+cited in the source code wherever relevant.
+
+We have also used jQuery v3.2.1~\cite{jquery} as well as Lodash
+v4.17.4~\cite{lodash}.
 
 \section{Approach} %% sonja
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{opticsvis-overview}
+    \caption{An overview of the implemented solution. (A) Density regions estimated from the input, (B) cluster sizes, (C) chart showing the path that the algorithm took, (D) heatmap displaying inter-point distances, (E) reachability chart.}
+    \label{fig:overview}
+\end{figure}
 
 We split our work on the visualization design into two parts: first, we
 designed and implemented the static views, making sure that even without
@@ -287,15 +363,16 @@ educational setting (e.g. a classroom).
 \subsection{Views}
 
 Our visualization design encompasses 6 views showing either the input data or
-different aspects of the output data. Perhaps most central is the reachability
-chart, which is the staple bar chart that was proposed as the go-to
-visualization method by the authors of OPTICS~\cite{optics}. We have extended
-this view to contain an interactive bar that corresponds to the cutoff value.
-Changes to this bar result in a recalculation of the output clustering. We have
-also introduced a second cutoff to separate subclusters from their
+different aspects of the output data. The five main views which are visible
+from the start are shown in Figure~\ref{fig:overview}. Perhaps most central is
+the reachability chart (E), which is the staple bar chart that was proposed as
+the go-to visualization method by the authors of OPTICS~\cite{optics}. We have
+extended this view to contain an interactive bar that corresponds to the cutoff
+value.  Changes to this bar result in a recalculation of the output clustering.
+We have also introduced a second cutoff to separate subclusters from their
 superclusters (e.g. even denser regions in an already dense region).
 
-The top left view shows a density map of the input data. This serves as a reminder
+The top left view shows a density map of the input data (A). This serves as a reminder
 of what the OPTICS algorithm deals with---densities---and shows the general shapes of
 the data. The density map is estimated using a Gaussian kernel and will thus show
 circular tendencies that may not fit the data perfectly.
@@ -308,10 +385,10 @@ reachability correlates to a point in the data set to be used during e.g. in-cla
 discussion of the algorithm.
 
 Going clockwise from this view, the next view shows a bar chart that summarizes the
-clustering by the cluster sizes. Very unbalanced values may be indicative of a bad
+clustering by the cluster sizes (B). Very unbalanced values may be indicative of a bad
 configuration.
 
-The next view visualizes the path that the algorithm took during execution.
+The next view visualizes the path that the algorithm took during execution (C).
 Hovering a bar of the reachability chart will highlight (by increasing the
 stroke width) the corresponding path. This is useful for tracing the algorithm
 on small data sets (e.g. when doing homework on the algorithm) and shows the
@@ -319,7 +396,7 @@ decisions that the algorithm made during a run. Changes to the paths taken when
 changing the configuration do not seem significant as to the quality of the
 configuration.
 
-The heatmap that is next is a rather novel way to help the user find the most
+The heatmap (D) that is next is a rather novel way to help the user find the most
 natural clustering of the given data set as well as show hierarchial clusters.
 For this visualization, we apply the data set to both axes in the order that is
 given by the OPTICS algorithm. For each pair $(p_i, p_j) \in DB \times
@@ -330,7 +407,7 @@ Euclidian distance function), and not the core dist as defined previously.
 
 If the data set has a clustering structure that is apparent with the given
 configuration of $\varepsilon$ and \emph{minPts}, the clusters will become
-apparent as squares of darker color. Figure~\ref{fig:heatmap} shows this for a
+apparent as squares of darker color. Figure~\ref{fig:overview} (D) shows this for a
 small data set. Other characteristics are also visible---such as having
 circular objects in the data set, which will appear as diagonal lines in the
 heatmap. Although this information is also visible in the reachability
@@ -347,19 +424,9 @@ Figure~\ref{fig:heatmap-bad}.
 
 \begin{figure}[tb]
     \centering
-
-    \begin{subfigure}{0.45\columnwidth}
-        \includegraphics[width=\columnwidth]{heatmap}
-        \caption{}
-        \label{fig:heatmap}
-    \end{subfigure}%
-    \hspace{1em}
-    \begin{subfigure}{0.45\columnwidth}
-        \includegraphics[width=\columnwidth]{heatmap-bad}
-        \caption{}
-        \label{fig:heatmap-bad}
-    \end{subfigure}
-    \caption{Heatmap. (a) A good configuration. (b) A bad one.}
+    \includegraphics[width=.9\columnwidth]{heatmap-bad}
+    \caption{A chaotic heatmap resulting from a bad configuration.}
+    \label{fig:heatmap-bad}
 \end{figure}
 
 The final view is hidden initially. By double clicking the reachability plot, a
@@ -569,7 +636,7 @@ Durring this project we learned different new things.
 \textbf{Task} & \textbf{Sonja} & \textbf{Christian} \\
  Website (Content) & 85\% & 15\%\\
  Idea & 15\% & 85\%\\
- Solution Sketch & 50\% & 50\%        
+ Solution Sketch & 50\% & 50\%
 \end{tabular}
 \end{table}
 \FloatBarrier
@@ -585,7 +652,7 @@ Durring this project we learned different new things.
  Mockup 3 & 100\% & 0\%\\
  Visualization Techniques & 100\% & 0\%\\
  Conclusion/Scenario of use & 0\% & 100\%\\
- Milestones & 70\% & 30\%        
+ Milestones & 70\% & 30\%
 \end{tabular}
 \end{table}
 \FloatBarrier
@@ -601,7 +668,7 @@ Durring this project we learned different new things.
  Zoom/Pan-Interaction & 50\% & 50\%\\
  Highlight-Interaction & 60\% & 40\%\\
  Algorithm & 10\% & 90\%\\
- Web summary & 50\% & 50\%        
+ Web summary & 50\% & 50\%
 \end{tabular}
 \end{table}
 \FloatBarrier
