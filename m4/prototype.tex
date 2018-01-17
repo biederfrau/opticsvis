@@ -559,6 +559,13 @@ Next a general discussion may be had about what a good clustering actualy is. Fo
 
 A good clustering will usually produce a nice heatmap because points close to each other in the data space will also be close to each other in this plot and produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set, as shown in Figure~\ref{fig:heatmap-bad},  may produce a bad result.
 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{/pictures/Scenario/7.PNG}
+    \caption{Heat map resulting from a bad configuration}
+    \label{fig:heatmap-bad}
+\end{figure}
+
 With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the lecturer can explain, that we may actually still want a result like this, e.g. Figure~\ref{fig:bad-param-set}, if there is reasoning behind the parameters, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ may improve the runtime of the algorithm greatly.
 
 \begin{figure}[tb]
@@ -607,12 +614,11 @@ Another complaint was about the highlighting in the density plot. We have improv
 The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot cannot be properly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligible because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
 
 \subsubsection{User Feedback}
-For our user feedback, we asked colleagues and people without computational background to evaluate our tool. Our colleagues usually already had some knowledge on hierarchical clustering, whereas the others did not.
+For our user feedback, we asked users with and without knowledge on hierarchial clustering or OPTICS to evaluate our tool.
 
-For our colleagues, we decided to let them try out our tool and not interfere during this process, since we wanted to recreate the setting of someone that wants to get to know this algorithm, which would usually be someone with some background knowledge. Some of our colleagues told us afterwards, that the second cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendrogram. A frequent question we were asked by them was how the density estimation works. It may be a good idea to give additional information to some details of our implementation in a readme or wiki page. We also saw, that some users did not use all possibilities of interaction that we implemented. When asking them why the answers were that they did not know they were possible, like zooming in the heat map, or that they did not try them out because they felt that they would not need them, like filtering by clicking in the cluster sizes plot. Besides that, we got good feedback on how the tool looks and how well they were able to understand the plots and the algorithms output.
+For the users with background knowledge, we decided to let them try out our tool and not interfere during this process, since we wanted to recreate the setting of someone that wants to get to know this algorithm. Some of those users told us afterwards, that the second cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendrogram. A frequent question we were asked by them was how the density estimation works. It may be a good idea to give additional information to some details of our implementation in a readme or wiki page. We also saw, that some users did not use all of the possibilities of interaction that we implemented. When asking them why the answers were that they did not know they were possible, like zooming in the heat map, or that they did not try them out because they felt that they would not need them, like filtering by clicking in the cluster sizes plot. Besides that, we got good feedback on how the tool looks and how well they were able to understand the plots and the algorithms output.
 
-For the other users, we changed the setting and decided to give them a very brief explanation on density based clustering and OPTICS first. We did this to create a teaching scenario and when we let them work with our tool we proposed trying specific settings and explained the different plots. When the users felt that they understood our tool we asked them if they felt that the tool made it easier to understand the algorithm and if so, why. All of them said, that the tool was helpful.
-%wird noch überarbeitet
+For the other users, we changed the setting and decided to give them a very brief explanation on density based clustering and OPTICS first. We did this to create a teaching scenario and when we let them work with our tool we proposed trying specific settings and explained the different plots. When the users felt that they understood our tool we asked them if they felt that the tool made it easier to understand the algorithm and if so, why. All of them said, that the tool was helpful. The estimated densities plot was usually mentioned as the most useful, because it gives a good idea of the clustering without further investigating the how or why. The dendrogram was also thought to be useful, the users especially liked being able to select a clustering from there. We were also told, that moving the cutoff around intuitively teaches how points get assigned to clusters. We also asked them what they did not like and were told different things. One person argued that the density regions plot and the jump paths plot could be drawn as one plot. We decided to keep it as is though, because joining them together may cause too much information overlapping, which may be confusing. Another person said, that the cluster-noise ratio widget is not very useful. We somewhat agree that if does not give the best overview of what to expect from the new parameters, but we think that it still gives an idea on how drastic the changes will be. Lastly some users would have liked more default data sets. For that reason, we added a few new sets with interesting patterns.
 
 \section{Discussion}
 
@@ -625,11 +631,11 @@ Where our tool may lack in is the ability to learn about how OPTICS works withou
 
 During this project we learned different new things.
 
-\begin{itemize}
-\item On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances.
-\item We learned a lot about creating nice visualizations, not only through the feedback we got, but usually from ourselves, when we did not like how something looked. Reworking what we did not like then showed us how not to visualize some things, which we will be able to apply in later projects.
-\item We also learned about teamwork, especially because our team coordinated very well. We worked with the versioning tool git and besides sometimes needlessly having to merge code snippets, we think our task separation and joining of code parts worked flawlessly.
-\end{itemize}
+On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances.
+
+We learned a lot about creating nice visualizations, not only through the feedback we got, but usually from ourselves, when we did not like how something looked. Reworking what we did not like then showed us how not to visualize some things, which we will be able to apply in later projects.
+
+We also learned about teamwork, especially because our team coordinated very well. We worked with the versioning tool git and besides sometimes needlessly having to merge code snippets, we think our task separation and joining of code parts worked flawlessly.
 
 \section{Separation of Tasks}
 \begin{table}[htb]
