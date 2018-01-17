@@ -215,10 +215,17 @@ outrageously high value, but will then result in an algorithmic complexity of
 $O(n^2)$ as every neighborhood query would likely return the entire data set.
 
 The influence of the \emph{minPts} parameter on the result is twofold: first,
-the \emph{core distance} of a point is defined as the distance to its
-\emph{minPts}th neighbor. Secondly, a point that fails to have \emph{minPts}
-neighbors is considered to be unreachable by the algorithm and will thus
-certainly be labeled as noise later on.
+the \emph{core distance} of a point is defined as the \emph{minPts}th smallest
+distance to one of its neighbors. Secondly, a point that fails to have
+\emph{minPts} neighbors is considered to be a non-core point, which is regarded
+as unreachable by the algorithm and will thus certainly be labeled as noise
+later on. The reachability distance of a point $p$, coming from a point $o$, is
+the maximum between the core distance of $p$ or the distance between $o$ and
+$p$~\cite{optics-wiki}.
+
+The output is thus composed of the order in which the points were visited, as
+well as the reachability distance of each point. This can nicely be summarized
+using a bar chart, which is then called a reachability chart in OPTICS lingo.
 
 \subsubsection{Data}
 
@@ -234,7 +241,6 @@ supplied and then two dimensions chosen. The other dimensions are not
 considered. Albeit being limited, this still allows to explore a higher
 dimensional data set in slices, and dimensionality reduction can be done
 using external tools if so desired.
-
 
 \subsubsection{Users}
 
@@ -252,7 +258,6 @@ works by loading up a large data set. It is also of note that the realized
 product is a browser application and is thus severely limited in terms of
 computational power.
 
-
 \subsubsection{Tasks}
 
 As already mentioned, the main aspect of our visualization is an educational one.
@@ -262,9 +267,10 @@ task is allowing researchers to experiment with the tool.
 
 \section{Related Work} %% sonja
 
-Since clustering of data is a fairly interesting and current topic, a few clustering
-visualizations have cropped up, most of them taking an educational angle. However,
-some also fulfill other tasks, such as allowing users to verify clustering output.
+Since the clustering of data is a fairly interesting, current but also hard
+problem, a few clustering visualizations have cropped up, most of them taking
+an educational angle. However, some also fulfill other tasks, such as allowing
+users to verify clustering output.
 
 \subsection{Visualizations}
 
@@ -342,6 +348,8 @@ cited in the source code wherever relevant.
 We have also used jQuery v3.2.1~\cite{jquery} as well as Lodash
 v4.17.4~\cite{lodash}.
 
+\vfill
+
 \section{Approach} %% sonja
 
 \begin{figure}[t]
@@ -387,12 +395,10 @@ clustering by the cluster sizes (B). Very unbalanced values may be indicative of
 configuration.
 
 The next view visualizes the path that the algorithm took during execution (C).
-Hovering a bar of the reachability chart will highlight (by increasing the
-stroke width) the corresponding path. This is useful for tracing the algorithm
-on small data sets (e.g. when doing homework on the algorithm) and shows the
-decisions that the algorithm made during a run. Changes to the paths taken when
-changing the configuration do not seem significant as to the quality of the
-configuration.
+This is useful for tracing the algorithm on small data sets (e.g. when doing
+homework on the algorithm) and shows the decisions that the algorithm made
+during a run. Changes to the paths taken when changing the configuration do not
+seem significant as to the quality of the configuration.
 
 The heatmap (D) that is next is a rather novel way to help the user find the most
 natural clustering of the given data set as well as show hierarchial clusters.
@@ -417,15 +423,7 @@ of the data set and will highlight the corresponding data points in the
 reachability chart.
 
 A particularly bad choice of parameterization will also become apparent in the
-heatmap, as it will appear rather erratic, as shown in
-Figure~\ref{fig:heatmap-bad}.
-
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=.9\columnwidth]{heatmap-bad}
-    \caption{A chaotic heatmap resulting from a bad configuration.}
-    \label{fig:heatmap-bad}
-\end{figure}
+heatmap, as it will appear rather erratic.
 
 The final view is hidden initially. By double clicking the reachability plot, a
 large dendrogram view will appear. Due to constraints in visualization estate,
@@ -436,7 +434,7 @@ A dendrogram is without doubt a good choice when visualizing hierarchies, which
 is our aim. However, it should also be noted that for large data sets, a
 dendrogram does not scale, and analyzing large hierarchies will quickly turn
 into an ordeal. Possible mitigations include e.g. collapsing parts of the tree
-or zooms, but the original problem still remains. Such was also argued
+or zooming, but the original problem still remains. Such was also argued
 in~\cite{optics}, where the authors make a point of highlighting that the
 typical reachability chart is vastly superior to tree-like outputs of
 other---usually hierarchical---algorithms. We want to point out that OPTICS is
@@ -461,17 +459,33 @@ clusterings'') are guaranteed to be contained, and each lower hierarchy level
 is larger than the last, something that is always given when working with
 hierarchical clustering algorithms.
 
-Any level of the hierarchy can be selected, which results in the application of
-the corresponding cutoff to the main visualization (as if having dragged the
-cutoff bar to this position). This way, certain levels of the hierarchy can be
-nicely mapped to the reachability chart, which also serves to illustrate how
-hierarchies appear in this more canonical chart type.
-
 \subsection{Interactivity}
 
-\subsection{Discussion}
+All views have interactive abilities. The toggled points of the density regions
+chart (A) can be lassoed to highlight groups of points in the reachability
+chart (E).  The cluster sizes overview (B) can be used to filter the
+reachability chart. Hovering over a bar in the reachability chart will show the
+$\varepsilon$-neighborhood of it in the density chart (if the points are
+toggled), as well as highlight the corresponding edge in the jumppath chart
+(C). Zooming is available in both the heatmap view (D) and the jumppath chart.
+The heatmap also has a square brush that can be used to select point groups,
+which will then be highlighted in the reachability chart. Selecting a level of the
+hierarchy tree will apply the corresponding cutoff value to the main visualization.
 
+Most of these interaction patterns have the goal of explaining and providing
+context to the reachability chart, which is the chart that is most commonly
+associated with OPTICS, and which most newcomers to the algorithm are confused
+by. Others, e.g. zooming into the jumppath chart, allow to see data that might
+be hidden by other overlapping data, or to filter down on particularly
+interesting clusters, particularly useful if the data set is quite large and
+the hovering actions on the reachability chart are no longer feasible if the
+whole data set is displayed.
 
+When toggling the Settings tab for changing the configuration of the algorithm
+a scented widget is displayed, which shows the ratio of cluster points to
+noise.  This can help identify a nonsensical configuration (e.g. one that
+results in a lot of noise) before the changes are committed (which triggers a
+rather expensive calculation along with an even more expensive re-rendering).
 
 \section{Implementation} %% sonja
 
@@ -494,13 +508,16 @@ Chrome and hope that Firefox will get its rendering act together sometime soon.
 
 \subsection{Challenges}
 
-The challenges we encountered include that our OPTICS implementation isn't the most efficient one, the tool can therefore be quite slow, and it may be a good idea to have a backend for the calculations.
+One of the main challenges the implementation itself faces is the terrible performance
+of SVG rendering which is especially bad in some browsers. There are quite a few SVG
+elements to be rendered, especially so with larger data sets, which bogs down the entire
+application.
 
-We also found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non-square selection doesn't make sense.
+Our home-baked OPTICS implementation is also quite na\"ive and thus not all
+that quick. This is however overshadowed by the performance issues of SVG. The
+browser would go kaput before getting close to large enough input sizes.
 
-We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large $\varepsilon$), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
-
-Lastly there seem to be performance issues with Firefox and large data sets, which we were not able to solve yet.
+Another issue was with forcing the heatmap's brush to stay square.
 
 \section{Results}
 
