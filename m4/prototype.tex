@@ -557,7 +557,7 @@ Explaining the algorithm step by step is supported by the jump paths plot, Figur
 
 Next a general discussion may be had about what a good clustering actualy is. For this it may be a good idea to argue with our heat map, Figure~\ref{fig:overview} (D).
 
-A good clustering will usually produce a nice heatmap because points close to each other in the data space will also be close to each other in this plot and produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set, as shown in Figure~\ref{fig:heatmap-bad},  may produce a bad result.
+A good clustering will usually produce a nice heatmap, because points close to each other in the data space will also be close to each other in this plot and therefor produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set, as shown in Figure~\ref{fig:heatmap-bad},  may produce a bad result.
 
 \begin{figure}[tb]
     \centering
@@ -566,7 +566,7 @@ A good clustering will usually produce a nice heatmap because points close to ea
     \label{fig:heatmap-bad}
 \end{figure}
 
-With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the lecturer can explain, that we may actually still want a result like this, e.g. Figure~\ref{fig:bad-param-set}, if there is reasoning behind the parameters, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ may improve the runtime of the algorithm greatly.
+With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. At this point the lecturer can explain, that we may still want a result like this, e.g. Figure~\ref{fig:bad-param-set}, if there is reasoning behind why, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ can improve the runtime of the algorithm greatly.
 
 \begin{figure}[tb]
     \centering
@@ -575,7 +575,7 @@ With those parameters, no cutoff will produce a satisfactory clustering, unless 
     \label{fig:bad-param-set}
 \end{figure}
 
-When the parameters were chosen well and the lecturer wants to show and explore different clusterings, our dendogram, Figure~\ref{fig:dendogram}, can be shown.
+When the parameters were chosen well and the lecturer wants to visualize and explore different clusterings, our dendogram, Figure~\ref{fig:dendogram}, can be shown.
 
 \begin{figure}[tb]
     \centering
