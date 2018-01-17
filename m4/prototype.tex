@@ -527,54 +527,55 @@ We feel, that our implementation\cite{Our_Implementation} is most useful when us
 
 A scenario in which a lecturer at a university may use our implementation may look something like the following:
 
-First the lecturer could show the default view, that appears when loading the tool, to his students. Here a good parameter set is preselected and we can clearly see the cluster structure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
+First the lecturer could show the default view, that appears when loading the tool, as shown in Figure~\ref{fig:overview}, to his students. Here a good parameter set is preselected and we can clearly see the cluster structure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/1.PNG}
+The logical next step is now to talk about the estimated density, Figure~\ref{fig:overview} (A), regions of the dataset where it is somewhat visualy obvious where the clusters are. An interesting question for the students would now be if they think, the left- or rightmost point in the bottom right cluster should still be part of the cluster.
 
-The logical next step is now to talk about the estimated density regions of the dataset where it is somewhat visualy obvious where the clusters are. An interesting question for the students would now be if they think, the left- or rightmost point in the bottom right cluster should still be part of the cluster.
+Moving the cutoff bar in the reachability plot, Figure~\ref{fig:reachability-plot}, around reveals, that the left point is removed first when moving the cutoff bar down.
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/2.PNG}
-
-Moving the cutoff bar in the reachability plot around reveals, that the left point is removed first when moving the cutoff bar down.
-
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/3.PNG}
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{/pictures/Scenario/3.PNG}
+    \caption{The resulting clustering when changing the cutoff}
+    \label{fig:reachability-plot}
+\end{figure}
 
 This can now be explained by moussing over the bars of the reachability plot and discussing how the reachability distance relates to the output of OPTICS, which is usually just this reachability data.
 
-While moving the cutoff bar around it might also be interesting to see how it affects cluster points changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
-
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/4.PNG}
+While moving the cutoff bar around it might also be interesting to see how it affects cluster points, Figure~\ref{fig:overview} (B), changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
 
 Whenever needed the lecturer may also want to use the filtering in this plot to focus an a cluster or highlight something using the lasso in the density plot or the brush in the heatmap.
 
-Explaining the algorithm step by step is supported by the jump paths plot where the lecturer can follow each jump, by moussing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not necessarily equal to the actual distance between the two connected points. It is important to emphasize the influence of the \emph{minPts} parameter on this value.
+Explaining the algorithm step by step is supported by the jump paths plot, Figure~\ref{fig:jump-paths}, where the lecturer can follow each jump, by moussing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not necessarily equal to the actual distance between the two connected points. It is important to emphasize the influence of the \emph{minPts} parameter on this value.
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/5.PNG}
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{/pictures/Scenario/5.PNG}
+    \caption{The jump paths plot, showing the steps the algorithm takes}
+    \label{fig:jump-paths}
+\end{figure}
 
-Next a general discussion may be had about what a good clustering actualy is. For this it may be a good idea to argue with our heat map.
+Next a general discussion may be had about what a good clustering actualy is. For this it may be a good idea to argue with our heat map, Figure~\ref{fig:overview} (D).
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/6.PNG}
+A good clustering will usually produce a nice heatmap because points close to each other in the data space will also be close to each other in this plot and produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set, as shown in Figure~\ref{fig:heatmap-bad},  may produce a bad result.
 
-A good clustering will usually produce a nice heatmap because points close to each other in the data space will also be close to each other in this plot and produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set ( \emph{minPts}=8, $\varepsilon$ =10) may produce a bad result.
+With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the lecturer can explain, that we may actually still want a result like this, e.g. Figure~\ref{fig:bad-param-set}, if there is reasoning behind the parameters, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ may improve the runtime of the algorithm greatly.
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/7.PNG}
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{/pictures/Scenario/8.PNG}
+    \caption{A usualy unwanted clustering result}
+    \label{fig:bad-param-set}
+\end{figure}
 
-With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the lecturer can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ may improve the runtime of the algorithm greatly.
+When the parameters were chosen well and the lecturer wants to show and explore different clusterings, our dendogram, Figure~\ref{fig:dendogram}, can be shown.
 
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/8.PNG}
-
-When the parameters were chosen well and the lecturer wants to show and explore different clusterings, our dendogram can be shown.
-
-\noindent
-\includegraphics[width=0.5\textwidth]{/pictures/Scenario/9.PNG}
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=.9\columnwidth]{/pictures/Scenario/9.PNG}
+    \caption{Dendogram, showing cluster hierarchies}
+    \label{fig:dendogram}
+\end{figure}
 
 Clicking onto a column and leaving this view allows for quickly changing the cutoff to useful settings. The cutoff can then be adjusted a little bit to achieve the right filtering of noise points in the data.
 
@@ -606,7 +607,12 @@ Another complaint was about the highlighting in the density plot. We have improv
 The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot cannot be properly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligible because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
 
 \subsubsection{User Feedback}
-We were told, that the second cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendrogram.
+For our user feedback, we asked colleagues and people without computational background to evaluate our tool. Our colleagues usually already had some knowledge on hierarchical clustering, whereas the others did not.
+
+For our colleagues, we decided to let them try out our tool and not interfere during this process, since we wanted to recreate the setting of someone that wants to get to know this algorithm, which would usually be someone with some background knowledge. Some of our colleagues told us afterwards, that the second cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendrogram. A frequent question we were asked by them was how the density estimation works. It may be a good idea to give additional information to some details of our implementation in a readme or wiki page. We also saw, that some users did not use all possibilities of interaction that we implemented. When asking them why the answers were that they did not know they were possible, like zooming in the heat map, or that they did not try them out because they felt that they would not need them, like filtering by clicking in the cluster sizes plot. Besides that, we got good feedback on how the tool looks and how well they were able to understand the plots and the algorithms output.
+
+For the other users, we changed the setting and decided to give them a very brief explanation on density based clustering and OPTICS first. We did this to create a teaching scenario and when we let them work with our tool we proposed trying specific settings and explained the different plots. When the users felt that they understood our tool we asked them if they felt that the tool made it easier to understand the algorithm and if so, why. All of them said, that the tool was helpful.
+%wird noch überarbeitet
 
 \section{Discussion}
 
