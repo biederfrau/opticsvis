@@ -1,10 +1,10 @@
 % $Id: template.tex 11 2007-04-03 22:25:53Z jpeltier $
 
-\documentclass{vgtc}                          % final (conference style)
-%\documentclass[review]{vgtc}                 % review
-%\documentclass[widereview]{vgtc}             % wide-spaced review
-%\documentclass[preprint]{vgtc}               % preprint
-%\documentclass[electronic]{vgtc}             % electronic version
+\documentclass{vgtc} % final (conference style)
+%\documentclass[review]{vgtc} % review
+%\documentclass[widereview]{vgtc} % wide-spaced review
+%\documentclass[preprint]{vgtc} % preprint
+%\documentclass[electronic]{vgtc} % electronic version
 
 %% Uncomment one of the lines above depending on where your paper is
 %% in the conference process. ``review'' and ``widereview'' are for review
@@ -26,29 +26,29 @@
 %% to provide the the path and extension of a graphics file:
 %% \includegraphics{diamondrule} is completely sufficient.
 %%
-\ifpdf%                                % if we use pdflatex
-  \pdfoutput=1\relax                   % create PDFs from pdfLaTeX
-  \pdfcompresslevel=9                  % PDF Compression
-  \pdfoptionpdfminorversion=7          % create PDF 1.7
-  \ExecuteOptions{pdftex}
-  \usepackage{graphicx}                % allow us to embed graphics files
-  \DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg} % for pdflatex we expect .pdf, .png, or .jpg files
-\else%                                 % else we use pure latex
-  \ExecuteOptions{dvips}
-  \usepackage{graphicx}                % allow us to embed graphics files
-  \DeclareGraphicsExtensions{.eps}     % for pure latex we expect eps files
+\ifpdf% % if we use pdflatex
+\pdfoutput=1\relax % create PDFs from pdfLaTeX
+\pdfcompresslevel=9 % PDF Compression
+\pdfoptionpdfminorversion=7 % create PDF 1.7
+\ExecuteOptions{pdftex}
+\usepackage{graphicx} % allow us to embed graphics files
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg} % for pdflatex we expect .pdf, .png, or .jpg files
+\else% % else we use pure latex
+\ExecuteOptions{dvips}
+\usepackage{graphicx} % allow us to embed graphics files
+\DeclareGraphicsExtensions{.eps} % for pure latex we expect eps files
 \fi%
 
 %% it is recomended to use ``\autoref{sec:bla}'' instead of ``Fig.~\ref{sec:bla}''
 \graphicspath{{figures/}{pictures/}{images/}{./}} % where to search for the images
 
-\usepackage{microtype}                 % use micro-typography (slightly more compact, better to read)
-\PassOptionsToPackage{warn}{textcomp}  % to address font issues with \textrightarrow
-\usepackage{textcomp}                  % use better special symbols
-\usepackage{mathptmx}                  % use matching math font
-\usepackage{times}                     % we use Times as the main font
-\renewcommand*\ttdefault{txtt}         % a nicer typewriter font
-\usepackage{cite}                      % needed to automatically sort the references
+\usepackage{microtype} % use micro-typography (slightly more compact, better to read)
+\PassOptionsToPackage{warn}{textcomp} % to address font issues with \textrightarrow
+\usepackage{textcomp} % use better special symbols
+\usepackage{mathptmx} % use matching math font
+\usepackage{times} % we use Times as the main font
+\renewcommand*\ttdefault{txtt} % a nicer typewriter font
+\usepackage{cite} % needed to automatically sort the references
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -91,15 +91,15 @@
 
 %% Author and Affiliation (multiple authors with multiple affiliations)
 \author{Sonja Biedermann\thanks{e-mail:sonja.biedermann@univie.ac.at }\\ %
-        \scriptsize University of Vienna %
+\scriptsize University of Vienna %
 \and Christian Permann\thanks{e-mail:a01463926@unet.univie.ac.at}\\ %
-     \scriptsize  University of Vienna}
+\scriptsize University of Vienna}
 
 %% A teaser figure can be included as follows, but is not recommended since
 %% the space is now taken up by a full width abstract.
 %\teaser{
-%  \includegraphics[width=1.5in]{sample.eps}
-%  \caption{Lookit! Lookit!}
+% \includegraphics[width=1.5in]{sample.eps}
+% \caption{Lookit! Lookit!}
 %}
 
 %% Abstract section.
@@ -126,13 +126,13 @@ delenit augue duis dolore te feugait nulla facilisi.%
 %% In both cases the last two arguments (1998) or last three (2012) can be empty.
 
 \CCScatlist{
-  \CCScatTwelve{Human-centered computing}{Visu\-al\-iza\-tion}{Visu\-al\-iza\-tion techniques}{Treemaps};
-  \CCScatTwelve{Human-centered computing}{Visu\-al\-iza\-tion}{Visualization design and evaluation methods}{}
+\CCScatTwelve{Human-centered computing}{Visu\-al\-iza\-tion}{Visu\-al\-iza\-tion techniques}{Treemaps};
+\CCScatTwelve{Human-centered computing}{Visu\-al\-iza\-tion}{Visualization design and evaluation methods}{}
 }
 
 %\CCScatlist{
-  %\CCScat{H.5.2}{User Interfaces}{User Interfaces}{Graphical user interfaces (GUI)}{};
-  %\CCScat{H.5.m}{Information Interfaces and Presentation}{Miscellaneous}{}{}
+%\CCScat{H.5.2}{User Interfaces}{User Interfaces}{Graphical user interfaces (GUI)}{};
+%\CCScat{H.5.m}{Information Interfaces and Presentation}{Miscellaneous}{}{}
 %}
 
 %% Copyright space is enabled by default as required by guidelines.
@@ -257,9 +257,9 @@ computational power.
 
 The main task our implementation aims to help with, is to educate on how use OPTICS and to see if it fits given data and problem.
 
-Teachers can either use our default data set or load a custom data set to explain how the algorithm works. They could use our implementation as a means of presentation and to show how parameter changes affect the output. The different views are also supposed to help understanding what the output actually means. Beeing able to play arround with parameters and having different usefull views could be beneficial for understanding the algorithm itself.
+Lecturers can either use our default data set or load a custom data set to explain how the algorithm works. They could use our implementation as a means of presentation and to show how parameter changes affect the output. The different views are also supposed to help understanding what the output actually means. Being able to play around with parameters and having different useful views could be beneficial for understanding the algorithm itself.
 
-The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionaly want to test their data set or part of it with our tool.
+The second use-case in our mind was for researchers or anyone interested to find out if they want to do future work with this algorithm. For this they will probably just play around with our implementation to see if they want to put further work into OPTICS. Researchers may additionally want to test their data set or part of it with our tool.
 
 
 \section{Related Work} %% sonja
@@ -437,7 +437,7 @@ rather a general tree, as leaves are not forcefully pulled to the last level.
 A dendrogram is without doubt a good choice when visualizing hierarchies, which
 is our aim. However, it should also be noted that for large data sets, a
 dendrogram does not scale, and analyzing large hierarchies will quickly turn
-into an ordeal.  Possible mitigations include e.g. collapsing parts of the tree
+into an ordeal. Possible mitigations include e.g. collapsing parts of the tree
 or zooms, but the original problem still remains. Such was also argued
 in~\cite{optics}, where the authors make a point of highlighting that the
 typical reachability chart is vastly superior to tree-like outputs of
@@ -445,7 +445,7 @@ other---usually hierarchical---algorithms. We want to point out that OPTICS is
 \emph{not} a hierarchical algorithm, but merely \emph{also} mirrors the
 hierarchical structures of the input in its output. Hierarchical clustering
 algorithms typically work by recursively merging (bottom-up) or splitting
-(top-down) a trivial clustering.  OPTICS does not show this behavior.
+(top-down) a trivial clustering. OPTICS does not show this behavior.
 
 The question is: how to source the hierarchy given the output, if it is not
 just given by how the algorithm does its clustering? We have chosen a rather
@@ -454,18 +454,18 @@ the core distance of each point, and then for every distance, extracting the
 clustering that results when setting the cutoff to this distance. If this
 clustering contains at least one cluster ID that is not present in the last
 clustering (if any), then some cluster must have split---and the current
-clustering is the next hierarchy level.  We completely ignore points that get
-assigned noise status.  However, since points drop out of the clustering, we
+clustering is the next hierarchy level. We completely ignore points that get
+assigned noise status. However, since points drop out of the clustering, we
 may overlook clusterings that are significantly different, but have as many as
 or less clusters than the previous. Thus, the resulting hierarchy is only
 approximate, but a few radically different clusterings (``cornerstone
 clusterings'') are guaranteed to be contained, and each lower hierarchy level
 is larger than the last, something that is always given when working with
-hierarchial clustering algorithms.
+hierarchical clustering algorithms.
 
 Any level of the hierarchy can be selected, which results in the application of
 the corresponding cutoff to the main visualization (as if having dragged the
-cutoff bar to this position). This way, certain levels of the hierachy can be
+cutoff bar to this position). This way, certain levels of the hierarchy can be
 nicely mapped to the reachability chart, which also serves to illustrate how
 hierarchies appear in this more canonical chart type.
 
@@ -495,23 +495,24 @@ some data sets. This seems more pronounced on Windows, whereas on Linux the issu
 Chrome and hope that Firefox will get its rendering act together sometime soon.
 
 \subsection{Challenges}
-\begin{itemize}
-\item The OPTICS implementation isn't the most efficient one and it may be a good idea to have a backend for the calculations.
-\item We found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non square selection doesn't make sense.
-\item We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large  $\varepsilon$), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
-\item There seem to be performance issues with Firefox and large data sets, which we were not able to solve yet.
-\end{itemize}
 
+The challenges we encountered include that our OPTICS implementation isn't the most efficient one, the tool can therefore be quite slow, and it may be a good idea to have a backend for the calculations.
+
+We also found it difficult to force the brush on top of the heat-map in a position where it makes sense, because since the x and y-Axis are mirrored, any non-square selection doesn't make sense.
+
+We think the main problem that remains is how to make it behave well with larger inputs. Given a bad configuration (mainly a very large $\varepsilon$), OPTICS runs in quadratic time, and some components such as our scented widget will call the algorithm every time an input event is triggered, which may lead to an explosion of calls which all take $ n^{2} $ time. This can't really be avoided (the output is needed to render the scented part), but maybe caching would cushion this effect. However, this depends on how often the same configurations would reappear, which may not be all that often.
+
+Lastly there seem to be performance issues with Firefox and large data sets, which we were not able to solve yet.
 
 \section{Results}
 
-We feel, that our implementation\cite{Our_Implementation} is most usefull when used to explain OPTICS and learning to understand its output. It is best used with at least a small amount of knowledge about density based clustering or in combination with learning about it. This is possibly the only tool that allows for interactive visual experimentation with this algorithm.
+We feel, that our implementation\cite{Our_Implementation} is most useful when used to explain OPTICS and learning to understand its output. It is best used with at least a small amount of knowledge about density based clustering or in combination with learning about it. This is possibly the only tool that allows for interactive visual experimentation with this algorithm.
 
 \subsection{Scenarios of use}
 
-A scenario in which a teacher at a university may use our implementation may look something like the following:
+A scenario in which a lecturer at a university may use our implementation may look something like the following:
 
-First the teacher could show the default view, that appears when loading the tool, to his students. Here a good parameter set is preselected and we can clearly see the clusterstructure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
+First the lecturer could show the default view, that appears when loading the tool, to his students. Here a good parameter set is preselected and we can clearly see the cluster structure on the data. The actual problem of clustering can be presented here as well as the specifics about density based clustering in comparison the methods like k-Means, that have probably been discussed in an earlier lecture.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/1.PNG}
@@ -526,16 +527,16 @@ Moving the cutoff bar in the reachability plot around reveals, that the left poi
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/3.PNG}
 
-This can now be explained by mousing over the bars of the reachability plot and discussing how the reachability distance relates to the output of OPTICS, which is usualy just this reachability data.
+This can now be explained by moussing over the bars of the reachability plot and discussing how the reachability distance relates to the output of OPTICS, which is usually just this reachability data.
 
-While moving the cutoff bar arround it might also be interesting to see how it affects clusterpoints changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
+While moving the cutoff bar around it might also be interesting to see how it affects cluster points changing into noise and splitting clusters into smaller ones. A general overview might be had when looking at the cluster sizes plot.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/4.PNG}
 
-Whenever needed the teacher may also want to use the filtering in this plot to focus an a cluster or highlight something using the lasso in the density plot or the brush in the heatmap.
+Whenever needed the lecturer may also want to use the filtering in this plot to focus an a cluster or highlight something using the lasso in the density plot or the brush in the heatmap.
 
-Explaining the algorithm step by step is supported by the jump paths plot where the teacher can follow each jump, by mousing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not nesseserily equal to the actual distance between the two connected points. It is important to emphasise the influence of the  \emph{minPts} paramater on this value.
+Explaining the algorithm step by step is supported by the jump paths plot where the lecturer can follow each jump, by moussing over the corresponding bar in the reachability plot and zooming in the jump paths plot. An important point to make here is that the reachability value in the corresponding chart is not necessarily equal to the actual distance between the two connected points. It is important to emphasize the influence of the \emph{minPts} parameter on this value.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/5.PNG}
@@ -545,81 +546,63 @@ Next a general discussion may be had about what a good clustering actualy is. Fo
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/6.PNG}
 
-A good clustering will usualy produce a nice heatmap because points close to eachother in the data space will also be close to eachother in this plot and produce a rectangle or other recognizable shapes. Here the teacher can nicely show how a bad parameter set ( \emph{minPts}=8,  $\varepsilon$ =10) may produce a bad result.
+A good clustering will usually produce a nice heatmap because points close to each other in the data space will also be close to each other in this plot and produce a rectangle or other recognizable shapes. Here the lecturer can nicely show how a bad parameter set ( \emph{minPts}=8, $\varepsilon$ =10) may produce a bad result.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/7.PNG}
 
-With those parameters no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the teacher can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less then 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing  $\varepsilon$ may improve the runtime of the algorithm greatly.
+With those parameters, no cutoff will produce a satisfactory clustering, unless this result was what we wanted. Here the lecturer can explain, that we may actually still want a result like this, if there is reasoning behind the parameters, like explicitly not wanting clusters with less than 8 points reachable within the distance 10. This might throw out unwanted minor clusters and break weak links between clusters. Here would also be a good moment to talk about how reducing $\varepsilon$ may improve the runtime of the algorithm greatly.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/8.PNG}
 
-When the parameters were chosen well and the teacher wants to show and explore different clusterings, our dendogram can be shown.
+When the parameters were chosen well and the lecturer wants to show and explore different clusterings, our dendogram can be shown.
 
 \noindent
 \includegraphics[width=0.5\textwidth]{/pictures/Scenario/9.PNG}
 
-Clicking onto a column and leaving this view allows for quickly changing the cutoff to usefull settings. The cutoff can the be adjusted a little bit to achieve the right filtering of noise points in the data.
+Clicking onto a column and leaving this view allows for quickly changing the cutoff to useful settings. The cutoff can then be adjusted a little bit to achieve the right filtering of noise points in the data.
 
 \subsection{Performance of the system}
 \subsubsection{Computational Performance}
 
-Computationally our tool is currently not well optimized. Since we implemented OPTICS ourselves we took a trivial approach and the runtime complexity for bad input parameters may reach $ O(n^{2}) $. For a more sophisticated implementation a server backend would be usefull as well as better optimized code.
+Computationally our tool is currently not well optimized. Since we implemented OPTICS ourselves we took a trivial approach and the runtime complexity for bad input parameters may reach $ O(n^{2}) $. For a more sophisticated implementation a server backend would be useful as well as better optimized code.
 
 A drawback of this is, that with current hardware working with a dataset larger than 400 points will result in stutter when interacting with different aspects of our tool.
 
 \subsubsection{Visual Performance}
- Problems with huge datasets:
-\begin{itemize}
-\item The points in the plots may overlap a lot. It is possible to work around this by zooming in the jump paths plot and looking at parts of the data at a time.
-\item The reachability plot may not be very nice anymore since the bars would be to thin to propperly distinguish.
-\end{itemize}
-Well working, even with huge datasets:
-\begin{itemize}
-\item The density plot should still give a good overview of the data, since it abstracts from single points.
-\item The clustersizes plot should look the same, as long as there is not also a huge amount of clusters.
-\item The heat map should always look good because it gives a hirachical overview and is zoomable. Shapes should still be recognizable.
-\end{itemize}
+We found that there are a few problems with our visual performance. If there are many points, they may overlap a lot in the plots. It is possible to work around this by zooming in the jump paths plot and looking at parts of the data at a time. Another possible problem could be, that the reachability plot may not be very nice anymore since the bars would be to thin to properly distinguish.
+
+Other parts of our implementation should still work well though. The density plot should still give a good overview of the data, even with lots of points, since it abstracts from single points. The cluster sizes plot should look the same, as long as there is not also a huge amount of clusters. The heat map should always look good because it gives a hierarchical overview and is zoomable. Shapes should still be recognizable.
 \subsection{Evaluation/Feedback}
-The Feedback we got consists of the course feedback given by our teachers and students durring our presentation of our prototype as well as from other users we questioned about our reworked prototype.
+The Feedback we got consists of the course feedback given by our lecturers and students during our presentation of our prototype as well as from other users we questioned about our reworked prototype.
 \subsubsection{Course Feedback}
 
 First Feedback:
 
 The first feedback we got was considered and implemented into our tool.
 
-\noindent Seccond Feedback:
+\noindent Second Feedback:
 
-We were told, that our heat map shows ugly lines between the actual squares. This was due to rendering aritfacts from the browser and was easily fixed by changing a shape rendering propperty.
+We were told, that our heat map shows ugly lines between the actual squares. This was due to rendering artifacts from the browser and was easily fixed by changing a shape rendering property.
 
-Another complaint was about the highlighting in the density plot. We have improved the highlighting behaviour and don't think this is a problem any more. We may be missunderstanding this feedback though, it is possible that what was actualy meant was that the highlighting does not work when the points are not visible. We want to keep this behaviour, because the user would otherwise have no idea where his highlighting comes from or be generaly confusing.
+Another complaint was about the highlighting in the density plot. We have improved the highlighting behavior and don't think this is a problem any more. We may be misunderstanding this feedback though, it is possible that what was actually meant was that the highlighting does not work when the points are not visible. We want to keep this behavior, because the user would otherwise have no idea where his highlighting comes from or be generally confusing.
 
-The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot can not be propperly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligable because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
+The last point made was questioning if our implementation visually scales well with large/realistic data sets. We think that it would, up to the point where the reachability distances plot cannot be properly read anymore because the bars get to thin. Another problem could be that the cluster sizes plot may get cramped when there are too many clusters. We targeted our implementation to the educational aspect and feel, that those problems are negligible because if someone wants to cluster a big data set they would want to use an optimized implementation anyway.
 
 \subsubsection{User Feedback}
-We were told, that the seccond cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendogram.
+We were told, that the second cutoff line is not very nice or intuitive, so we removed it and replaced it with the new dendrogram.
 
 \section{Discussion}
 
 \subsection{Strengths and weaknesses}
-Strengths of our Tool:
-\begin{itemize}
-\item Allows to quickly explore clusterhirachies in small datasets.
-\item Helps with learning and teaching about the OPTICS algorithm and density based clustering in general.
-\item Helps understanding if the algorithm is fit for the problem the user aims to solve.
-\item Default data sets give a nice overview over the capabilities of OPTICS for other data sets.
-\item Shows additional meta imformation that may give additional insights. (dendogram/heat map)
-\end{itemize}
-Weaknesses of our Tool:
-\begin{itemize}
-\item It may be difficult to understand how OPTICS works without any knowledge about density based clustering or supervision.
-\item May be to slow when working with larger datasets
-\item May not be showing enought information when working with multidimensional data.
-\end{itemize}
+We have found, that the biggest strengths of our tool include allowing for quick explotation of cluster hierarchies in small datasets and helping with learning and teaching about the OPTICS algorithm and density based clustering in general. We think, that it also helps understanding if the algorithm is fit for the problem the user aims to solve, especially by showing additional meta information that may give additional insights. (dendrogram/heat map) In addition our Default data sets give a nice overview over the capabilities of OPTICS for other data sets.
+
+Where our tool may lack in is the ability to learn about how OPTICS works without any knowledge about density based clustering or supervision. It may also not be showing enough information when working with multidimensional data and it could therefore be difficult to understand the different plots. Also, our tool is slow when working with large data sets, which makes it less useful for scientific use.
+
 \subsection{Lessons we learned}
 
-Durring this project we learned different new things.
+During this project we learned different new things.
 
 \begin{itemize}
 \item On top of what we learned about the d3 library in the visualization class, working with it on a custom project where we had to realize our own ideas made us dive deeper into its uses. This taught us how to work with it, what it is capable of as well as what it is not capable of and how to overcome those instances.
@@ -678,10 +661,10 @@ Durring this project we learned different new things.
 \label{my-label}
 \begin{tabular}{@{} p{4cm}p{1cm}p{1cm} @{}}
 \textbf{Task} & \textbf{Sonja} & \textbf{Christian} \\
- Dendogram & 100\% & 0\%\\
- Bugfixes & 40\% &  60\%\\
- Additional Data-Sets & 50\% & 50\%\\
- Paper & 50\% & 50\%
+Dendogram & 100\% & 0\%\\
+Bugfixes & 40\% & 60\%\\
+Additional Data-Sets & 50\% & 50\%\\
+Paper & 50\% & 50\%
 \end{tabular}
 \end{table}
 \FloatBarrier
@@ -710,3 +693,4 @@ rebum.
 
 \bibliography{template}
 \end{document}
+
