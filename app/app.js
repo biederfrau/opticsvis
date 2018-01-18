@@ -543,6 +543,7 @@ function draw_clusters(data, state, ctx) {
     ctx.x.domain(data.map((_, i) => i));
     ctx.y.domain([0,max]);
 
+    /*
     var subclustersize_per_cluster = state.output_data.reduce((acc, x) => {
         if(!acc[x.tag]) { acc[x.tag] = {}; }
         if(!acc[x.tag][x.subtag]) { acc[x.tag][x.subtag] = 0; }
@@ -550,7 +551,7 @@ function draw_clusters(data, state, ctx) {
 
         return acc;
     }, {});
-
+*/
     canvas.selectAll(".separator").remove();
 
     var barbottom=ctx.height-ctx.margins.bottom;
@@ -590,7 +591,8 @@ function draw_clusters(data, state, ctx) {
             }
 
             filter(state);
-        })
+        });
+    /*
         .each(function(d, i, e) {
             var cluster = +d.key,
                 subcluster_sizes = _.map(subclustersize_per_cluster[cluster], (v, k) => v),
@@ -619,6 +621,7 @@ function draw_clusters(data, state, ctx) {
                 });
             }
         });
+        */
 
     bars.exit().remove();
 
