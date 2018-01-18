@@ -89,9 +89,10 @@ function optics(input) {
             current.flag = true;
             var distances = [];
             var neighbours = query(input, eps, current, distances);
-            if (neighbours.length + 1 >= minPTS) {
+            var neighbourlength=neighbours.length;
+            if (neighbourlength + 1 >= minPTS) {
                     var coredistance = coredist(distances, minPTS);
-                    for (var j = 0; j < neighbours.length; j++) {
+                    for (var j = 0; j < neighbourlength; j++) {
                         var neighbour = neighbours[j];
                         if (!neighbour.flag) {
                             var dist = Math.max(distances[j], coredistance);
@@ -108,10 +109,11 @@ function optics(input) {
             }
         //TODO: a min heap would save us sorting every itteration maybe consider this (or some ordered list)
         //TODO: for the seedlist
-        if (seedlist.length > 1) {
+        var listlength=seedlist.length;
+        if (listlength > 1) {
             var minval = Number.MAX_VALUE;
             var index = -1;
-            for (var y = 0; y < seedlist.length; y++) {
+            for (var y = 0; y < listlength; y++) {
                 if (seedlist[y].distance < minval) {
                     index = y;
                     minval = seedlist[y].distance;
@@ -136,9 +138,9 @@ function reCalculateClusters(){
 }
 
 function calculateClusters(clusterOrder) {
+    var datalength = clusterOrder.length;
     if(cutoff1==cutoff2) {
         var clusterer = [];
-        var datalength = clusterOrder.length;
         var curindex = 0;
         clusterer[0] = 1;
         clusterOrder[0].subtag=0;
@@ -154,7 +156,6 @@ function calculateClusters(clusterOrder) {
     else{
         var clusterer1 = [];
         var clusterer2 = [];
-        var datalength = clusterOrder.length;
         var curindex1 = 0;
         var curindex2 = 0;
         clusterer1[0] = 1;
@@ -176,7 +177,8 @@ function calculateClusters(clusterOrder) {
 function  tag(clusterOrder,clusterer){
     var noise=0;
     var index=0;
-    for(var i=0;i<clusterer.length;++i) {
+    var length=clusterer.length;
+    for(var i=0;i<length;++i) {
         if (clusterer[i] == 1) {
             noise++;
             clusterOrder[index++].tag=-1;
@@ -193,7 +195,8 @@ function  tag(clusterOrder,clusterer){
 function  tag2(clusterOrder,clusterer1,clusterer2){
     var noise=0;
     var index=0;
-    for(var i=0;i<clusterer1.length;++i) {
+    var length1=clusterer1.length;
+    for(var i=0;i<length1;++i) {
         if (clusterer1[i] == 1) {
             noise++;
             clusterOrder[index++].tag=-1;
@@ -209,7 +212,8 @@ function  tag2(clusterOrder,clusterer1,clusterer2){
     var retag=0;
     var oldtag=-1;
     index=0;
-    for(var i=0;i<clusterer2.length;++i) {
+    var length2=clusterer2.length;
+    for(var i=0;i<length2;++i) {
         if (clusterer2[i] == 1) {
             if(oldtag!=clusterOrder[index].tag){retag=i; noise2=0}
             else{noise2++;}
@@ -238,8 +242,9 @@ function coredist(distances, minPTS) {
     var smalest = Number.MAX_VALUE;
     var count = 0;
     var count2=0;
+    var distancelength=distances.length;
     for (var i = 0; i < minPTS - 1; i++) {
-        for (var j = 0; j < distances.length; j++) {
+        for (var j = 0; j < distancelength; j++) {
             var distance = distances[j];
             if (distance < smalest && distance > lowerbound) {
                 smalest = distance;
