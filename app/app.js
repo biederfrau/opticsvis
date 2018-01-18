@@ -253,7 +253,7 @@ function draw_density(data, state, ctx) {
 
 // setup_reach {{{
 var scutoff1;
-var scutoff2;
+//var scutoff2;
 var cutofftoplimit;
 function setup_reach(state) {
     var canvas = d3.select("#reach"),
@@ -483,16 +483,16 @@ function draw_reach(data, state, ctx) {
     canvas.select(".yaxis").call(d3.axisLeft(ctx.y));
 
     scutoff1=barbottom-ctx.y(max-getcutoff1());
-    scutoff2=barbottom-ctx.y(max-getcutoff2());
+    //scutoff2=barbottom-ctx.y(max-getcutoff2());
 
-    d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
-    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")")
+   // d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
+    d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")");
 
     state.dispatcher.on("select:level.reach", () => {
         scutoff1=barbottom-ctx.y(max-getcutoff1());
-        scutoff2=barbottom-ctx.y(max-getcutoff2());
-        d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")")
-        d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
+        //scutoff2=barbottom-ctx.y(max-getcutoff2());
+        d3.select(".moveable1").attr("transform", "translate(" + [ctx.margins.left, scutoff1>cutofftoplimit?scutoff1:cutofftoplimit] + ")");
+       // d3.select(".moveable2").attr("transform", "translate(" + [ctx.margins.left, scutoff2>cutofftoplimit?scutoff2:cutofftoplimit] + ")")
     });
 
     state.dispatcher.call("drawn");
@@ -535,7 +535,7 @@ function setup_clusters(state) {
 
 // draw_clusters {{{
 function draw_clusters(data, state, ctx) {
-    data.sort(d => +d.key === -1 ? 1 : 0); // keep noise at last index
+    //data.sort(d => +d.key === -1 ? 1 : 0); // keep noise at last index
     var axisleftticks=5;
     var canvas = d3.select("#size");
 
