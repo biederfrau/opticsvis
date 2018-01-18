@@ -552,7 +552,7 @@ function draw_clusters(data, state, ctx) {
         return acc;
     }, {});
 */
-    canvas.selectAll(".separator").remove();
+   // canvas.selectAll(".separator").remove();
 
     var barbottom=ctx.height-ctx.margins.bottom;
     var bars = canvas.selectAll(".bar").data(data, d => d.key);
