@@ -81,15 +81,31 @@
         </p>
 
         <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi varius
-        facilisis odio, nec facilisis turpis rhoncus quis. Mauris at tortor
-        purus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Quisque laoreet, mauris nec imperdiet pulvinar, felis leo semper
-        arcu, ut sodales est tellus ac dolor. Quisque vitae vestibulum ex.
-        Integer cursus arcu at cursus tempus. Maecenas ut justo euismod,
-        condimentum ex accumsan, tempus velit. Sed at nibh id tortor
-        dignissim scelerisque. Nunc et pharetra lorem, non varius diam.
-        Aliquam fringilla urna et malesuada ornare.
+        This visualization aims to help you understand how OPTICS works. The chart on the upper
+        left estimates the densities of the input data. Doubleclicking on it will toggle the actual
+        data points. These data points can be selected using a lasso. Doing so will highlight them
+        in the chart below, the reachability chart.
+        </p>
+
+        <p>
+          On the upper right, a small bar chart showing the cluster sizes can be found.
+          Below that, we've plotted all the jumps that the algorithm made during execution.
+          Hovering a bar of the reachability chart (lower left) will highlight the corresponding
+          edge in this chart, as well as enlarge the corresponding point in the density chart
+          and show its epsilon neighborhood.
+        </p>
+
+        <p>
+          The heatmap on the lower right shows the distances between two points i and j. The points
+          are ordered by the algorithm and mirrored on both axes. This view makes it easier to find
+          clusters and even subclusters---although it shows the same data as the reachability chart,
+          the square shapes are much easier to see for humans.
+        </p>
+
+        <p>
+          OPTICS is a cool and robust algorithm. We encourage you to check out the data tab below to
+          select another data set, or even enter your own, and the settings tab below that to change
+          the parameters of the algorithm and the visualization.
         </p>
       </div>
 
