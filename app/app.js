@@ -735,6 +735,7 @@ function draw_jumps(data, state,ctx) {
 } // }}}
 
 // setup_heat {{{
+// http://bl.ocks.org/darrenjaworski/5397362 <--- continuous legend
 var datacount;
 function setup_heat(state) {
     var closecolor="#000066";
@@ -998,7 +999,7 @@ function draw_scented_widget(data, state, ctx) {
 } // }}}
 
 // setup_dendrogram {{{
-// https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b
+// https://bl.ocks.org/mbostock/ff91c1558bc570b08539547ccc90050b <-- dendrogram (stratify and co)
 function setup_dendrogram(state) {
     var canvas = d3.select("#dendro"),
         style = window.getComputedStyle(document.getElementById("dendro")),
@@ -1107,11 +1108,20 @@ function draw_dendrogram(data, state, ctx) {
                 d3.select(this).style("opacity", 0);
             })
             .on("click", () => {
+                if(state.selected_clusters.length !== 0) { return; }
                 setcutoffs(cutoff, cutoff);
                 cutoffchanged(state);
                 state.dispatcher.call("select:level");
             });
     });
+
+    state.dispatcher.on("filter.dendrogram", () => {
+        if(state.selected_clusters.length !== 0) {
+            d3.selectAll(".clustering-group").style("cursor", "not-allowed");
+        } else {
+            d3.selectAll(".clustering-group").style("cursor", undefined);
+        }
+    })
 
     nodes.exit().remove();
 }//}}}

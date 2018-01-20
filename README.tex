@@ -1,0 +1,69 @@
+\documentclass[english]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[scaled=.8]{beramono}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+\usepackage[english]{babel}
+\usepackage{microtype}
+\usepackage[parfill]{parskip}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{nameref}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{blindtext}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Group 11---Biedermann \& Permann}
+\lhead{README: $\text{OPTICS}_\text{vis}$}
+\cfoot{\thepage}
+
+\newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1}~\nameref*{#1}}}
+
+\definecolor{darkgray}{rgb}{0.66, 0.66, 0.66}
+\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+
+\lstdefinestyle{s}{
+  commentstyle=\color{darkgray},
+  keywordstyle=\bfseries,
+  morekeywords={},
+  stringstyle=\color{asparagus},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  keepspaces=true,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+}
+
+\lstset{style=s}
+
+\begin{document}
+
+\title{README: $\text{OPTICS}_\text{vis}$}
+
+\author{Group 11}
+
+\maketitle
+
+\section{How to get it running}
+
+Go into the \texttt{app/} folder and start any simple HTTP server capable of
+serving files out of the current directory. We have included \texttt{serve.sh}
+which uses PHP to serve at \href{http://localhost:8080}{localhost:8080}.
+
+Nothing else.
+
+\section{References}
+
+Everything that we know, we know from \texttt{bl.ocks.org}. The source code
+is composed of mainly \texttt{setup\_*} and \texttt{draw\_*} functions.
+When we took something from \texttt{bl.ocks.org}, we cited it above the
+relevant \texttt{setup\_*} function.
+
+\end{document}
